@@ -1,0 +1,115 @@
+﻿@model RealEstateRegalSpace.Models.Wallet
+
+@{
+    ViewBag.Title = "PayoutRequest";
+    Layout = "~/Views/Shared/Layout.cshtml";
+}
+
+
+
+@section Header{
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <div class="page-header-title">
+                <h5 class="m-b-10">Payout </h5>
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0)"> <i class="fa fa-home"></i> </a>
+                </li>
+
+
+                <li class="breadcrumb-item">
+                    <a href="javascript:void(0);">Request</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("PayoutRequest", "Associate", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+
+    <div class="card">
+        <div class="card-header">
+            <h5>Request</h5>
+
+        </div>
+        <div class="card-block">
+
+            <!-- Page-Title -->
+
+            <div class="form-group row">
+                <div class="col-lg-12">
+
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <label class="float-label">Balance Amount:</label>
+                            <span class="form-bar" style="color:darkblue"><b>@ViewBag.Balance</b></span>
+                        </div>
+                        <div class="col-sm-4">
+                            <label class="float-label">Amount<span style="color:red">*</span></label>
+                            @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "Enter Amount", @onkeypress = "return isNumberOrDecimal(event);", @onchange = "return Check();" })
+                            <span class="form-bar"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <br />
+                            <input class="btn btn-success pull-left" type="submit" onclick="return validateform();" value="Save" id="btnSave" name="Save" />
+                            <p style="color:red">@TempData["PayoutReq"]</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script>
+
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#Amount').val() == '') {
+            $("#Amount").addClass('errortext');
+            $('#Amount').focus();
+            return false;
+        }
+
+
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>

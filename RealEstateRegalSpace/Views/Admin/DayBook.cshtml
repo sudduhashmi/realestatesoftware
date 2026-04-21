@@ -1,0 +1,144 @@
+﻿@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "DayBook";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("DayBook", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="card-block">
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Day Book</h4>
+                        </div>                      
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-xl-2 col-lg col-md-2 col-sm-2 col-12">
+                                <div class="form-group">
+                                    <label>From Date  </label>
+                                    @Html.TextBoxFor(m => m.FromSearchDate, new { @class = "form-control", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg col-md-2 col-sm-2 col-12">
+                                <div class="form-group">
+                                    <label>To Date  </label>
+                                    @Html.TextBoxFor(m => m.ToSearchDate, new { @class = "form-control", @readonly = "readonly" })
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <label>Select Head Type</label>
+                                    @Html.DropDownListFor(m => m.HeadType, new SelectList(ViewBag.ddlHeadtTyppe, "Value", "Text"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label>Select Sub Head </label>
+                                    @Html.DropDownListFor(m => m.AccountId, new SelectList(ViewBag.ddlHead, "Value", "Text"), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <br />
+                                    <input type="submit" id="btnSearch" class="btn btn-success pull-left" name="Search" value="Search" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row gutters table-responsive">
+                            <table id="example23" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>Name</th>
+                                        <th>Account Head</th>
+                                        <th>TransactionDate</th>
+                                        <th>Narration</th>
+                                        <th>PaymentMode</th>
+                                        <th>Transcation No</th>
+                                        <th>Credit To</th>
+                                        <th>Credit</th>
+                                        <th>Debit</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.lstDetails != null)
+                                        {
+                                            if (Model.lstDetails.Rows.Count > 0)
+                                            {
+                                                int j = 1;
+                                                for (int i = 0; i <= Model.lstDetails.Rows.Count - 1; i++)
+                                                {
+                                                    <tr class="text-left">
+
+                                                        <td>@j</td>
+                                                        <td>@Model.lstDetails.Rows[i]["Name"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["SubAccountHead"].ToString()</td>
+
+                                                        <td>@Model.lstDetails.Rows[i]["TransactionDate"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["Narration"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["PaymentMode"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["TransactionNo"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["CreditTo"].ToString()</td>
+
+                                                        <td>@Model.lstDetails.Rows[i]["DrAmount"].ToString()</td>
+                                                        <td>@Model.lstDetails.Rows[i]["CrAmount"].ToString()</td>
+                                                        <td>
+                                                            @if (i != Model.lstDetails.Rows.Count - 1)
+                                                            {
+                                                                <a href="/Admin/ExpenseEntry?id=@RealEstateRegalSpace.Crypto.Encrypt(Model.lstDetails.Rows[i]["PK_LedgerID"].ToString())" class="btn btn-info btn-sm">Edit</a>
+
+                                                                <a href="/Admin/DeletedayBook?id=@Model.lstDetails.Rows[i]["PK_LedgerID"].ToString()" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you wish to delete this entry?');">Delete</a>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                    j++;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+<script>
+
+    $('#FromSearchDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+    });
+    $('#ToSearchDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+    });
+</script>
+<script>
+    function printDiv() {
+        var divToPrint = document.getElementById("example23");
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }</script>
+
+
+
+

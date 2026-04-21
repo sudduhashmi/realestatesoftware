@@ -1,0 +1,156 @@
+﻿@model Tanyvas.Models.KisanLedgerViewModel
+
+@{
+    ViewBag.Title = "GetKisanLedgerNew";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("GetKisanLedgerNew", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+
+            <div class="card-block">
+                <!-- Page-Title -->
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Kisan Ledger</h4>
+                        </div>
+                        
+                    </div>
+                    <!-- end row -->
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row">
+
+                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <label>Kisan Code</label>
+                                    @*<input type="text" id="txtKhasraNo" class="form-control" placeholder="Search by Khasra No.">*@
+                                    @Html.TextBoxFor(m => m.KisanCode, new { @class = "form-control", @placeholder = "Search by Kisan Code" })
+                                    @*@Html.HiddenFor(m => m.KhasraNo)*@
+
+                                </div>
+                            </div>
+
+                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <br />
+                                    <input type="submit" id="btnSearch" class="btn btn-success pull-left" name="Search" value="Search" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row gutters" id="printData">
+                            @*id="printableArea"*@
+                            @if (Model != null)
+                            {
+                                @Html.HiddenFor(m => m.KisanId)
+                                <div class="col-sm-4">
+                                    Name
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.Name" style="color:blue" />
+                                </div>
+                                <div class="col-sm-4">
+                                    Khasra No
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.KhasraNo" style="color:blue" />
+                                </div>
+                                <div class="col-sm-4">
+                                    Address
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.Address" style="color:blue" />
+                                </div>
+
+                                <div class="col-sm-4">
+                                    Area
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.LandArea" style="color:blue" />
+                                </div>
+                                <div class="col-sm-4">
+                                    Rate
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.Rate" style="color:blue" />
+
+                                </div>
+
+                                <div class="col-sm-4">
+                                    Total Amount
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.TotalAmount" style="color:blue" />
+
+                                </div>
+                                <div class="col-sm-4">
+                                    Total Paid Amount
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.TotalPaidAmount" style="color:blue" />
+
+                                </div>
+                                <div class="col-sm-4">
+                                    Balance Amount
+                                    <input type="text" class="form-control" readonly="readonly" value="@Model.BalanceAmount" style="color:blue" />
+
+                                </div>
+
+
+                            }
+
+                        </div>
+
+                        <div class="row gutters table-responsive">
+                            <table id="example25" class="table table-bordered">
+                                <colgroup>
+                                    <col width="5%" />
+                                    <col width="15%" />
+                                    <col width="25%" />
+                                    <col width="15%" />
+                                    <col width="10%" />
+                                    <col width="30%" />
+                                </colgroup>
+                                <thead>
+
+                                    <tr>
+                                        <th>Sr No.</th>
+                                        <th>TransactionDate</th>
+                                        <th>Particular</th>
+                                        <th>Amount</th>
+                                        <th>Mode</th>
+                                        <th>Narration</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.KisanLedgerDetails != null)
+                                        {
+                                            if (Model.KisanLedgerDetails.Count > 0)
+                                            {
+                                                int j = 1;
+                                                for (int i = 0; i < Model.KisanLedgerDetails.Count; i++)
+                                                {
+                                                    <tr class="text-left">
+                                                        <td>@j</td>
+                                                        <td>@Model.KisanLedgerDetails.ElementAt(i).TransactionDate</td>
+                                                        <td>@Model.KisanLedgerDetails.ElementAt(i).Particulars</td>
+                                                        <td>
+                                                            @Model.KisanLedgerDetails.ElementAt(i).TotalAmount
+
+                                                        </td>
+                                                        <td>@Model.KisanLedgerDetails.ElementAt(i).PaymentMode</td>
+                                                        <td>@Model.KisanLedgerDetails.ElementAt(i).Narration</td>
+                                                    </tr>
+                                                    j++;
+                                                }
+                                            }
+
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+

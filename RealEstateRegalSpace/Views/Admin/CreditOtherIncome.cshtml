@@ -1,0 +1,156 @@
+﻿@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "CreditOtherIncome";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("CreditOtherIncome", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+
+            <div class="card-block">
+
+                <!-- Page-Title -->
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Credit Other Income</h4>
+                        </div>
+                        
+                    </div>
+                    <!-- end row -->
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row">
+
+                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label>Login Id</label>
+                                    <input type="text" id="txtassociateId" class="form-control" placeholder="Search Associate Name Or LoginId">
+                                    @Html.HiddenFor(m => m.LoginId)
+
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label>Amount</label>
+                                    @Html.TextBoxFor(m => m.PaidAmount, new { @class = "form-control", @placeholder = "Amount", @onkeypress = "return isNumberOrDecimal(event);" })
+
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-12">
+                                <div class="form-group">
+                                    <label>Payment Date</label>
+                                    @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @placeholder = "Payment Date", @readonly = "ss" })
+
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
+                                <div class="form-group">
+                                    <br />
+                                    <input type="submit" id="btnSearch" class="btn btn-success pull-left" name="Search" value="Save" onclick="return fvalidate();" />
+                                    <p style="color:red">@TempData["CreditOtherIncome"] </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+<script>
+    $('#FromDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' })
+        var doctorDetails = [];
+
+        $.ajax({
+            url: '/Admin/GetAssociateList',
+            type: 'Post',
+            success: function (response) {
+                if (response != null) {
+
+                    //alert("Respose is not null");
+                    $(response).each(function (index, item) {
+                        doctorDetails.push(item.Name + "[" + item.LoginId + "]");
+                    });
+
+                    $('#txtassociateId').autocomplete({
+                        source: doctorDetails,
+                        select: function (event, ui) {
+
+                            var str = ui.item.label;
+                            var strsplit = str.split("[");
+
+                            $('#LoginId').val(strsplit[1].substr(0, strsplit[1].length - 1));
+                            $("#loader").css({ 'display': 'none' });
+
+
+                            // getCustomerName();
+
+                        }
+                    })
+                    $("#divload").css({ 'display': 'none' })
+
+                }
+                else {
+                    $("#divload").css({ 'display': 'none' })
+                }
+            }, error: function () {
+                //alert('Some Thing wrong!');
+                $("#loader").css({ 'display': 'none' });
+
+            }
+        });
+    });
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function fvalidate() {
+        if ($('#txtassociateId').val() == '') {
+            $("#txtassociateId").addClass('errortext');
+            $('#txtassociateId').focus();
+
+            return false;
+        }
+        if ($('#PaidAmount').val() == '') {
+            $("#PaidAmount").addClass('errortext');
+            $('#PaidAmount').focus();
+
+            return false;
+        }
+        if ($('#PaidAmount').val() == '0') {
+            $("#PaidAmount").addClass('errortext');
+            $('#PaidAmount').focus();
+
+            return false;
+        }
+        if ($('#FromDate').val() == '') {
+            $("#FromDate").addClass('errortext');
+            $('#FromDate').focus();
+
+            return false;
+        }
+        $("#divload").css({ 'display': '' });
+    }
+
+</script>

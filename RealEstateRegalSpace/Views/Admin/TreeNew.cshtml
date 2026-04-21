@@ -1,0 +1,41 @@
+﻿@model RealEstateRegalSpace.Models.Reports
+
+@{
+    /**/
+
+    ViewBag.Title = "Downline";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("Treenew", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Tree</h4>
+                    </div>
+                   
+                </div>
+                <!-- end row -->
+            </div>
+            <div class="card-block">
+                <div class="row">
+                    <div class="col-sm-3">
+                        LoginId
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Associate Id" })
+                    </div>
+                    <div class="col-sm-3">
+                        <br />
+                        <input type="submit" value="Get Details" class="btn btn-primary" />
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <iframe id="frm" src="~/DownlineTreeNew.aspx" style="height:500px;border: 0px solid;width:100%"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+}
