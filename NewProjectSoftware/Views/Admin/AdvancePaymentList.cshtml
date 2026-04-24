@@ -1,0 +1,143 @@
+@model RealEstateRegalSpace.Models.Wallet
+
+@{
+    ViewBag.Title = "AdvancePaymentList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("AdvancePaymentList", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="card-block">
+                <!-- Page-Title -->
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Advance Payment List</h4>
+                        </div>
+                      
+                    </div>
+                    <!-- end row -->
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row gutters">
+                            <div class="col-sm-3">
+                                LoginId
+                                @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "LoginId" })
+                            </div>
+
+                            <div class="col-sm-3">
+                                From Joining Date
+                                @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "From Date" })
+                            </div>
+                            <div class="col-sm-3">
+                                To Joining Date
+                                @Html.TextBoxFor(m => m.ToDate, new { @class = "form-control", @Placeholder = "To Date" })
+                            </div>
+                            <div class="col-sm-3">
+                                <br />
+                                <input type="submit" value="Get Details" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table_section" style="overflow-x: auto; width: 100%;">
+                    <div>
+                        @if (Model != null)
+                        {
+                            decimal totalAmt = 0;
+                            <table id="example23" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Payment Date</th>
+                                        <th>LoginId</th>
+                                        <th>Name</th>
+                                        <th>Payment Mode</th>
+                                        <th>Bank Details</th>
+                                        <th>Description</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @if (Model.advancePayment != null)
+                                    {
+                                        if (Model.advancePayment.Rows.Count > 0)
+                                        {
+                                            for (int i = 0; i <= Model.advancePayment.Rows.Count - 1; i++)
+                                            {
+                                                totalAmt += decimal.Parse(@Model.advancePayment.Rows[i]["Amount"].ToString());
+                                                <tr>
+                                                    <td>@Model.advancePayment.Rows[i]["PaymentDate"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["LoginID"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["FirstName"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["PaymentMode"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["PayMode"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["Description"].ToString()</td>
+                                                    <td>@Model.advancePayment.Rows[i]["Amount"].ToString()</td>
+
+                                                    <td>
+                                                        <a class="btn btn-primary btn-sm" href="/Admin/AdvancePayment?PK_AdvancePaymentID=@RealEstateRegalSpace.Crypto.Encrypt(Model.advancePayment.Rows[i]["PK_AdvancePaymentID"].ToString())">Edit</a>
+
+                                                        <a class="btn btn-danger btn-sm" href="/Admin/DeleteAdvancePayment?PK_AdvancePaymentID=@RealEstateRegalSpace.Crypto.Encrypt(Model.advancePayment.Rows[i]["PK_AdvancePaymentID"].ToString())">Delete</a>
+                                                    </td>
+
+
+
+                                                </tr>
+                                            }
+
+                                        }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Total</th>
+                                        <th>@totalAmt</th>
+
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="../../assets/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+<script>
+    $('#FromDate').datepicker({
+        format: 'dd/mm/yyyy',
+        changeYear: true,
+        changeMonth: true
+    });
+    $('#Todate').datepicker({
+        format: 'dd/mm/yyyy',
+        changeYear: true,
+        changeMonth: true
+    });
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+
+
+    });
+
+</script>
+
+
+

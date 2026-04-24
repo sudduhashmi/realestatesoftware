@@ -1,0 +1,545 @@
+@model RealEstateRegalSpace.Models.Dashboard
+
+@{
+    ViewBag.Title = "DashBoard";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+<style>
+    /* Modern Stat Cards */
+    .stat-card {
+        background: #fff;
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 140px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 20px;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        text-decoration: none;
+    }
+    .stat-card-border-left {
+        border-left: 6px solid var(--card-color);
+    }
+    .stat-card-border-bottom::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 20px;
+        right: 20px;
+        height: 3px;
+        background: var(--card-color);
+        border-radius: 3px 3px 0 0;
+    }
+    .stat-card-title {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 5px;
+        margin-bottom: 0;
+    }
+    .stat-card-value {
+        color: #212529;
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 0;
+        line-height: 1.2;
+    }
+    .stat-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+    .badge-soft-success { background: #e6f4ea; color: #1e8e3e; }
+    .badge-soft-danger { background: #fce8e6; color: #d93025; }
+    .badge-soft-secondary { background: #f1f3f4; color: #5f6368; }
+    
+    .stat-card-footer {
+        text-align: right;
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-top: 15px;
+    }
+</style>
+
+<div class="wrapper">
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box ">
+            <div class="row align-items-center">
+                <div class="col-sm-12">
+                    <h2 class="font-weight-bold mb-1" style="color: #2c3e50; font-size: 1.8rem;">Dashboard Overview</h2>
+                    <p class="text-muted mb-0" style="font-size: 0.95rem;">
+                        Welcome back, @(Session["FullName"] != null ? Session["FullName"].ToString() : "Admin") &middot; 
+                        <span style="color: #6c757d;"><i class="far fa-calendar-alt mr-1"></i> Last updated: @DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="page-body">
+            @if (Session["Pk_AdminId"].ToString() == "11")
+            {
+
+            }
+            else
+            {
+                <!-- Top KPI Row 1 -->
+                <div class="row dashboard-row">
+                    <!-- Total Associates -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/AssociateList" class="stat-card stat-card-border-left" style="--card-color: #0d6efd;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalAssociate</h3>
+                                <p class="stat-card-title">Total Associates</p>
+                            </div>
+                            <span class="stat-badge badge-soft-success">+@(ViewBag.AssociatePercentage ?? 0)%</span>
+                            <div class="stat-card-footer text-primary">
+                                +@(ViewBag.AssociateThisMonth ?? 0) this month
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Total Customers -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/CustomerList" class="stat-card stat-card-border-left" style="--card-color: #198754;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalCustomer</h3>
+                                <p class="stat-card-title">Total Customers</p>
+                            </div>
+                            <span class="stat-badge badge-soft-success">+@(ViewBag.CustomerPercentage ?? 0)%</span>
+                            <div class="stat-card-footer text-success">
+                                +@(ViewBag.CustomerThisWeek ?? 0) this week
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Total Bookings -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/BookingList" class="stat-card stat-card-border-left" style="--card-color: #fd7e14;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalBooking</h3>
+                                <p class="stat-card-title">Total Bookings</p>
+                            </div>
+                            <span class="stat-badge badge-soft-secondary">@(ViewBag.BookingPercentage ?? 0)%</span>
+                            <div class="stat-card-footer text-warning">
+                                Active booking
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- Total Active Associates -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/AssociateList?status=P" class="stat-card stat-card-border-left" style="--card-color: #6f42c1;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalActiveAssociate</h3>
+                                <p class="stat-card-title">Total Active Assoc</p>
+                            </div>
+                            <span class="stat-badge badge-soft-danger">-@(ViewBag.TotalInactiveAssociate ?? "0")</span>
+                            <div class="stat-card-footer text-purple" style="color: #6f42c1;">
+                                @ViewBag.TotalInactiveAssociate inactive
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Top KPI Row 2 -->
+                <div class="row dashboard-row">
+                    @if (Session["RoleName"].ToString() == "Admin")
+                    {
+                        <!-- Total Business -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/CollectionReport" class="stat-card stat-card-border-bottom" style="--card-color: #0d6efd;">
+                                <div>
+                                    <h3 class="stat-card-value">&#8377;@ViewBag.TotalBusiness</h3>
+                                    <p class="stat-card-title">Total Business</p>
+                                </div>
+                                <span class="stat-badge text-primary bg-transparent p-0" style="font-weight: 500;">vs last month</span>
+                            </a>
+                        </div>
+
+                        <!-- Direct Business -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/CollectionReport" class="stat-card stat-card-border-bottom" style="--card-color: #198754;">
+                                <div>
+                                    <h3 class="stat-card-value">&#8377;@ViewBag.TotalDirectBusiness</h3>
+                                    <p class="stat-card-title">Direct Business</p>
+                                </div>
+                                <span class="stat-badge text-success bg-transparent p-0" style="font-weight: 500;">Self-referred</span>
+                            </a>
+                        </div>
+                    }
+
+                    @if (Session["RoleName"].ToString() == "Admin" || Session["Pk_adminId"].ToString() == "9")
+                    {
+                        <!-- Level Business -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/CollectionReport" class="stat-card stat-card-border-bottom" style="--card-color: #fd7e14;">
+                                <div>
+                                    <h3 class="stat-card-value">&#8377;@ViewBag.TotalLevelBusienss</h3>
+                                    <p class="stat-card-title">Level Business</p>
+                                </div>
+                                <span class="stat-badge text-warning bg-transparent p-0" style="font-weight: 500; color: #fd7e14 !important;">Network income</span>
+                            </a>
+                        </div>
+                    }
+
+                    @if (Session["RoleName"].ToString() == "Admin")
+                    {
+                        <!-- Booked Area -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/GetPlotAreaReport?Status=Booked" class="stat-card stat-card-border-bottom" style="--card-color: #0dcaf0;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.BookedArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
+                                    <p class="stat-card-title">Booked Area</p>
+                                </div>
+                                <span class="stat-badge badge-soft-success">+@ViewBag.BookedArea sqft</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Top KPI Row 3 -->
+                <div class="row dashboard-row">
+                    <!-- Inactive Associate -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/AssociateList?status=T" class="stat-card stat-card-border-bottom" style="--card-color: #dc3545;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalInactiveAssociate</h3>
+                                <p class="stat-card-title">Inactive Associates</p>
+                            </div>
+                            <span class="stat-badge text-danger bg-transparent p-0" style="font-weight: 500;">Action required</span>
+                        </a>
+                    </div>
+
+                    @if (Session["RoleName"].ToString() == "Admin")
+                    {
+                        <!-- Pending Document -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/ApproveKYC" class="stat-card stat-card-border-bottom" style="--card-color: #ffc107;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.PendingDocument</h3>
+                                    <p class="stat-card-title">Pending Documents</p>
+                                </div>
+                                <span class="stat-badge badge-soft-danger">Pending</span>
+                            </a>
+                        </div>
+
+                        <!-- Alloted Area -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/GetPlotAreaReport?Status=Alloted" class="stat-card stat-card-border-bottom" style="--card-color: #20c997;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.AllotedArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
+                                    <p class="stat-card-title">Alloted Area</p>
+                                </div>
+                                <span class="stat-badge badge-soft-success">Alloted</span>
+                            </a>
+                        </div>
+
+                        <!-- Registered Area -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/GetPlotAreaReport?Status=Registered" class="stat-card stat-card-border-bottom" style="--card-color: #6610f2;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.RegisteredArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
+                                    <p class="stat-card-title">Registered Area</p>
+                                </div>
+                                <span class="stat-badge badge-soft-secondary">Registered</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <!-- Plot Status & Recent Bookings -->
+                <div class="row dashboard-row mt-4">
+                    <!-- Plot Status Overview -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="mb-0 font-weight-bold" style="color: #212529; font-size: 1.1rem;">Plot Status Overview</h5>
+                                    <a href="/Admin/PlotList" class="text-primary font-weight-bold" style="font-size: 0.85rem; text-decoration: none;">All Sites <i class="fas fa-caret-down ml-1"></i></a>
+                                </div>
+                                
+                                @{
+                                    var plotStats = ViewBag.PlotStats as System.Data.DataTable;
+                                    int totalPlots = 0;
+                                    int available = 0, booked = 0, onHold = 0, registered = 0, cancelled = 0;
+                                    
+                                    if (plotStats != null) {
+                                        foreach (System.Data.DataRow row in plotStats.Rows) {
+                                            totalPlots += plotStats.Columns.Contains("TotalPlots") ? Convert.ToInt32(row["TotalPlots"]) : 0;
+                                            available += plotStats.Columns.Contains("AvailablePlots") ? Convert.ToInt32(row["AvailablePlots"]) : 0;
+                                            booked += plotStats.Columns.Contains("BookedPlots") ? Convert.ToInt32(row["BookedPlots"]) : 0;
+                                            onHold += plotStats.Columns.Contains("HoldPlots") ? Convert.ToInt32(row["HoldPlots"]) : 0;
+                                            registered += plotStats.Columns.Contains("RegisteredPlots") ? Convert.ToInt32(row["RegisteredPlots"]) : 0;
+                                        }
+                                    }
+                                    if (totalPlots == 0) { totalPlots = 1; } // Prevent div by zero
+                                }
+
+                                <!-- Available -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <div style="width: 90px;">
+                                        <span class="text-muted" style="font-size: 0.95rem;">Available</span>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pr-3">
+                                        <span class="font-weight-bold text-dark" >@available</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: @((available * 100) / totalPlots)%; background-color: #008080; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pl-2">
+                                        <span class="text-muted" style="font-size: 0.85rem;">@((available * 100) / totalPlots)%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Booked -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <div style="width: 90px;">
+                                        <span class="text-muted" style="font-size: 0.95rem;">Booked</span>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pr-3">
+                                        <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">@booked</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: @((booked * 100) / totalPlots)%; background-color: #0d6efd; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pl-2">
+                                        <span class="text-muted" style="font-size: 0.85rem;">@((booked * 100) / totalPlots)%</span>
+                                    </div>
+                                </div>
+
+                                <!-- On Hold -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <div style="width: 90px;">
+                                        <span class="text-muted" style="font-size: 0.95rem;">On Hold</span>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pr-3">
+                                        <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">@onHold</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: @((onHold * 100) / totalPlots)%; background-color: #fd7e14; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pl-2">
+                                        <span class="text-muted" style="font-size: 0.85rem;">@((onHold * 100) / totalPlots)%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Registered -->
+                                <div class="d-flex align-items-center mb-3">
+                                    <div style="width: 90px;">
+                                        <span class="text-muted" style="font-size: 0.95rem;">Registered</span>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pr-3">
+                                        <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">@registered</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: @((registered * 100) / totalPlots)%; background-color: #6f42c1; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pl-2">
+                                        <span class="text-muted" style="font-size: 0.85rem;">@((registered * 100) / totalPlots)%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Cancelled -->
+                                <div class="d-flex align-items-center mb-2">
+                                    <div style="width: 90px;">
+                                        <span class="text-muted" style="font-size: 0.95rem;">Cancelled</span>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pr-3">
+                                        <span class="font-weight-bold text-dark" style="font-size: 0.95rem;">@cancelled</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
+                                            <div class="progress-bar" role="progressbar" style="width: @((cancelled * 100) / totalPlots)%; background-color: #dc3545; border-radius: 4px;"></div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 40px;" class="text-right pl-2">
+                                        <span class="text-muted" style="font-size: 0.85rem;">@((cancelled * 100) / totalPlots)%</span>
+                                    </div>
+                                </div>
+
+                                <!-- Legend -->
+                                <div class="d-flex flex-wrap mt-4 pt-2">
+                                    <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #008080; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Available</span></div>
+                                    <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #0d6efd; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Booked</span></div>
+                                    <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #fd7e14; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">On Hold</span></div>
+                                    <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #6f42c1; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Registered</span></div>
+                                    <div class="mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #dc3545; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Cancelled</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Bookings -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <h5 class="mb-0 font-weight-bold" style="color: #444;">Recent Bookings</h5>
+                                    <a href="/Admin/BookingList" class="text-primary small font-weight-bold">View All <i class="fas fa-arrow-right ml-1"></i></a>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-sm mb-0">
+                                        <thead>
+                                            <tr class="text-muted small uppercase" style="letter-spacing: 0.5px; border-bottom: 1px solid #f0f0f0;">
+                                                <th class="pb-3 pl-0">Customer</th>
+                                                <th class="pb-3 text-center">Plot</th>
+                                                <th class="pb-3 text-right">Amount</th>
+                                                <th class="pb-3 text-right pr-0">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="small font-weight-bold">
+                                            @{
+                                                var recent = ViewBag.RecentBookings as System.Data.DataTable;
+                                                if (recent != null && recent.Rows.Count > 0) {
+                                                    int count = 0;
+                                                    foreach (System.Data.DataRow row in recent.Rows) {
+                                                        if (count >= 5) { break; }
+                                                        <tr>
+                                                            <td class="py-3 pl-0">@(recent.Columns.Contains("CustomerName") ? row["CustomerName"] : (recent.Columns.Contains("Name") ? row["Name"] : "N/A"))</td>
+                                                            <td class="py-3 text-center text-muted">@(recent.Columns.Contains("PlotNumber") ? row["PlotNumber"] : "N/A")</td>
+                                                            <td class="py-3 text-right">&#8377;@(recent.Columns.Contains("PaidAmount") ? row["PaidAmount"] : "0")</td>
+                                                            <td class="py-3 text-right pr-0">
+                                                                <span class="badge badge-pill badge-soft-success px-2 py-1">Success</span>
+                                                            </td>
+                                                        </tr>
+                                                        count++;
+                                                    }
+                                                } else {
+                                                    <tr><td colspan="4" class="text-center py-4 text-muted">No recent bookings found</td></tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Actions & Top Performers -->
+                <div class="row dashboard-row">
+                    <!-- Pending Actions -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <h5 class="mb-4 font-weight-bold" style="color: #444;">Pending Actions</h5>
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <div class="p-3 text-center" style="background: #eef2ff; border-radius: 12px;">
+                                            <h3 class="mb-1 font-weight-bold" style="color: #4f46e5;">@ViewBag.PendingDocument</h3>
+                                            <p class="small text-muted mb-0">Pending Documents</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <div class="p-3 text-center" style="background: #fff7ed; border-radius: 12px;">
+                                            <h3 class="mb-1 font-weight-bold" style="color: #ea580c;">0</h3>
+                                            <p class="small text-muted mb-0">EMI Due Today</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 text-center" style="background: #f0fdf4; border-radius: 12px;">
+                                            <h3 class="mb-1 font-weight-bold" style="color: #16a34a;">0</h3>
+                                            <p class="small text-muted mb-0">Approve Payments</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="p-3 text-center" style="background: #fef2f2; border-radius: 12px;">
+                                            <h3 class="mb-1 font-weight-bold" style="color: #dc2626;">0</h3>
+                                            <p class="small text-muted mb-0">Expiring Holds</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Associate Health & Top Performers -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <h5 class="mb-4 font-weight-bold" style="color: #444;">Associate Health</h5>
+                                
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="position-relative mr-4" style="width: 100px; height: 100px;">
+                                        <svg viewBox="0 0 36 36" class="circular-chart" style="width: 100%; height: 100%;">
+                                            <path class="circle-bg" style="fill: none; stroke: #f0f0f0; stroke-width: 3.8;" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            @{
+                                                int totalAssoc = Convert.ToInt32(ViewBag.TotalAssociate ?? "0");
+                                                int activeAssoc = Convert.ToInt32(ViewBag.TotalActiveAssociate ?? "0");
+                                                int inactiveAssoc = Convert.ToInt32(ViewBag.TotalInactiveAssociate ?? "0");
+                                                double activePerc = totalAssoc > 0 ? (activeAssoc * 100.0 / totalAssoc) : 0;
+                                            }
+                                            <path class="circle" style="fill: none; stroke: #4f46e5; stroke-width: 3.8; stroke-linecap: round; stroke-dasharray: @activePerc, 100;" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                            <text x="18" y="20.35" class="percentage" style="fill: #444; font-family: sans-serif; font-size: 0.5rem; text-anchor: middle; font-weight: bold;">@totalAssoc</text>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="small font-weight-bold text-muted"><i class="fas fa-circle mr-2" style="color: #4f46e5;"></i> Active</span>
+                                            <span class="small font-weight-bold">@activeAssoc</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="small font-weight-bold text-muted"><i class="fas fa-circle mr-2" style="color: #f0f0f0;"></i> Inactive</span>
+                                            <span class="small font-weight-bold">@inactiveAssoc</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4" style="border-color: #f0f0f0;">
+                                
+                                <h6 class="small font-weight-bold text-muted mb-3 uppercase" style="letter-spacing: 0.5px;">Top Performers</h6>
+                                <ul class="list-unstyled mb-0">
+                                    @{
+                                        var performers = ViewBag.TopPerformers as System.Data.DataTable;
+                                        if (performers != null && performers.Rows.Count > 0) {
+                                            int pCount = 0;
+                                            foreach (System.Data.DataRow row in performers.Rows) {
+                                                if (pCount >= 3) { break; }
+                                                <li class="d-flex align-items-center mb-3">
+                                                    <div class="avatar-sm mr-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                                        <i class="fas fa-user text-muted" style="font-size: 0.8rem;"></i>
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <h6 class="mb-0 small font-weight-bold">@(performers.Columns.Contains("AssociateName") ? row["AssociateName"] : "N/A")</h6>
+                                                        <p class="small text-muted mb-0">ID: @(performers.Columns.Contains("AssociateId") ? row["AssociateId"] : "N/A")</p>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <span class="badge badge-soft-primary px-2 py-1">Top @(pCount + 1)</span>
+                                                    </div>
+                                                </li>
+                                                pCount++;
+                                            }
+                                        } else {
+                                            <li class="text-center py-2 text-muted small">No performers data available</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

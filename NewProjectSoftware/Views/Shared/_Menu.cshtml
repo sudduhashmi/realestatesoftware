@@ -1,0 +1,52 @@
+@model RealEstateRegalSpace.Models.Home
+
+<ul id="side-menu">
+    <li data-title="Dashboard">
+        <a href="/Admin/DashBoard">
+            <i class="fas fa-tachometer-alt fa-fw"></i>
+            <span>Dashboard</span>
+        </a>
+    </li>
+
+    @if (Model != null && Model.lstMenu != null)
+    {
+        foreach (var item in Model.lstMenu)
+        {
+            string name = item.MenuName.ToLower();
+            string menuIcon = "fas fa-folder fa-fw";
+            
+            if (name.Contains("master")) { menuIcon = "fas fa-box fa-fw"; }
+            else if (name.Contains("permission")) { menuIcon = "fas fa-user-shield fa-fw"; }
+            else if (name.Contains("team")) { menuIcon = "fas fa-users-cog fa-fw"; }
+            else if (name.Contains("associate")) { menuIcon = "fas fa-handshake fa-fw"; }
+            else if (name.Contains("customer")) { menuIcon = "fas fa-user-friends fa-fw"; }
+            else if (name.Contains("plot")) { menuIcon = "fas fa-map-marked-alt fa-fw"; }
+            else if (name.Contains("account")) { menuIcon = "fas fa-file-invoice-dollar fa-fw"; }
+            else if (name.Contains("payout")) { menuIcon = "fas fa-money-bill-wave fa-fw"; }
+            else if (name.Contains("report")) { menuIcon = "fas fa-chart-line fa-fw"; }
+            else if (name.Contains("ledger")) { menuIcon = "fas fa-book fa-fw"; }
+
+            <li class="has-submenu" data-title="@item.MenuName">
+                <a href="javascript:void(0);" class="menu-link">
+                    <i class="@menuIcon"></i>
+                    <span>@item.MenuName</span>
+                    <i class="fas fa-chevron-down arrow"></i>
+                </a>
+                <ul class="submenu">
+                    @if (Model.lstsubmenu != null)
+                    {
+                        foreach (var item1 in Model.lstsubmenu)
+                        {
+                            if (item1.MenuId == item.MenuId)
+                            {
+                                <li>
+                                    <a href='@item1.Url'>@item1.SubMenuName</a>
+                                </li>
+                            }
+                        }
+                    }
+                </ul>
+            </li>
+        }
+    }
+</ul>

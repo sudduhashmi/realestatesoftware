@@ -1,0 +1,258 @@
+
+@model RealEstateRegalSpace.Models.Plot
+
+@{
+    ViewBag.Title = "Pay Investment";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@section Header{
+
+    <div class="row align-items-center">
+        <div class="col-md-8">
+            <div class="page-header-title">
+                <h5 class="m-b-10">Pay Investment</h5>
+
+            </div>
+        </div>
+        <div class="col-md-4">
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="index.html"> <i class="fa fa-home"></i> </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="#!">Investor Management</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("PayInvestment", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+
+{
+    <div class="card">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h6 class="page-title">Pay Investment</h6>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-right" style="margin-bottom:0px;">
+                        <li class="breadcrumb-item active">Investor Management</li>
+                        <li class="breadcrumb-item active">Pay Investment</li>
+                    </ol>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="row gutters mb-4">
+
+                <div class="col-sm-4">
+                    Investment Amount <span style="color: red">*</span>
+                    @Html.TextBoxFor(m => m.DrAmount, new { @class = "form-control", @Placeholder = "Investment Amount", @onkeypress = "return isNumberOrDecimal(event);", @maxlength = "10", @onchange = "return getbalance();" })
+                </div>
+
+                <div class="col-sm-4">
+                    Payment Date <span style="color: red">*</span>
+                    @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @Placeholder = "PaymentDate", @readonly = "readonly" })
+                </div>
+                <div class="col-sm-4">
+                    Payment Mode <span style="color: red">*</span>
+                    @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlPaymentMode, "Value", "Text"), new { @class = "form-control", @onchange = "return CheckPayMode()" })
+                </div>
+                <div class="col-sm-12">
+                    Narration <span style="color: red">*</span>
+                    @Html.TextAreaFor(m => m.Narration, new { @class = "form-control", @Placeholder = "Narration" })
+                </div>
+            </div>
+
+            <div class="row" id="divPaymentMode" style="display: none">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        Cheque/Transaction Number <span style="color: red">*</span>
+                        @Html.TextBoxFor(m => m.TransactionNumber, new { @class = "form-control", @Placeholder = "Cheque/Transaction Number", @maxlength = "50" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        Cheque/Transaction Date <span style="color: red">*</span>
+                        @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control", @Placeholder = "Cheque/Transaction Date", @Readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        Bank Name <span style="color: red">*</span>
+                        @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @maxlength = "100", @Placeholder = "Bank Name" })
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        Bank Branch <span style="color: red">*</span>
+                        @Html.TextBoxFor(m => m.BankBranch, new { @class = "form-control", @maxlength = "100", @Placeholder = "Bank Branch" })
+                    </div>
+                    @Html.HiddenFor(m => m.Fk_UserId)
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input class="btn btn-success" type="submit" onclick="return validateform();" value="Save" id="btnSave" name="btnSave" />
+                    </div>
+
+
+                </div>
+                <br />
+                <a style="color:red">
+
+                    @TempData["payinvestment"]
+
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+    $('#PaymentDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+    $('#TransactionDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+</script>
+<script>
+    function gettotalamount() {
+        var plotarea = Number($('#PlotArea').val());
+        var totalamount = Number(plotarea) * Number($('#PlotRate').val());
+        $('#PlotAmount').val(totalamount);
+    }
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+
+
+        if ($('#DrAmount').val() == '') {
+            $("#DrAmount").addClass('errortext');
+            $('#DrAmount').focus();
+            //    alert("Please Enter Pin Code")
+            return false;
+        }
+        if ($('#PaymentDate').val() == '') {
+            $("#PaymentDate").addClass('errortext');
+            $('#PaymentDate').focus();
+            //    alert("Please Enter Pin Code")
+            return false;
+        }
+        if ($('#PaymentMode').val() == '0') {
+            $("#PaymentMode").addClass('errortext');
+            $('#PaymentMode').focus();
+            //    alert("Please Enter Pin Code")
+            return false;
+        }
+        if ($('#PaymentMode').val() != '1' && $('#PaymentMode').val() != '7' && $('#PaymentMode').val() != '8') {
+            if ($('#TransactionNumber').val() == '') {
+                $("#TransactionNumber").addClass('errortext');
+                $('#TransactionNumber').focus();
+                $("#divload").css({ 'display': 'none' });
+                return false;
+            }
+            if ($('#TransactionDate').val() == '') {
+                $("#TransactionDate").addClass('errortext');
+                $('#TransactionDate').focus();
+                $("#divload").css({ 'display': 'none' });
+                return false;
+            }
+            if ($('#PaymentMode').val() != '4' && $('#PaymentMode').val() != '9') {
+                if ($('#BankName').val() == '') {
+                    $("#BankName").addClass('errortext');
+                    $('#BankName').focus();
+                    $("#divload").css({ 'display': 'none' });
+                    return false;
+                }
+                if ($('#BankBranch').val() == '') {
+                    $("#BankBranch").addClass('errortext');
+                    $('#BankBranch').focus();
+                    $("#divload").css({ 'display': 'none' });
+                    return false;
+                }
+                // $('#creditdebit').html('Debit To');
+            }
+
+        }
+        else {
+            $('#TransactionNumber').val('');
+            $('#TransactionDate').val('');
+            $('#BankName').val('');
+            $('#BankBranch').val('');
+        }
+        $("#divload").css({ 'display': '' });
+        return true;
+    }
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+    function CheckPayMode() {
+        debugger
+        if ($('#PaymentMode').val() != '1' && $('#PaymentMode').val() != '7' && $('#PaymentMode').val() != '8') {
+            $("#divPaymentMode").show();
+            if ($('#PaymentMode').val() == '9') {
+                $('#creditdebit').html('Debit To');
+            }
+            else {
+                $('#creditdebit').html('Debit To');
+            }
+        }
+
+        else {
+            $("#divPaymentMode").hide();
+        }
+
+    }
+    function getbalance() {
+        var balance = Number($('#PlotAmount').val()) - Number($('#PaidAmount').val());
+        $('#Balance').val(balance);
+    }
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>
+
+
+

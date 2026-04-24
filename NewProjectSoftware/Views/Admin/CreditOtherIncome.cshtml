@@ -1,0 +1,114 @@
+@model RealEstateRegalSpace.Models.Reports
+@{
+    ViewBag.Title = "CreditOtherIncome";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("CreditOtherIncome", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Credit Other Income</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 style="color:red">@TempData["CreditOtherIncome"]</h6>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        Associate ID <span style="color: red">*</span>
+                                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Associate ID", @onchange="return getMemberDetails();" })
+                                        @Html.HiddenFor(m=>m.Fk_UserId)
+                                        <span id="txtMemberName" style="color:blue"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        Amount <span style="color: red">*</span>
+                                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "Amount", @onkeypress="return isNumberOrDecimal(event);" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        Date <span style="color: red">*</span>
+                                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "Date", @readonly="readonly" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        Remark
+                                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @Placeholder = "Remark" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <br />
+                                    <input type="submit" name="Save" value="Credit Income" class="btn btn-success" onclick="return validate();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $('#FromDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true
+    });
+
+    function getMemberDetails() {
+        var loginId = $('#LoginId').val();
+        $.ajax({
+            url: '/Home/GetSponserDetails', type: 'post', dataType: 'json',
+            data: { 'ReferBy': loginId },
+            success: function (data) {
+                if (data.Result == 'Yes') {
+                    $('#txtMemberName').text(data.DisplayName);
+                } else {
+                    alert(data.Result);
+                    $('#LoginId').val('');
+                    $('#txtMemberName').text('');
+                }
+            }
+        });
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) return false;
+        return true;
+    }
+
+    function validate() {
+        if ($('#LoginId').val() == '') {
+            alert('Please enter Associate ID');
+            return false;
+        }
+        if ($('#Amount').val() == '' || $('#Amount').val() == '0') {
+            alert('Please enter Amount');
+            return false;
+        }
+        if ($('#FromDate').val() == '') {
+            alert('Please select Date');
+            return false;
+        }
+        return true;
+    }
+</script>
