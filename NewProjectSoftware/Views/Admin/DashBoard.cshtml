@@ -82,7 +82,13 @@
                 <div class="col-sm-12">
                     <h2 class="font-weight-bold mb-1" style="color: #2c3e50; font-size: 1.8rem;">Dashboard Overview</h2>
                     <p class="text-muted mb-0" style="font-size: 0.95rem;">
-                        Welcome back, @(Session["FullName"] != null ? Session["FullName"].ToString() : "Admin") &middot; 
+                        @{
+                            string welcomeName = Session["FullName"] != null ? Session["FullName"].ToString() : "Admin";
+                            if (welcomeName.Contains("Regal Space")) {
+                                welcomeName = welcomeName.Replace("Regal Space", "Shashikala");
+                            }
+                        }
+                        Welcome back, @welcomeName &middot; 
                         <span style="color: #6c757d;"><i class="far fa-calendar-alt mr-1"></i> Last updated: @DateTime.Now.ToString("dd MMM yyyy, hh:mm tt")</span>
                     </p>
                 </div>
@@ -261,11 +267,11 @@
                 </div>
 
                 <!-- Plot Status & Recent Bookings -->
-                <div class="row dashboard-row mt-4">
+                <div class="row dashboard-row ">
                     <!-- Plot Status Overview -->
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-6 ">
                         <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                            <div class="card-body p-4">
+                            <div class="card-body ">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5 class="mb-0 font-weight-bold" style="color: #212529; font-size: 1.1rem;">Plot Status Overview</h5>
                                     <a href="/Admin/PlotList" class="text-primary font-weight-bold" style="font-size: 0.85rem; text-decoration: none;">All Sites <i class="fas fa-caret-down ml-1"></i></a>
@@ -391,9 +397,9 @@
                     </div>
 
                     <!-- Recent Bookings -->
-                    <div class="col-lg-6 mb-4">
+                    <div class="col-lg-6 ">
                         <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                            <div class="card-body p-4">
+                            <div class="card-body ">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5 class="mb-0 font-weight-bold" style="color: #444;">Recent Bookings</h5>
                                     <a href="/Admin/BookingList" class="text-primary small font-weight-bold">View All <i class="fas fa-arrow-right ml-1"></i></a>
@@ -442,7 +448,7 @@
                     <!-- Pending Actions -->
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                            <div class="card-body p-4">
+                            <div class="card-body ">
                                 <h5 class="mb-4 font-weight-bold" style="color: #444;">Pending Actions</h5>
                                 <div class="row">
                                     <div class="col-6 mb-3">
@@ -477,7 +483,7 @@
                     <!-- Associate Health & Top Performers -->
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow-sm border-0" style="border-radius: 15px;">
-                            <div class="card-body p-4">
+                            <div class="card-body ">
                                 <h5 class="mb-4 font-weight-bold" style="color: #444;">Associate Health</h5>
                                 
                                 <div class="d-flex align-items-center mb-4">
@@ -521,7 +527,15 @@
                                                         <i class="fas fa-user text-muted" style="font-size: 0.8rem;"></i>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-0 small font-weight-bold">@(performers.Columns.Contains("AssociateName") ? row["AssociateName"] : "N/A")</h6>
+                                                        <h6 class="mb-0 small font-weight-bold">
+                                                            @{
+                                                                string assocName = performers.Columns.Contains("AssociateName") ? row["AssociateName"].ToString() : "N/A";
+                                                                if (assocName.Contains("Regal Space")) {
+                                                                    assocName = assocName.Replace("Regal Space", "Shashikala");
+                                                                }
+                                                                @assocName
+                                                            }
+                                                        </h6>
                                                         <p class="small text-muted mb-0">ID: @(performers.Columns.Contains("AssociateId") ? row["AssociateId"] : "N/A")</p>
                                                     </div>
                                                     <div class="text-right">

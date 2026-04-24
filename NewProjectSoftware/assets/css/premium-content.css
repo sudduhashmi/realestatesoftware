@@ -30,12 +30,14 @@
     border-radius: var(--border-radius) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important;
     padding: 30px !important;
-    margin-bottom: 30px !important;
+    /* margin-bottom: 30px !important; */
     transition: var(--transition);
-    height: 100%; /* Ensure card fills container height */
+    height: 100%;
+    /* Ensure card fills container height */
 }
 
-.card-body, .card-block {
+.card-body,
+.card-block {
     background: transparent !important;
     padding: 0 !important;
     margin: 0 !important;
@@ -55,7 +57,7 @@
     align-items: stretch !important;
 }
 
-.row.dashboard-row > [class*='col-'] {
+.row.dashboard-row>[class*='col-'] {
     display: flex !important;
     flex-direction: column !important;
 }
@@ -65,7 +67,7 @@
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
-    margin-bottom: 30px !important;
+    /* margin-bottom: 30px !important; */
 }
 
 .row.dashboard-row .card-body {
@@ -92,7 +94,8 @@ body {
     margin-bottom: 25px !important;
 }
 
-label, .float-label {
+label,
+.float-label {
     font-weight: 600 !important;
     font-size: 0.88rem !important;
     color: #4a5568 !important;
@@ -101,7 +104,9 @@ label, .float-label {
     text-transform: none !important;
 }
 
-.form-control, select, textarea {
+.form-control,
+select,
+textarea {
     height: 50px !important;
     background-color: #fdfdfd !important;
     border: 1.5px solid #e2e8f0 !important;
@@ -125,7 +130,8 @@ textarea.form-control {
 }
 
 /* Custom Checkbox/Radio if needed */
-input[type="checkbox"], input[type="radio"] {
+input[type="checkbox"],
+input[type="radio"] {
     accent-color: #004191;
 }
 
@@ -134,7 +140,7 @@ input[type="checkbox"], input[type="radio"] {
     background: #fff !important;
     padding: 15px 30px !important;
     border-bottom: 1px solid #edf2f7 !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
     margin-bottom: 0 !important;
 }
 
@@ -200,7 +206,7 @@ select.form-control {
     background: #fff !important;
     border-radius: var(--border-radius);
     padding: 15px !important;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.02) !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02) !important;
     margin-top: 20px;
 }
 
@@ -303,7 +309,8 @@ select.form-control {
 }
 
 /* Utilities */
-.text-danger, .errortext {
+.text-danger,
+.errortext {
     color: #e53e3e !important;
     font-size: 0.8rem !important;
     font-weight: 500 !important;
@@ -314,7 +321,8 @@ select.form-control {
 }
 
 /* Row & Col spacing and Alignment Fixes */
-.row.gutters, .row {
+.row.gutters,
+.row {
     display: flex !important;
     flex-wrap: wrap !important;
     align-items: flex-start !important;
@@ -324,7 +332,8 @@ select.form-control {
 }
 
 [class*="col-"] {
-    display: block !important; /* Changed from flex to block to keep text and asterisk on same line */
+    display: block !important;
+    /* Changed from flex to block to keep text and asterisk on same line */
     padding-left: 15px !important;
     padding-right: 15px !important;
     margin-bottom: 25px !important;
@@ -336,7 +345,7 @@ select.form-control {
 }
 
 /* Ensure asterisk stays inline with text and doesn't push down */
-[class*="col-"] span[style*="color:red"], 
+[class*="col-"] span[style*="color:red"],
 [class*="col-"] span[style*="color: red"],
 label span[style*="color:red"] {
     display: inline !important;
@@ -346,10 +355,13 @@ label span[style*="color:red"] {
 }
 
 /* Ensure all form controls have consistent spacing and alignment */
-.form-control, select, textarea {
+.form-control,
+select,
+textarea {
     display: block !important;
     width: 100% !important;
-    margin-top: 10px !important; /* Standardized gap from text to input */
+    margin-top: 10px !important;
+    /* Standardized gap from text to input */
     height: 48px !important;
     border: 1.2px solid #cbd5e0 !important;
     border-radius: 10px !important;
@@ -379,6 +391,8 @@ textarea.form-control:focus {
 }
 
 /* Hide redundant <br> tags used for spacing in old layout */
-.content-body br, .card br, .row br {
+.content-body br,
+.card br,
+.row br {
     display: none !important;
 }
