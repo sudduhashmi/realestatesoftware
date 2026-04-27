@@ -1,480 +1,409 @@
 @model RealEstateRegalSpace.Models.Master
 
 @{
-    ViewBag.Title = "PlotAvailbility";
-
+    ViewBag.Title = "Plot Availability";
     Layout = null;
 }
 
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="Registration" />
+    <title>Plot Availability | Shashikala Infratech</title>
 
-    <link rel="shortcut icon" href="img/favicon.ico" />
-    <title>Plot Availbility</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <!--
-        **********************
-        **********************
-        Common CSS files
-        **********************
-        **********************
-    -->
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="../../AdminPanelCss/css/bootstrap.min.css" />
-    <!-- Icomoon Icons CSS -->
-    <link rel="stylesheet" href="../../AdminPanelCss/fonts/icomoon/icomoon.css" />
-    <!-- Master CSS -->
-    <link rel="stylesheet" href="../../AdminPanelCss/css/main.css" />
     <style>
+        :root {
+            --primary-color: #004191;
+            --accent-color: #ff9800;
+            --bg-light: #f8f9fa;
+            --available: #28a745;
+            --hold: #ffc107;
+            --booked: #e83e8c;
+            --allotted: #dc3545;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            color: #2c3e50;
+            padding: 40px 0;
+        }
+
+        .main-card {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .card-header-premium {
+            background: linear-gradient(135deg, #004191 0%, #3949ab 100%);
+            color: #fff;
+            padding: 25px;
+            border: none;
+            text-align: center;
+        }
+
+        .card-header-premium img {
+            max-width: 150px;
+            margin-bottom: 15px;
+            filter: brightness(0) invert(1);
+        }
+
+        .card-header-premium h2 {
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 0;
+            letter-spacing: 1px;
+        }
+
+        .filter-section {
+            padding: 30px;
+            background: #fff;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .form-control {
+            height: 48px;
+            border-radius: 10px;
+            border: 1.5px solid #e2e8f0;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 65, 145, 0.1);
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .btn-search {
+            background: var(--primary-color);
+            color: #fff;
+            height: 48px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            width: 100%;
+            border: none;
+        }
+
+        .btn-search:hover {
+            background: #003366;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 65, 145, 0.3);
+            color: #fff;
+        }
+
+        .status-legend {
+            padding: 20px 30px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .legend-box {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+
+        .bg-available { background-color: var(--available); }
+        .bg-hold { background-color: var(--hold); }
+        .bg-booked { background-color: var(--booked); }
+        .bg-allotted { background-color: var(--allotted); }
+
+        .plot-container {
+            padding: 40px 30px;
+            min-height: 400px;
+        }
+
+        .block-header {
+            width: 100%;
+            padding: 10px 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #334155;
+            margin: 25px 0 15px 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .block-header i { margin-right: 10px; color: var(--primary-color); }
+
+        .plot-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .plot-box {
+            width: 60px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none !important;
+            position: relative;
+        }
+
+        .plot-box:hover {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            color: #fff;
+        }
+
+        .plot-box.available { background: var(--available); border: 2px solid #1e7e34; }
+        .plot-box.booked { background: var(--booked); border: 2px solid #b11d5a; }
+        .plot-box.hold { background: var(--hold); border: 2px solid #d39e00; color: #333; }
+        .plot-box.allotted { background: var(--allotted); border: 2px solid #bd2130; }
+
+        .block-tag {
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            position: absolute;
+            top: -15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .popover {
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border: none;
+        }
+
+        .popover-header {
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 12px 12px 0 0 !important;
+            font-weight: 600;
+        }
+
+        .popover-body {
+            padding: 12px 15px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
         .errortext {
-            border: 1px solid red !important;
-            background-color: #fff0f0 !important;
+            border-color: var(--allotted) !important;
+            background-color: #fff5f5 !important;
+        }
+
+        @media (max-width: 768px) {
+            .plot-box { width: 45px; height: 40px; font-size: 0.75rem; }
+            .card-header-premium h2 { font-size: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
-    @using (Html.BeginForm("PlotAvailbility", "Home", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("PlotAvailbility", "Home", FormMethod.Post, new { @id = "form1" }))
     {
-        <!-- Container start -->
         <div class="container">
-            <div class="row justify-content-md-center">
-                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                    <div class="login-screen">
-                        <div class="login-box">
-                            <a href="#" class="login-logo">
-                                @* <img src="~/files/assets/Logo.png" alt="" />*@
-                                <img src="~/files/assets/images/logo.png" />
-                            </a>
-                            <div class="row gutters">
-
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Select Site <span style="color: red">*</span>
-                                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Select Sector
-                                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Select Block
-                                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        Plot Status
-                                        <select class="form-control" id="PlotStatus" name="PlotStatus">
-                                            <option value="">All</option>
-                                            <option value="A">Vaccant</option>
-                                            <option value="H">Hold</option>
-                                            <option value="B">Booked</option>
-                                            <option value="AL">Allotted</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <br>
-                                    <div class="form-group">
-                                        <input type="submit" name="Search" value="Search" id="btnSearchPlot" class="btn btn-success" onclick="return GetDetails(); ">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row gutters">
-                                <div class="col-lg-12">
-                                    <label style="color: black;"><b><u>Availability Status</u></b></label>
-                                    <br>
-                                    <div class="col-md-2 float-left">
-                                        <div style="border:solid; border-color:#43af5a; background-color:#43af5a; height:20px; width:20px; float:left"></div>
-                                        - Available
-                                    </div>
-                                    <div class="col-md-2 float-left">
-                                        <div style="border:solid; border-color:yellow; background-color:yellow; height:20px; width:20px; float:left"></div>
-                                        - On Hold
-                                    </div>
-                                    <div class="col-md-2 float-left">
-                                        <div style="border:solid; border-color:#dc7d7d; background-color:#dc7d7d; height:20px; width:20px; float:left"></div>
-                                        - Booked
-                                    </div>
-
-                                    <div class="col-md-2 float-left">
-                                        <div style="border:solid; border-color: #B90000; background-color: #B90000; height:20px; width:20px; float:left"></div>
-                                        - Allotted
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-
-                            <div class="row gutters">
-                                <div class="col-md-12" style="padding-top:20px;">
-                                    @*<a href="test.aspx?SuperId=1" data-html="true" class="showpopover" data-content="xdffdfdf" rel="popover" data-placement="bottom" data-original-title="Binary Details" data-trigger="hover"><img src="binaryimage/0.png" style="height:70px;"></a>
-
-
-        <a href="#" data-toggle="popover" title="Popover Header"
-           data-content="Some content inside the popover">
-            GeeksforGeeks
-        </a>*@
-                                    @if (Model != null)
-                                    {
-                                        if (Model.lstPlot != null)
-                                        {
-                                            int i = 0;
-
-                                            foreach (var item in Model.lstPlot)
-                                            {
-
-
-                                                if (item.PlotStatus == "Available")
-                                                {
-                                                    if (i > 0)
-                                                    {
-                                                        if (Model.lstPlot[i - 1].BlockName != Model.lstPlot[i].BlockName)
-                                                        {
-
-                                                            <div class="clearfix"></div>
-
-
-                                                            <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #43af5a; border:Solid;color:black; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-                                                                    @item.BlockName <br />
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div style="width:5%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #43af5a; border:Solid;color:black;padding-top: 14px; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-
-
-
-
-                                                    }
-                                                    else
-
-                                                    {
-                                                        <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #43af5a; border:Solid;color:black; text-align:center; ">
-                                                            <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                @*<span>Block Change</span>*@
-                                                                @item.BlockName <br />
-                                                                @item.PlotNumber
-
-                                                            </a>
-                                                        </div>
-                                                    }
-
-
-                                                }
-                                                else if (item.PlotStatus == "Booked")
-                                                {
-
-                                                    if (i > 0)
-                                                    {
-                                                        if (Model.lstPlot[i - 1].BlockName != Model.lstPlot[i].BlockName)
-                                                        {
-
-                                                            <div class="clearfix"></div>
-
-
-                                                            <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #dc7d7d; border:Solid;color:black; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-                                                                    @item.BlockName <br />
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div style="width:5%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #dc7d7d; border:Solid;color:black;padding-top: 14px; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-
-
-
-
-                                                    }
-                                                    else
-
-                                                    {
-                                                        <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #dc7d7d; border:Solid;color:black; text-align:center; ">
-                                                            <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                @*<span>Block Change</span>*@
-                                                                @item.BlockName <br />
-                                                                @item.PlotNumber
-
-                                                            </a>
-                                                        </div>
-                                                    }
-                                                }
-                                                else if (item.PlotStatus == "Allotted")
-                                                {
-
-                                                    if (i > 0)
-                                                    {
-                                                        if (Model.lstPlot[i - 1].BlockName != Model.lstPlot[i].BlockName)
-                                                        {
-
-                                                            <div class="clearfix"></div>
-
-
-                                                            <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #B90000; border:Solid;color:black; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-                                                                    @item.BlockName <br />
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div style="width:5%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #B90000; border:Solid;color:black;padding-top: 14px; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-
-
-
-
-                                                    }
-                                                    else
-
-                                                    {
-                                                        <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #B90000; border:Solid;color:black; text-align:center; ">
-                                                            <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                @*<span>Block Change</span>*@
-                                                                @item.BlockName <br />
-                                                                @item.PlotNumber
-
-                                                            </a>
-                                                        </div>
-                                                    }
-                                                }
-                                                else if (item.PlotStatus == "Hold")
-                                                {
-                                                  
-                                                    if (i > 0)
-                                                    {
-                                                        if (Model.lstPlot[i - 1].BlockName != Model.lstPlot[i].BlockName)
-                                                        {
-
-                                                            <div class="clearfix"></div>
-
-
-                                                            <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #FFFF00; border:Solid;color:black; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-                                                                    @item.BlockName <br />
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-                                                        else
-                                                        {
-                                                            <div style="width:5%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #FFFF00; border:Solid;color:black;padding-top: 14px; text-align:center; ">
-                                                                <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                    @*<span>Block Change</span>*@
-
-                                                                    @item.PlotNumber
-
-                                                                </a>
-                                                            </div>
-                                                        }
-
-
-
-
-                                                    }
-                                                    else
-
-                                                    {
-                                                        <div style="width:10%;margin-left:0.5%; margin-bottom:0.5%;float:left; height:50px;  background: #FFFF00; border:Solid;color:black; text-align:center; ">
-                                                            <a href='#' data-html="true" class='showpopover' style="font-weight:bold;color:black;width:100%;" data-content="@item.PlotArea Sq/Ft <br/>@item.PLCNames" rel="popover" data-placement="bottom" data-original-title="Plot Details" data-trigger="hover">
-
-
-                                                                @*<span>Block Change</span>*@
-                                                                @item.BlockName <br />
-                                                                @item.PlotNumber
-
-                                                            </a>
-                                                        </div>
-                                                    }
-                                                }
-                                                i++;
-                                            }
-                                        }
-                                    }
-                                </div>
-
-                            </div>
+            <div class="main-card animate-up">
+                <div class="card-header-premium">
+                    <a href="/">
+                        <img src="~/files/assets/images/logo.png" alt="Logo" />
+                    </a>
+                    <h2><i class="fas fa-th mr-2"></i> Plot Availability Matrix</h2>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label><i class="fas fa-map-marker-alt mr-1"></i> Select Site</label>
+                            @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "onSiteChange();" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label><i class="fas fa-layer-group mr-1"></i> Select Sector</label>
+                            @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "onSectorChange();" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label><i class="fas fa-th-large mr-1"></i> Select Block</label>
+                            @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label><i class="fas fa-info-circle mr-1"></i> Plot Status</label>
+                            <select class="form-control" id="PlotStatus" name="PlotStatus">
+                                <option value="">All Status</option>
+                                <option value="A">Available (Vaccant)</option>
+                                <option value="H">On Hold</option>
+                                <option value="B">Booked</option>
+                                <option value="AL">Allotted</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" name="Search" value="Search" id="btnSearchPlot" class="btn btn-search px-5" onclick="return GetDetails();">
+                                <i class="fas fa-search mr-2"></i> Search Availability
+                            </button>
                         </div>
                     </div>
                 </div>
+
+                <!-- Legend -->
+                <div class="status-legend">
+                    <div class="legend-item"><div class="legend-box bg-available"></div> Available</div>
+                    <div class="legend-item"><div class="legend-box bg-hold"></div> On Hold</div>
+                    <div class="legend-item"><div class="legend-box bg-booked"></div> Booked</div>
+                    <div class="legend-item"><div class="legend-box bg-allotted"></div> Allotted</div>
+                </div>
+
+                <!-- Plot Grid -->
+                <div class="plot-container">
+                    @if (Model != null && Model.lstPlot != null && Model.lstPlot.Count > 0)
+                    {
+                        string currentBlock = "";
+                        <div class="plot-grid">
+                            @for (int i = 0; i < Model.lstPlot.Count; i++)
+                            {
+                                var item = Model.lstPlot[i];
+                                
+                                if (currentBlock != item.BlockName)
+                                {
+                                    currentBlock = item.BlockName;
+                                    <div class="block-header">
+                                        <i class="fas fa-cube"></i> Block: @currentBlock
+                                    </div>
+                                }
+
+                                string statusClass = "available";
+                                if (item.PlotStatus == "Booked") { statusClass = "booked"; }
+                                else if (item.PlotStatus == "Hold") { statusClass = "hold"; }
+                                else if (item.PlotStatus == "Allotted") { statusClass = "allotted"; }
+
+                                <a href="javascript:void(0);" 
+                                   class="plot-box @statusClass showpopover" 
+                                   data-toggle="popover" 
+                                   data-trigger="hover" 
+                                   data-placement="top" 
+                                   title="Plot Details: @item.PlotNumber" 
+                                   data-html="true" 
+                                   data-content="<strong>Area:</strong> @item.PlotArea Sq/Ft<br/><strong>Block:</strong> @item.BlockName<br/><strong>Details:</strong> @(string.IsNullOrEmpty(item.PLCNames) ? "N/A" : item.PLCNames)">
+                                    @item.PlotNumber
+                                </a>
+                            }
+                        </div>
+                    }
+                    else if (Model != null)
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <i class="fas fa-search-minus fa-3x mb-3"></i>
+                            <p>No plots found matching your criteria. Please select a Site/Sector.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            
+            <div class="text-center text-muted small mt-4">
+                &copy; @DateTime.Now.Year Shashikala Infratech. All Rights Reserved.
             </div>
         </div>
-        <script>
-            function GetDetails() {
-                debugger
-                if ($('#SiteID').val() == '0' && $('#SiteID').val() == '0' && $('#SiteID').val() == '0') {
-                    alert("Please select Site!")
-                    return false;
-                }
-
-                else {
-                    $("#DivPlot").show();
-                }
-            }
-
-            function onSiteChange() {
-                $("#divload").css({ 'display': '' });
-
-                var value = $('#SiteID').val();
-                var values = $('#SectorID').val();
-                var tr = [];
-                $.ajax({
-                    url: "/Home/GetSiteDetails",
-                    Type: "Get",
-                    DataType: "JSON",
-                    data: { SiteID: value },
-                    success: function (data) {
-                        var j = 1;
-                        if (data.Result == "yes") {
-                            $("#divload").css({ 'display': 'none' });
-
-                            $("#SectorID").html(""); // clear before appending new list
-                            $("#SectorID").empty();
-                            $("#SectorID").append(
-                                $('<option></option>').val(0).html('Select Sector'));
-                            $.each(data.ddlSector, function (index, Sectorcount) {
-                                $("#SectorID").append(
-                                    $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
-                            });
-
-                        }
-                        else {
-                            $("#SectorID").empty();
-                            $('#Rate').val('');
-                        }
-                    }
-
-                });
-
-            }
-
-            function onSectorChange() {
-
-                $("#divload").css({ 'display': '' });
-                var siteID = $('#SiteID').val();
-                var sectorID = $('#SectorID').val();
-                $.ajax({
-                    url: '/Home/GetBlockList', type: 'post', dataType: 'json',
-                    data: { 'SiteID': siteID, 'sectorID': sectorID },
-                    success: function (data) {
-                        $("#divload").css({ 'display': 'none' });
-                        $("#BlockID").html(""); // clear before appending new list
-                        $("#BlockID").empty();
-                        $("#BlockID").append(
-                            $('<option></option>').val(0).html('Select Block'));
-                        $.each(data.lstBlock, function (index, BlockCount) {
-                            $("#BlockID").append(
-                                $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
-                        });
-
-                    }
-
-                });
-            }
-        </script>
-
-
     }
-    <!-- Container end -->
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+
+        function GetDetails() {
+            if ($('#SiteID').val() == '0') {
+                alert("Please select Site!");
+                $('#SiteID').addClass('errortext');
+                return false;
+            }
+            return true;
+        }
+
+        function onSiteChange() {
+            var value = $('#SiteID').val();
+            $.ajax({
+                url: "/Home/GetSiteDetails",
+                type: "Get",
+                dataType: "JSON",
+                data: { SiteID: value },
+                success: function (data) {
+                    if (data.Result == "yes") {
+                        $("#SectorID").empty().append($('<option></option>').val(0).html('Select Sector'));
+                        $.each(data.ddlSector, function (index, Sectorcount) {
+                            $("#SectorID").append($('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+                        });
+                    } else {
+                        $("#SectorID").empty();
+                    }
+                }
+            });
+        }
+
+        function onSectorChange() {
+            var siteID = $('#SiteID').val();
+            var sectorID = $('#SectorID').val();
+            $.ajax({
+                url: '/Home/GetBlockList', type: 'post', dataType: 'json',
+                data: { 'SiteID': siteID, 'sectorID': sectorID },
+                success: function (data) {
+                    $("#BlockID").empty().append($('<option></option>').val(0).html('Select Block'));
+                    $.each(data.lstBlock, function (index, BlockCount) {
+                        $("#BlockID").append($('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                    });
+                }
+            });
+        }
+    </script>
 </body>
-
-
 </html>
-@*<script src="../../Scripts/jquery-1.10.2.min.js"></script>*@
-
-<script src="../../assets/popover/jquery-1.8.2.js"></script>
-<script src="../../assets/popover/jquery.tooltip.min.js" type="text/javascript"></script>
-<script src="../../assets/popover/bootstrap.min.js"></script>
-<script>
-    $('.showpopover').popover();
-    //$(function () {
-    //    $('.showpopover').popover({
-    //        container: 'body'
-    //    })
-    //})
-</script>
-
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-</script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js">
-</script>
-
-<script>
-    $(document).ready(function () {
-        $('[data-toggle="popover"]').popover();
-    });
-</script>
