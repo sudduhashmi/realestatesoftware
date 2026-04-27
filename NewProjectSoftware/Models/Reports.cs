@@ -83,6 +83,7 @@ namespace RealEstateRegalSpace.Models
         public string HeadType { get; set; }
         public string IncomeType { get; set; }
         public string Amount { get; set; }
+        public string Description { get; set; }
         public string BusinessAMount { get; set; }
 
         public DataSet GettingUserProfile()
@@ -163,8 +164,9 @@ namespace RealEstateRegalSpace.Models
             SqlParameter[] para =
                             {
                                  new SqlParameter("@LoginId",LoginId),
-                                  new SqlParameter("@Amount",PaidAmount ),
-                                   new SqlParameter("@PaymentDate",FromDate)
+                                  new SqlParameter("@Amount",Amount ),
+                                   new SqlParameter("@PaymentDate",FromDate),
+                                   new SqlParameter("@Description",Particular)
                             };
             DataSet ds = Connection.ExecuteQuery("CreditOtherIncome", para);
             return ds;

@@ -4,953 +4,527 @@
     Layout = null;
 }
 
-<!--<!DOCTYPE html>
-
-<html>
-<head>
-    <title>PrintAllotment</title>
-    <style>
-        table, th, td {
-            font-size: medium;
-            /*border: 1px solid black;*/
-            border-collapse: collapse;
-        }
-
-        th, td {
-            font-size: medium;
-            padding: 5px;
-        }
-    </style>
-
-</head>
-
-
-<body>
-    <div style="padding-left:10px;padding-right:10px;">
-        <table style="border: 0px none black; width:100%;">
-            <tr style="border: 0px none black;height: 110px;">
-                <td style="border: 0px none black;width:25%;">-->
-@*<img src="~/images/Regal Space Infratech Pvt. Ltd.%20LOGO.png" style="width:250px" />*@
-<!--<img src="~/files/assets/images/logo.png" style="width:250px" />
-        </td>
-
-
-        <td style="border: 0px none black;" valign="top">
-            <h1 style="color:#a20e0e">Shashikala Infratech Properties</h1>
-            Email : shashikalainfratech@gmail.com <br />
-            Website : www.shashikalainfratech.com<br />
-            Mobile :  9616222200<br />
-            Address : A3-97/4, Sector-A, Pocket 3, Sushant Golf City, Lucknow, 226030
-        </td>
-        <td style="border: 0px none black;" valign="top">
-            <span class="text-right">CIN :- U68200UP 2023PTC180193</span>
-
-
-        </td>
-    </tr>
-
-</table>
-<br />
-
-<table style="width:100%;background:#a20e0e;color:white;">
-    <tr>
-        @if (ViewBag.Status == "EMI")
-        {
-            <td style="text-align:center">
-                Renewal Copy
-            </td>
-        }
-        else
-        {
-            <td style="text-align:center">
-                Office Copy
-            </td>
-        }
-    </tr>
-</table>
-<br />
-
-<table style="width: 100%;" class="table table-striped">
-    <tr>
-        <td style="border: 1px solid black;"><b>Booking For:    </b>@ViewBag.ProjectName</td>
-        <td colspan="2" style="border: 1px solid black;">
-            <b>Date :    </b>@ViewBag.DepositeDate-->
-@*@DateTime.Now.ToString("dd/MM/yyyy")**@
-<!--</td>
-            <td style="border: 1px solid black;"><b>Receipt No.    </b>@ViewBag.ReceiptNo</td>
-        </tr>
-    </table>
-    <br />
-    <table style="width: 100%;" class="table table-striped">
-
-        <tr>
-            <td style="border: 1px solid black;" colspan="2"><b>Customer Id:    </b>@ViewBag.CustomerID</td>
-            <td style="border: 1px solid black;"><b>Mobile No.</b>@ViewBag.CustomerContact</td>
-        </tr>
-        <tr><td style="border: 1px solid black;" colspan="3"><b>Received with thanks from:    </b>@ViewBag.CustomerName @ViewBag.Relation @ViewBag.FathersName</td></tr>
-        <tr>
-            <td colspan="3" style="border: 1px solid black;"><b>Address:    </b>@ViewBag.Address</td>
-        </tr>
-
-    </table>
-    <br />
-    <table style="width: 100%;" class="table table-striped">
-        <tr>
-
-            <td style="border: 1px solid black;" colspan="2"><b> Site:    </b>@ViewBag.ProjectName</td>
-            <td style="border: 1px solid black;"><b>Sector:    </b>@ViewBag.SectorName</td>
-            <td style="border: 1px solid black;"><b>Block:    </b>@ViewBag.BlockName</td>
-            <td style="border: 1px solid black;"><b> Plot No:    </b>@ViewBag.PlotNumber</td>
-        </tr>
-        <tr>
-
-            <td style="border: 1px solid black;" colspan="5"><b> Site Location:    </b>@ViewBag.SiteLocation</td>
-
-        </tr>
-        <tr>
-            <td style="border: 1px solid black;" colspan="2"><b>Plot Amount:     </b>@ViewBag.PlotAmount /-</td>
-            <td style="border: 1px solid black;" colspan="2"><b>PLC Charge:     </b>@ViewBag.TotalPLC /-</td>
-            <td style="border: 1px solid black;" colspan="1"><b>Development Charge:     </b>@ViewBag.DevelopmentCharge /-</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black;" colspan="2"><b>Total Amount:     </b>@ViewBag.TotalAMount /-</td>
-            <td style="border: 1px solid black;" colspan="3"><b>In Words:     </b>@ViewBag.NetPlotAmountInWords</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black;" colspan="2"><b>A sum of:     </b>@ViewBag.PaidAmount /-</td>
-            <td style="border: 1px solid black;" colspan="3"><b>In Words:     </b>@ViewBag.AmountInWords</td>
-        </tr>
-        <tr>
-            <td style="border: 1px solid black;" colspan="2"><b>Balance:     </b>@ViewBag.BalanceAmt /-</td>
-            <td style="border: 1px solid black;" colspan="3"></td>
-        </tr>
-        <tr>
-            @if (ViewBag.PaymentMode == "Cash")
-            {
-                <td style="border: 1px solid black;" colspan="5"><b> Via:    </b>@ViewBag.PaymentMode</td>
-            }
-            else
-            {
-                if (ViewBag.PaymentMode == "Cheque")
-                {
-                    <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                    <td style="border: 1px solid black;"><b> ChequeNo:    </b>@ViewBag.TransactionNo</td>
-                    <td style="border: 1px solid black;"><b> ChequeDate:    </b>@ViewBag.TransactionDate</td>
-                    <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                    <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-                }
-                else if (ViewBag.PaymentMode == "NEFT")
-                {
-                    <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                    <td style="border: 1px solid black;"><b> NEFTNo:    </b>@ViewBag.TransactionNo</td>
-                    <td style="border: 1px solid black;"><b> NEFTDate:    </b>@ViewBag.TransactionDate</td>
-                    <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                    <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-                }
-                else if (ViewBag.PaymentMode == "DD")
-                {
-                    <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                    <td style="border: 1px solid black;"><b> DD No:    </b>@ViewBag.TransactionNo</td>
-                    <td style="border: 1px solid black;"><b> DD Date:    </b>@ViewBag.TransactionDate</td>
-                    <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                    <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-                }
-                else
-                {
-                    <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                    <td style="border: 1px solid black;"><b> Transaction No:    </b>@ViewBag.TransactionNo</td>
-                    <td style="border: 1px solid black;"><b> Transaction Date:    </b>@ViewBag.TransactionDate</td>
-                    <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                    <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-                }
-            }
-
-
-        </tr>
-
-
-        <tr>
-            <td style="border: 1px solid black;"><b>Area:    </b>@ViewBag.PlotArea </td>
-            <td style="border: 1px solid black;"><b>Rate:    </b>@ViewBag.Rate </td>
-            <td style="border: 1px solid black;"><b>PLC:    </b>@ViewBag.PLC</td>
-            <td style="border: 1px solid black;" colspan="2">
-                <b>Payment Type:    </b>@ViewBag.Status
-                @if (ViewBag.Status == "EMI")
-                {
-                    <p>Installment No  @ViewBag.InstallmentNo</p>
-                }
-            </td>
-        </tr>
-
-    </table>
-
-    <br />
-    <table style="width: 100%;" class="table table-striped">
-        <tr>
-            <td style="border: 1px solid black;"><b>Associate Id:    </b>@ViewBag.RefrenceId  </td>
-            <td style="border: 1px solid black;"><b>Associate Name:    </b>@ViewBag.AssociateName</td>
-            <td style="border: 1px solid black;"><b>Printed By :    </b>@(Session["FullName"] != null ? Session["FullName"].ToString() : "Admin")  </td>
-            <td style="border: 1px solid black;"><b>Updated On :    </b>@DateTime.Now.ToString("dd/MM/yyyy hh:MM:ss")  </td>
-        </tr>
-    </table>
-    <br />
-    <br />
-
-
-
-    <br />
-    <br />
-    <table style="width:100%;text-align:right">
-        <tr>
-            <td></td>
-            <td>Authorized Signatory</td>
-        </tr>
-    </table>
-    <br />
-    <table style="width:100%">
-        <tr>
-            <td style="font-weight:bold;">
-                Note :
-                <ul>
-                    <li> The receipt is subject to clearing of cheque/neft/rtgs/dd or whatever the mode of payment is.</li>
-                    <li>All diputes to Lucknow jurisdiction only .</li>
-                </ul>
-            </td>
-        </tr>
-    </table>
-    <br />
-    <br />
-
-</div>
-
-<p style="page-break-after: always;">&nbsp;</p>
-
-
-<div style="padding-left:10px;padding-right:10px;">
-    <table style="border: 0px none black; width:100%;">
-        <tr style="border: 0px none black;height: 110px;">
-            <td style="border: 0px none black;width:25%;">-->
-@*<img src="~/images/Regal Space Infratech Pvt. Ltd.%20LOGO.png" style="width:250px" />*@
-<!--<img src="~/files/assets/images/logo.png" style="width:250px" />
-        </td>
-
-
-        <td style="border: 0px none black;" valign="top">
-            <h1 style="color:#a20e0e">Shashikala Infratech Properties</h1>
-            Email : shashikalainfratech@gmail.com <br />
-            Website : www.shashikalainfratech.com<br />
-            Mobile :  9616222200<br />
-            Address : A3-97/4, Sector-A, Pocket 3, Sushant Golf City, Lucknow, 226030
-        </td>
-        <td style="border: 0px none black;" valign="top">
-            <span class="text-right">CIN :- U68200UP 2023PTC180193</span>
-
-
-        </td>
-    </tr>
-
-</table>
-<br />
-
-<table style="width:100%;background:#a20e0e;color:white;">
-    <tr>
-        <td style="text-align:center">
-            Customer Copy
-        </td>
-    </tr>
-</table>
-<br />
-
-<table style="width: 100%;" class="table table-striped">
-    <tr>
-        <td style="border: 1px solid black;"><b>Booking For:    </b>@ViewBag.ProjectName</td>
-        <td colspan="2" style="border: 1px solid black;"><b>Date :    </b>@DateTime.Now.ToString("dd/MM/yyyy")</td>
-        <td style="border: 1px solid black;"><b>Receipt No.    </b>@ViewBag.ReceiptNo</td>
-    </tr>
-</table>
-<br />
-<table style="width: 100%;" class="table table-striped">
-
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Customer Id:    </b>@ViewBag.CustomerID</td>
-        <td style="border: 1px solid black;"><b>Mobile No.</b>@ViewBag.CustomerContact</td>
-    </tr>
-    <tr><td style="border: 1px solid black;" colspan="3"><b>Received with thanks from:    </b>@ViewBag.CustomerName @ViewBag.Relation @ViewBag.FathersName</td></tr>
-    <tr>
-        <td colspan="3" style="border: 1px solid black;"><b>Address:    </b>@ViewBag.Address</td>
-    </tr>
-
-</table>
-<br />
-<table style="width: 100%;" class="table table-striped">
-    <tr>
-
-        <td style="border: 1px solid black;" colspan="2"><b> Site:    </b>@ViewBag.ProjectName</td>
-        <td style="border: 1px solid black;"><b>Sector:    </b>@ViewBag.SectorName</td>
-        <td style="border: 1px solid black;"><b>Block:    </b>@ViewBag.BlockName</td>
-        <td style="border: 1px solid black;"><b> Plot No:    </b>@ViewBag.PlotNumber</td>
-    </tr>
-    <tr>
-
-        <td style="border: 1px solid black;" colspan="5"><b> Site Location:    </b>@ViewBag.SiteLocation</td>
-
-    </tr>
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Plot Amount:     </b>@ViewBag.PlotAmount /-</td>
-        <td style="border: 1px solid black;" colspan="2"><b>PLC Charge:     </b>@ViewBag.TotalPLC /-</td>
-        <td style="border: 1px solid black;" colspan="1"><b>Development Charge:     </b>@ViewBag.DevelopmentCharge /-</td>
-    </tr>
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Total Amount:     </b>@ViewBag.TotalAMount /-</td>
-        <td style="border: 1px solid black;" colspan="3"><b>In Words:     </b>@ViewBag.NetPlotAmountInWords</td>
-    </tr>
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>A sum of:     </b>@ViewBag.PaidAmount /-</td>
-        <td style="border: 1px solid black;" colspan="3"><b>In Words:     </b>@ViewBag.AmountInWords</td>
-    </tr>
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Balance:     </b>@ViewBag.BalanceAmt /-</td>
-        <td style="border: 1px solid black;" colspan="3"></td>
-    </tr>
-    <tr>
-        @if (ViewBag.PaymentMode == "Cash")
-        {
-            <td style="border: 1px solid black;" colspan="5"><b> Via:    </b>@ViewBag.PaymentMode</td>
-        }
-        else
-        {
-            if (ViewBag.PaymentMode == "Cheque")
-            {
-                <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                <td style="border: 1px solid black;"><b> ChequeNo:    </b>@ViewBag.TransactionNo</td>
-                <td style="border: 1px solid black;"><b> ChequeDate:    </b>@ViewBag.TransactionDate</td>
-                <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-            }
-            else if (ViewBag.PaymentMode == "NEFT")
-            {
-                <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                <td style="border: 1px solid black;"><b> NEFTNo:    </b>@ViewBag.TransactionNo</td>
-                <td style="border: 1px solid black;"><b> NEFTDate:    </b>@ViewBag.TransactionDate</td>
-                <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-            }
-            else if (ViewBag.PaymentMode == "DD")
-            {
-                <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                <td style="border: 1px solid black;"><b> DD No:    </b>@ViewBag.TransactionNo</td>
-                <td style="border: 1px solid black;"><b> DD Date:    </b>@ViewBag.TransactionDate</td>
-                <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-            }
-            else
-            {
-                <td style="border: 1px solid black;"><b> Via:    </b>@ViewBag.PaymentMode</td>
-                <td style="border: 1px solid black;"><b> Transaction No:    </b>@ViewBag.TransactionNo</td>
-                <td style="border: 1px solid black;"><b> Transaction Date:    </b>@ViewBag.TransactionDate</td>
-                <td style="border: 1px solid black;"><b> BankName:    </b>@ViewBag.BankName</td>
-                <td style="border: 1px solid black;"><b> BankBranch:    </b>@ViewBag.BankBranch</td>
-            }
-        }
-
-
-    </tr>
-
-
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Area:    </b>@ViewBag.PlotArea</td>
-        <td style="border: 1px solid black;"><b>Rate:    </b>@ViewBag.Rate </td>
-        <td style="border: 1px solid black;"><b>PLC:    </b>@ViewBag.PLC</td>
-        <td style="border: 1px solid black;" colspan="2">
-            <b>Payment Type:    </b>@ViewBag.Status
-            @if (ViewBag.Status == "EMI")
-            {
-                <p>Installment No  @ViewBag.InstallmentNo</p>
-            }
-        </td>
-
-    </tr>
-
-</table>
-
-<br />
-<table style="width: 100%;" class="table table-striped">
-    <tr>
-        <td style="border: 1px solid black;" colspan="2"><b>Associate Id:    </b>@ViewBag.RefrenceId  </td>-->
-@*<td style="border: 1px solid black;"><b>Associate Name:    </b>@ViewBag.AssociateName</td>*@
-
-<!--<td style="border: 1px solid black;"><b>Printed By :    </b>@(Session["FullName"] != null ? Session["FullName"].ToString() : "Admin")  </td>
-                <td style="border: 1px solid black;"><b>Updated On :    </b>@DateTime.Now.ToString("dd/MM/yyyy hh:MM:ss")  </td>
-            </tr>
-        </table>
-        <br />
-        <br />
-
-
-        <br />
-        <br />
-        <table style="width:100%;text-align:right">
-            <tr>
-                <td></td>
-                <td>Authorized Signatory</td>
-            </tr>
-        </table>
-        <br />
-        <table style="width:100%">
-            <tr>
-                <td style="font-weight:bold;">Note :
-                <ul>
-                    <li> The receipt is subject to clearing of cheque/neft/rtgs/dd or whatever the mode of payment is.</li>
-                    <li>All diputes to Lucknow jurisdiction only .</li>
-                </ul>
-               </td>
-            </tr>
-        </table>
-        <br />
-        <br />
-
-
-    </div>
-
-</body>
-</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PAYMENT RECEIPT</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap-theme.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400;1,700&display=swap" rel="stylesheet">
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
-
+    <title>Payment Receipt - Shashikala Infratech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+    
     <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #d4a81e;
+            --dark: #212121;
+            --light: #f5f5f5;
+            --white: #ffffff;
+            --border: #e0e0e0;
+        }
+
+        @@page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
         body {
-            font-family: sans-serif;
-            font-size: 10pt;
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.4;
         }
 
-        p {
-            margin: 0pt;
-        }
-
-        /* table.items {
-            border: 0.1mm solid #e7e7e7;
-        } */
-
-        td {
-            vertical-align: top;
-        }
-
-        /* .items td {
-            border-left: 0.1mm solid #e7e7e7;
-            border-right: 0.1mm solid #e7e7e7;
-        } */
-
-        table thead td {
+        .no-print-zone {
+            background: var(--white);
+            padding: 15px;
             text-align: center;
-            border: 0.1mm solid #e7e7e7;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        .items td.blanktotal {
-            background-color: #EEEEEE;
-            border: 0.1mm solid #e7e7e7;
-            background-color: #FFFFFF;
-            border: 0mm none #e7e7e7;
-            border-top: 0.1mm solid #e7e7e7;
-            border-right: 0.1mm solid #e7e7e7;
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3);
         }
 
-        .items td.totals {
+        .receipt-container {
+            width: 210mm;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 0;
+        }
+
+        .receipt-wrapper {
+            padding: 30px;
+            position: relative;
+            width: 210mm;
+            height: 297mm; /* Full A4 height */
+            page-break-after: always;
+            border-bottom: none;
+            background: white;
+        }
+
+        .receipt-wrapper:last-child {
+            page-break-after: auto;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 55px;
+            color: rgba(0,0,0,0.02);
+            font-weight: 800;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 15px;
+        }
+
+        .logo-box img {
+            height: 80px;
+        }
+
+        .receipt-title-box {
             text-align: right;
-            border: 0.1mm solid #e7e7e7;
         }
 
-        .items td.cost {
-            text-align: "."center;
+        .receipt-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .copy-tag {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 4px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+            margin-bottom: 25px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #666;
+            width: 120px;
+        }
+
+        .value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Applicant Box */
+        .applicant-box {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            background: #fafafa;
+        }
+
+        .applicant-header {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .payment-table th {
+            background: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .payment-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .total-row {
+            background: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .amount-in-words {
+            font-style: italic;
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Paid Through */
+        .payment-method-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .method-item .m-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .method-item .m-value {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Terms and Signature */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: end;
+        }
+
+        .terms {
+            font-size: 10.5px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .terms b {
+            color: var(--dark);
+        }
+
+        .signature-area {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1.5px solid var(--dark);
+            margin-top: 50px;
+            padding-top: 5px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .system-gen {
+            font-size: 10px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Company Footer */
+        .company-footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #777;
+        }
+
+        .footer-contact i {
+            color: var(--secondary);
+            margin-right: 5px;
+        }
+
+        @@media print {
+            body {
+                background: white;
+            }
+            .no-print-zone {
+                display: none;
+            }
+            .receipt-container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+            .receipt-wrapper {
+                page-break-after: always;
+                border-bottom: none;
+            }
+            .receipt-wrapper:last-child {
+                page-break-after: auto;
+            }
         }
     </style>
-    <script>
-        function PrintElem(elem) {
-            var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-            mywindow.document.write('<html><head>');
-            mywindow.document.write('</head><body >');
-            //mywindow.document.write('<h1>' + document.title + '</h1>');
-            mywindow.document.write(document.getElementById(elem).innerHTML);
-            mywindow.document.write('</body></html>');
-
-            mywindow.document.close(); // necessary for IE >= 10
-            mywindow.focus(); // necessary for IE >= 10*/
-
-            mywindow.print();
-            mywindow.close();
-
-            return true;
-        }
-    </script>
 </head>
-<!--<body>
-    <button id="print" style="background: #515de4; color: #fff;  padding: 15px 29px 15px 29px;" onclick="PrintElem('divPrint');">Print</button>
-    <div id="divPrint">
-        <table width="100%" style="font-family: sans-serif;  margin-top: 4rem;" cellpadding="10">
-
-            <tr>
-                <td width="100%" style="text-align: center; font-size: 18px;  padding: 0px;">
-                    <strong style="background: #D4A81E; color: #fff;  padding: 15px 29px 15px 29px;">SHASHIKALA INFRATECH</strong>
-                </td>
-            </tr>
-            <tr>
-                <td height="10" style="font-size: 0px; line-height: 10px; height: 10px; padding: 0px;">&nbsp;</td>
-            </tr>
-        </table>
-        <table width="100%" style="font-family: sans-serif;" cellpadding="10">
-            <tr>
-                <td width="49%" style=" text-align: right;">
-                    <strong>Receipt No -</strong>
-                    <span>@ViewBag.ReceiptNo</span><br>
-                    <strong>Receipt Date -</strong>
-                    <span>@ViewBag.DepositeDate</span><br>
-                    <strong>Project -</strong>
-                    <span>@ViewBag.ProjectName</span><br>
-                    <strong style="margin: -21px;">Branch: </strong>
-                    <span style="margin: 26px;">Head Office</span>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <br>
-        <table width="100%" style="font-family: sans-serif;" cellpadding="10">
-            <tr>
-                <td width="49%" style=" text-align:center;">
-                    <span style="padding: 0px 150px 6px 150px; border-bottom: 2px solid #D4A81E; font-size: 25px;font-family: initial;">CONGRATULATIONS</span><br>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 13px;">
-            <tr>
-                <h4>Customer Details</h4>
-                <td>
-
-                    <table width="100%" style="font-family: sans-serif; font-size: 14px; border-bottom: 2px solid #D4A81E;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;"><strong>@ViewBag.CustomerName</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">@ViewBag.Address</td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">Mobile: @ViewBag.CustomerContact</td>
-
-                        </tr>
-                        <tr>
-                            <td style="    padding: 0px 7px 10px; line-height: 20px;">Pan No.: @ViewBag.PanNumber</td>
-
-                        </tr>
-
-                    </table>
-                </td>
-
-                <td>
-                    <h4>Associate Details</h4>
-                    <table width="100%" style="font-family: sans-serif; font-size: 14px; border-bottom: 2px solid #D4A81E;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;"><strong>@ViewBag.AssociateName</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 5px 8px; line-height: 20px;">@ViewBag.RefrenceId</td>
-
-                        </tr>
-
-
-
-                    </table>
-                </td>
-
-            </tr>
-        </table>
-        <br>
-        <table class="items" width="100%" style="font-size: 13px; border-collapse: collapse;" cellpadding="8">-->
-            <!-- <thead>
-                <tr>
-                    <td width="15%" style="text-align: left;"><strong>PAX</strong></td>
-                    <td width="45%" style="text-align: left;"><strong>Description</strong></td>
-                    <td width="20%" style="text-align: left;"><strong>Amount</strong></td>
-                    <td width="20%" style="text-align: left;"><strong>Total Trip Cost</strong></td>
-                </tr>
-            </thead> -->
-            <!--<tbody>-->
-                <!-- ITEMS HERE -->
-                <!--<tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Plot No</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.BlockName-@ViewBag.PlotNumber ( @ViewBag.ProjectName )</td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Area</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.PlotArea </td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Plot Amount</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.PlotAmount <strong>(As Per B.S.P.)</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Due</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.DueAmount </td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>PLC Location</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.PLC</td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>PLC Charges </strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.TotalPLC</td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Rate</strong> </td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.Rate/- <strong>SQFT</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Development Charges</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.DevelopmentCharge</td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 13px;">
-            <tr>
-                <td>
-
-                    <table width="100%" style="font-family: sans-serif; font-size: 13px;     border-bottom: 2px solid #D4A81E;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;"><strong>PAYMENT DETAIL</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px 10px; line-height: 20px;">
-                                <strong>Paid Amount : Rs. @ViewBag.PaidAmount </strong>( in words <strong> @ViewBag.AmountInWords </strong>) as <strong>Booking Amount,</strong> Paid By : <strong>
-
-
-
-
-
-                                    @if (ViewBag.PaymentMode == "Cash")
-                                    {
-                                        @ViewBag.PaymentMode
-                                    }
-                                    else
-                                    {
-
-                                        @ViewBag.PaymentMode <span>Transaction Date:</span>
-                                        @ViewBag.TransactionDate <span>,Transaction id: </span>@ViewBag.TransactionNo; <span>Bank:</span> @ViewBag.BankName
-                                    }
-
-                                </strong>  Drawn on :
-                                <strong>PHYNIX VALLEY INFRATECH PVT LTD</strong>
-                            </td>
-
-                        </tr>
-
-
-
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 14px;">
-            <tr>
-                <td>
-
-                    <table width="100%" style="font-family: sans-serif; font-size: 13px;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">Thank you for associating with Phynix Valley Infratech Pvt. Ltd</td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">
-                                Your plot no. is <strong>B-1</strong> in <strong>PROJECT NAME - SARAYU VIHAR,</strong>  paid amount against your plot is <strong>51000.00/-</strong> and balance amount is
-                                <strong>2146800.00/-</strong>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">YOUR PAYMENT PLAN IS :- 100 % Down Payment Plan</td>
-
-                        </tr>
-
-
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 14px;">
-            <br>
-            <tr>
-                <td>
-                    <table width="75%" style="font-family: sans-serif; font-size: 10px; ">
-                        <tr>
-                            <td style="padding: 0px; line-height: 20px;">
-                                <strong>Note:</strong>
-                                <br>
-                                <p style="font-size: 10px;">•*In case of any cancellation within 15 days no deduction. After 15 days 25% will be deducted in Total Deposited Amount.</p>
-                                <p style="font-size: 10px;">•*All the Terms & Conditions shall be applicable as per the <b>Company Policy.</b></p>
-                                <p style="font-size: 10px;">•*If three installments are not deposited regularly, the plot will go into cancellation without any notice.</p>
-
-                            </td>
-                        </tr>
-                    </table>
-                    <table width="25%" align="right" style="font-family: sans-serif; font-size: 12px;">
-                        <tr>
-                            <td style="padding: 0px; line-height: 20px; font-size: 20px;">
-                                <strong>0522-7145931</strong>
-
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <br>
-        </table>
-    </div>
-</body>
-</html>-->
-
-
 <body>
-    <button id="print" style="background: #515de4; color: #fff;  padding: 15px 29px 15px 29px;" onclick="PrintElem('divPrint');">Print</button>
-    <div id="divPrint">
-        <table width="100%" style="font-family: sans-serif;" cellpadding="10">
 
-            <tr>
-                <td width="100%" style="text-align: center; font-size: 18px;  padding: 0px;">
-                    <img src="~/files/assets/images/logo.png" style="height: 100px;" /><br><br>
-                    <strong style="background: #D4A81E; color: #fff;  padding: 15px 29px 15px 29px; margin-bottom: 15px;">PAYMENT RECEIPT</strong>
-
-                </td>
-            </tr>
-            <tr>
-                <td height="10" style="font-size: 0px; line-height: 10px; height: 10px; padding: 0px;">&nbsp;</td>
-            </tr>
-        </table>
-        <table width="100%" style="font-family: sans-serif;" cellpadding="10">
-            <tr>
-
-
-                <td width="49%" style=" text-align: right;">
-                    <strong>Receipt No -</strong>
-                    <span>@ViewBag.ReceiptNo</span><br>
-                    <strong>Receipt Date -</strong>
-                    <span>@ViewBag.DepositeDate</span><br>
-                    <strong>Project -</strong>
-                    <span>@ViewBag.ProjectName</span><br>
-                    <strong >Branch: </strong>
-                    <span>Head Office</span>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <br>
-        <table width="100%" style="font-family: sans-serif;" cellpadding="10">
-            <tr>
-                <td width="49%" style=" text-align:center;">
-                    <span style="padding: 0px 150px 6px 150px; border-bottom: 2px solid #D4A81E; font-size: 25px;font-family: initial;">CONGRATULATIONS</span><br>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 13px; border-bottom: 2px solid #D4A81E;">
-            <tr>
-                <td>
-                    <!-- <table width="60%" align="left" style="font-family: sans-serif; font-size: 14px;" >
-        <tr>
-            <td style="padding: 0px; line-height: 20px;">&nbsp;</td>
-        </tr>
-    </table> -->
-                    <table width="66%" style="font-family: sans-serif; font-size: 14px;  float: left;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;"><strong>@ViewBag.CustomerName</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">@ViewBag.Address</td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">Mobile: @ViewBag.CustomerContact</td>
-
-                        </tr>
-                        <tr>
-                            <td style="    padding: 0px 7px 10px; line-height: 20px;">Pan No.: @ViewBag.PanNumber</td>
-
-                        </tr>
-
-                    </table>
-                    <table width="34%" style="font-family: sans-serif; font-size: 14px;  float: right; ">
-                        <tr>
-                            <h4 style="text-align:right;">Associate Details</h4>
-                            
-                        </tr>
-                        <tr>
-                           
-                            <td style=" text-align: right;"> Name: <strong>@ViewBag.AssociateName</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 5px 0px; text-align: right;">Id: @ViewBag.RefrenceId</td>
-
-                        </tr>
-
-                    </table>
-
-                </td>
-            </tr>
-
-        </table>
-        <br>
-        <table class="items" width="100%" style="font-size: 13px; border-collapse: collapse;" cellpadding="8">
-            <!-- <thead>
-                <tr>
-                    <td width="15%" style="text-align: left;"><strong>PAX</strong></td>
-                    <td width="45%" style="text-align: left;"><strong>Description</strong></td>
-                    <td width="20%" style="text-align: left;"><strong>Amount</strong></td>
-                    <td width="20%" style="text-align: left;"><strong>Total Trip Cost</strong></td>
-                </tr>
-            </thead> -->
-            <tbody>
-                <!-- ITEMS HERE -->
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Plot No</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.BlockName-@ViewBag.PlotNumber ( @ViewBag.ProjectName )</td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Area</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.PlotArea </td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Plot Amount</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.PlotAmount <strong>(As Per B.S.P.)</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Due</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.DueAmount </td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>PLC Location</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.PLC</td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>PLC Charges </strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">Rs. @ViewBag.TotalPLC</td>
-                </tr>
-                <tr>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Rate</strong> </td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.Rate/- <strong>SQFT</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;"><strong>Development Charges</strong></td>
-                    <td style="padding: 7px 7px; line-height: 20px;">@ViewBag.DevelopmentCharge</td>
-                </tr>
-            </tbody>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 13px;">
-            <tr>
-                <td>
-
-                    <table width="100%" style="font-family: sans-serif; font-size: 13px;     border-bottom: 2px solid #D4A81E;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;"><strong>PAYMENT DETAIL</strong></td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px 10px; line-height: 20px;">
-                                <strong>Paid Amount : Rs. @ViewBag.PaidAmount </strong>( in words <strong> @ViewBag.AmountInWords </strong>) as <strong>Booking Amount,</strong> Paid By : <strong>
-
-
-
-
-
-                                    @if (ViewBag.PaymentMode == "Cash")
-                                    {
-                                        @ViewBag.PaymentMode
-                                    }
-                                    else
-                                    {
-
-                                        @ViewBag.PaymentMode <span>Transaction Date:</span>
-                                        @ViewBag.TransactionDate <span>,Transaction id: </span>@ViewBag.TransactionNo; <span>Bank:</span> @ViewBag.BankName
-                                    }
-
-                                </strong>  Drawn on :
-                                <strong>SHASHIKALA INFRATECH</strong>
-                            </td>
-
-                        </tr>
-
-
-
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 14px;">
-            <tr>
-                <td>
-
-                    <table width="100%" style="font-family: sans-serif; font-size: 13px;">
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">Thank you for associating with SHASHIKALA INFRATECH</td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">
-                                Your plot no. is <strong>@ViewBag.PlotNumber</strong> in <strong>PROJECT NAME - @ViewBag.ProjectName,</strong>  paid amount against your plot is <strong>@ViewBag.PaidAmount/-</strong> and balance amount is
-                                <strong>@ViewBag.BalanceAmt/-</strong>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td style=" padding: 0px 8px; line-height: 20px;">YOUR PAYMENT PLAN IS :- @ViewBag.PaymentPlan</td>
-
-                        </tr>
-
-
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <br>
-        <table width="100%" style="font-family: sans-serif; font-size: 14px;">
-            <tr>
-                <td>
-                    <table width="75%" style="font-family: sans-serif; font-size: 10px; ">
-                        <tr>
-                            <td style="padding: 0px; line-height: 20px;">
-                                <strong>Note:</strong>
-                                <br>
-                                <p style="font-size: 9px;">•*In case of any cancellation within 15 days no deduction. After 15 days 25% will be deducted in Total Deposited Amount.</p>
-                                <p style="font-size: 9px;">•*All the Terms & Conditions shall be applicable as per the <b>Company Policy.</b></p>
-                                <p style="font-size: 9px;">•*If three installments are not deposited regularly, the plot will go into cancellation without any notice.</p>
-
-                            </td>
-                        </tr>
-                    </table>
-                    <table width="25%" align="right" style="font-family: sans-serif; font-size: 12px; margin-top: -11px;">
-                        <tr>
-
-                            <td style="padding: 0px; line-height: 20px; font-size: 18px;">
-
-                            <td style="padding: 0px; line-height: 20px;">
-
-                                <p style="font-size: 18px;">Authorized Signature</p>
-
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-        <h5 style="text-align: center;margin-top: -10px;">www.ShashikalaInfratech.com</h5>
+    <div class="no-print-zone">
+        <button class="btn-print" onclick="window.print();">
+            <i class="fas fa-print mr-2"></i> Print Allotment Receipt
+        </button>
+        <p style="margin-top: 10px; color: #666; font-size: 13px;">Ensure "Background Graphics" is enabled in print settings for best results.</p>
     </div>
+
+    <div class="receipt-container">
+        
+        @renderReceipt("OFFICE COPY")
+        @renderReceipt("CUSTOMER COPY")
+
+    </div>
+
+    @helper renderReceipt(string copyType) {
+        <div class="receipt-wrapper">
+            <div class="watermark">Shashikala Infratech</div>
+            
+            <div class="header">
+                <div class="logo-box">
+                    <img src="/files/assets/images/logo.png" alt="Shashikala Logo">
+                </div>
+                <div class="receipt-title-box">
+                    <h1 class="receipt-title">Payment Receipt</h1>
+                    <span class="copy-tag">@copyType</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Project:</td>
+                        <td class="value">@ViewBag.ProjectName</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Unit No:</td>
+                        <td class="value">
+                            @{
+                                string pNo = ViewBag.PlotNumber ?? "";
+                                if (pNo.Contains("BLOCK")) {
+                                    // Extract just the part after the last dash or within specific pattern if possible
+                                    // For now, let's keep it clean if user says so.
+                                }
+                                @pNo
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Unit Type:</td>
+                        <td class="value">PLOT</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Block:</td>
+                        <td class="value">@ViewBag.BlockName</td>
+                    </tr>
+                </table>
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Customer ID:</td>
+                        <td class="value">@ViewBag.CustomerID</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Receipt No:</td>
+                        <td class="value">@ViewBag.ReceiptNo</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Receipt Date:</td>
+                        <td class="value">@ViewBag.DepositeDate</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Print Date:</td>
+                        <td class="value">@DateTime.Now.ToString("dd-MMM-yy")</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="applicant-box">
+                <div class="applicant-header">APPLICANT DETAILS</div>
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Applicant:</td>
+                        <td class="value" style="font-size: 16px;">@ViewBag.CustomerName</td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(ViewBag.FathersName))
+                    {
+                        <tr>
+                            <td class="label">@ViewBag.Relation:</td>
+                            <td class="value">@ViewBag.FathersName</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="label">Address:</td>
+                        <td class="value">
+                            @ViewBag.Address
+                            @if (!string.IsNullOrEmpty(ViewBag.City)) { <span>, @ViewBag.City</span> }
+                            @if (!string.IsNullOrEmpty(ViewBag.State)) { <span>, @ViewBag.State</span> }
+                            @if (!string.IsNullOrEmpty(ViewBag.Pincode)) { <span>- @ViewBag.Pincode</span> }
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(ViewBag.CoApplicantName))
+                    {
+                        <tr>
+                            <td class="label">Co-Applicant:</td>
+                            <td class="value">@ViewBag.CoApplicantName</td>
+                        </tr>
+                    }
+                    else if (!string.IsNullOrEmpty(ViewBag.NomineeName))
+                    {
+                        <tr>
+                            <td class="label">Nominee:</td>
+                            <td class="value">@ViewBag.NomineeName</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th width="50%">Description</th>
+                        <th width="20%">Charge Type</th>
+                        <th width="30%" style="text-align: right;">Amount (INR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Against Unit No: <b>@ViewBag.PlotNumber</b> (@ViewBag.ProjectName)</td>
+                        <td>BASIC AMOUNT</td>
+                        <td style="text-align: right; font-weight: 700;">@ViewBag.PaidAmount</td>
+                    </tr>
+                    @if (Convert.ToDecimal(ViewBag.TotalPLC) > 0)
+                    {
+                        <tr>
+                            <td>PLC Charges</td>
+                            <td>PLC</td>
+                            <td style="text-align: right;">@ViewBag.TotalPLC</td>
+                        </tr>
+                    }
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: right; text-transform: uppercase;">Total Received:</td>
+                        <td style="text-align: right; font-size: 18px; color: var(--primary);">Rs. @ViewBag.PaidAmount</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="amount-in-words" style="margin-bottom: 25px;">
+                <b>Amount in Words:</b> @ViewBag.AmountInWords
+            </div>
+
+            <div class="payment-method-box">
+                <div class="method-item">
+                    <span class="m-label">Payment Mode</span>
+                    <span class="m-value">@ViewBag.PaymentMode</span>
+                </div>
+                <div class="method-item">
+                    <span class="m-label">Reference No.</span>
+                    <span class="m-value">
+                        @{
+                            var rNo = !string.IsNullOrEmpty(ViewBag.TransactionNo) ? ViewBag.TransactionNo : (!string.IsNullOrEmpty(ViewBag.TransactionNumber) ? ViewBag.TransactionNumber : "N/A");
+                        }
+                        @rNo
+                    </span>
+                </div>
+                <div class="method-item">
+                    <span class="m-label">Bank Name</span>
+                    <span class="m-value">
+                        @{
+                            var bName = !string.IsNullOrEmpty(ViewBag.BankName) ? ViewBag.BankName : "CASH";
+                            if (bName != "CASH" && !string.IsNullOrEmpty(ViewBag.BankBranch)) {
+                                bName += " (" + ViewBag.BankBranch + ")";
+                            }
+                        }
+                        @bName
+                    </span>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div class="terms">
+                    <b>Remarks / Terms:</b><br>
+                    &bull; Applicant shall be liable/responsible for any payment made by him from any third party account.<br>
+                    &bull; This report is not transferable unless consented by the company.<br>
+                    &bull; This report does not confirm the booking/allotment of the unit which would be subject to availability.<br>
+                    &bull; Please keep this document in safe custody & in case the same is lost/misplaced, please inform immediately.<br>
+                    &bull; This money is subject to realization of Payment Mode.
+                </div>
+                <div class="signature-area">
+                    <div class="signature-line">Authorized Signatory</div>
+                    <div class="system-gen">THIS IS SYSTEM GENERATED SLIP, HENCE DOES NOT REQUIRE ANY SIGNATURE</div>
+                </div>
+            </div>
+
+            <div class="company-footer">
+                <div class="footer-contact">
+                    <i class="fas fa-map-marker-alt"></i> 132, 1st Floor, Sector-J/6, Sushant Golf City, Lucknow, UP-226030
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-phone"></i> +91-8175928000
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-globe"></i> shashikalainfratech.com
+                </div>
+            </div>
+        </div>
+    }
+
 </body>
 </html>

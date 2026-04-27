@@ -7,110 +7,113 @@
 
 @using (Html.BeginForm("DayBook", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-            <div class="card-block">
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Day Book</h4>
-                        </div>                      
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Daily Transaction Ledger (Day Book)</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Accounting Filters
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold text-dark small">From Date</label>
+                        @Html.TextBoxFor(m => m.FromSearchDate, new { @class = "form-control", @readonly = "readonly", @placeholder = "dd/mm/yyyy", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="font-weight-bold text-dark small">To Date</label>
+                        @Html.TextBoxFor(m => m.ToSearchDate, new { @class = "form-control", @readonly = "readonly", @placeholder = "dd/mm/yyyy", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark small">Head Type</label>
+                        @Html.DropDownListFor(m => m.HeadType, new SelectList(ViewBag.ddlHeadtTyppe, "Value", "Text"), new { @class = "form-control", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark small">Sub Head</label>
+                        @Html.DropDownListFor(m => m.AccountId, new SelectList(ViewBag.ddlHead, "Value", "Text"), new { @class = "form-control", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm" style="height: 40px;">
+                            <i class="fas fa-search mr-1"></i> Search
+                        </button>
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-xl-2 col-lg col-md-2 col-sm-2 col-12">
-                                <div class="form-group">
-                                    <label>From Date  </label>
-                                    @Html.TextBoxFor(m => m.FromSearchDate, new { @class = "form-control", @readonly = "readonly" })
-                                </div>
-                            </div>
-                            <div class="col-xl-2 col-lg col-md-2 col-sm-2 col-12">
-                                <div class="form-group">
-                                    <label>To Date  </label>
-                                    @Html.TextBoxFor(m => m.ToSearchDate, new { @class = "form-control", @readonly = "readonly" })
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <label>Select Head Type</label>
-                                    @Html.DropDownListFor(m => m.HeadType, new SelectList(ViewBag.ddlHeadtTyppe, "Value", "Text"), new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-12">
-                                <div class="form-group">
-                                    <label>Select Sub Head </label>
-                                    @Html.DropDownListFor(m => m.AccountId, new SelectList(ViewBag.ddlHead, "Value", "Text"), new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-xl-3 col-lg col-md-3 col-sm-3 col-12">
-                                <div class="form-group">
-                                    <br />
-                                    <input type="submit" id="btnSearch" class="btn btn-success pull-left" name="Search" value="Search" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row gutters table-responsive">
-                            <table id="example23" class="table table-bordered">
-                                <thead>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary d-flex justify-content-between align-items-center">
+                <span><i class="fas fa-book mr-2"></i> Daily Records</span>
+                <button type="button" onclick="printDiv()" class="btn btn-sm btn-light text-dark shadow-sm">
+                    <i class="fas fa-print mr-1"></i> Print Ledger
+                </button>
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Name / Account Head</th>
+                                <th>Date</th>
+                                <th>Narration</th>
+                                <th>Payment Mode</th>
+                                <th>Transaction Dtl</th>
+                                <th class="text-right">Debit (Dr)</th>
+                                <th class="text-right">Credit (Cr)</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                int j = 1;
+                                for (int i = 0; i <= Model.lstDetails.Rows.Count - 1; i++)
+                                {
                                     <tr>
-                                        <th>Sr No.</th>
-                                        <th>Name</th>
-                                        <th>Account Head</th>
-                                        <th>TransactionDate</th>
-                                        <th>Narration</th>
-                                        <th>PaymentMode</th>
-                                        <th>Transcation No</th>
-                                        <th>Credit To</th>
-                                        <th>Credit</th>
-                                        <th>Debit</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null)
-                                    {
-                                        if (Model.lstDetails != null)
-                                        {
-                                            if (Model.lstDetails.Rows.Count > 0)
+                                        <td>@j</td>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Model.lstDetails.Rows[i]["Name"].ToString()</div>
+                                            <span class="badge badge-soft-info small">@Model.lstDetails.Rows[i]["SubAccountHead"].ToString()</span>
+                                        </td>
+                                        <td><span class="small text-muted"><i class="fas fa-calendar-alt mr-1"></i> @Model.lstDetails.Rows[i]["TransactionDate"].ToString()</span></td>
+                                        <td style="max-width: 200px; white-space: normal;"><span class="small">@Model.lstDetails.Rows[i]["Narration"].ToString()</span></td>
+                                        <td><span class="badge badge-soft-primary px-2">@Model.lstDetails.Rows[i]["PaymentMode"].ToString()</span></td>
+                                        <td>
+                                            <div class="small">No: <span class="font-weight-bold text-dark">@Model.lstDetails.Rows[i]["TransactionNo"].ToString()</span></div>
+                                            <div class="small text-muted">Bank: @Model.lstDetails.Rows[i]["CreditTo"].ToString()</div>
+                                        </td>
+                                        <td class="text-right font-weight-bold text-danger">@Model.lstDetails.Rows[i]["DrAmount"].ToString()</td>
+                                        <td class="text-right font-weight-bold text-success">@Model.lstDetails.Rows[i]["CrAmount"].ToString()</td>
+                                        <td class="text-center">
+                                            @if (i != Model.lstDetails.Rows.Count - 1)
                                             {
-                                                int j = 1;
-                                                for (int i = 0; i <= Model.lstDetails.Rows.Count - 1; i++)
-                                                {
-                                                    <tr class="text-left">
-
-                                                        <td>@j</td>
-                                                        <td>@Model.lstDetails.Rows[i]["Name"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["SubAccountHead"].ToString()</td>
-
-                                                        <td>@Model.lstDetails.Rows[i]["TransactionDate"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["Narration"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["PaymentMode"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["TransactionNo"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["CreditTo"].ToString()</td>
-
-                                                        <td>@Model.lstDetails.Rows[i]["DrAmount"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["CrAmount"].ToString()</td>
-                                                        <td>
-                                                            @if (i != Model.lstDetails.Rows.Count - 1)
-                                                            {
-                                                                <a href="/Admin/ExpenseEntry?id=@RealEstateRegalSpace.Crypto.Encrypt(Model.lstDetails.Rows[i]["PK_LedgerID"].ToString())" class="btn btn-info btn-sm">Edit</a>
-
-                                                                <a href="/Admin/DeletedayBook?id=@Model.lstDetails.Rows[i]["PK_LedgerID"].ToString()" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you wish to delete this entry?');">Delete</a>
-                                                            }
-                                                        </td>
-                                                    </tr>
-                                                    j++;
-                                                }
+                                                <div class="btn-group">
+                                                    <a href="/Admin/ExpenseEntry?id=@RealEstateRegalSpace.Crypto.Encrypt(Model.lstDetails.Rows[i]["PK_LedgerID"].ToString())" class="btn btn-outline-info btn-sm rounded-circle mr-2" style="width: 30px; height: 30px; padding: 4px;" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a href="/Admin/DeletedayBook?id=@Model.lstDetails.Rows[i]["PK_LedgerID"].ToString()" class="btn btn-outline-danger btn-sm rounded-circle" style="width: 30px; height: 30px; padding: 4px;" onclick="return confirm('Are you sure you wish to delete this entry?');" title="Delete">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
                                             }
-
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                                        </td>
+                                    </tr>
+                                    j++;
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

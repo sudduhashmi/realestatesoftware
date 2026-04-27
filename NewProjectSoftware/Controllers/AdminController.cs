@@ -3884,34 +3884,15 @@ namespace RealEstateRegalSpace.Controllers
         {
             if (!string.IsNullOrEmpty(print))
             {
-                Session["PK_BookingId"] = obj.id;
-                return RedirectToAction("PrintLedger");
-
+                if (!string.IsNullOrEmpty(obj.id))
+                {
+                    return RedirectToAction("CustomerLedger", "Print", new { id = obj.id });
+                }
             }
             DataSet ds = obj.CustomerLedger();
             obj.lstDetails = ds.Tables[0];
             obj.customerLedger = ds.Tables[1];
 
-            return View(obj);
-        }
-        public ActionResult PrintLedger()
-        {
-            Reports obj = new Reports();
-            obj.id = Session["PK_BookingId"].ToString();
-            DataSet ds = obj.CustomerLedger();
-            ViewBag.Name = ds.Tables[0].Rows[0]["Name"].ToString();
-            ViewBag.LoginId = ds.Tables[0].Rows[0]["LoginId"].ToString();
-            ViewBag.SiteName = ds.Tables[0].Rows[0]["SiteName"].ToString();
-            ViewBag.PlotNumber = ds.Tables[0].Rows[0]["PlotNumber"].ToString();
-            ViewBag.TotalArea = ds.Tables[0].Rows[0]["TotalArea"].ToString();
-            ViewBag.PlotRate = ds.Tables[0].Rows[0]["PlotRate"].ToString();
-            ViewBag.PLCPerc = ds.Tables[0].Rows[0]["PLCPerc"].ToString();
-            ViewBag.PlotAmount = ds.Tables[0].Rows[0]["PlotAmount"].ToString();
-            ViewBag.NetPlotAmount = ds.Tables[0].Rows[0]["NetPlotAmount"].ToString();
-            ViewBag.TotalPlotAmount = ds.Tables[2].Rows[0]["TotalPlotAmount"].ToString();
-            ViewBag.TotalPaidAmount = ds.Tables[2].Rows[0]["TotalPaidAmount"].ToString();
-            ViewBag.TotalBalance = (Convert.ToDecimal(ViewBag.TotalPlotAmount) - Convert.ToDecimal(ViewBag.TotalPaidAmount)).ToString("0.00");
-            obj.paymentDetails = ds.Tables[1];
             return View(obj);
         }
         public ActionResult GetPaymentDetails(string id)

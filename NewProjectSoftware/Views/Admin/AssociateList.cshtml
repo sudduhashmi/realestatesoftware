@@ -7,132 +7,137 @@
 
 @using (Html.BeginForm("AssociateList", "Admin", FormMethod.Post, new { @id = "form1" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-
-            <div class="card-block">
-
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Associate List</h4>
-                        </div>
-                       
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Associate Management</h4>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                LoginId
-                                @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "LoginId" })
-                            </div>
-                            <div class="col-sm-3">
-                                Mobile No
-                                @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @Placeholder = "Mobile No" })
-                            </div>
-                            <div class="col-sm-3">
-                                SponsorId
-                                @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Sponsor Id" })
-                            </div>
-                            <div class="col-sm-3">
-                                From Joining Date
-                                @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "From Date" })
-                            </div>
-                            <div class="col-sm-3">
-                                To Joining Date
-                                @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @Placeholder = "To Date" })
-                            </div>
-                            <div class="col-sm-3">
-                                <br />
-                                <input type="submit" value="Get Details" class="btn btn-primary" />
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="table-responsive">
-                                    <table id="example23" class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Sr No</th>
-                                                <th>LoginId</th>
-                                                <th>Name</th>
-                                                @if (Session["RoleName"].ToString() == "Admin")
-                                                {
-                                                    <th>Password</th>
-                                                }
-                                                <th>Designation</th>
-                                                <th>Sponsor Details</th>
-                                                <th>Joining Date</th>
-                                                <th>Mobile</th>
-                                                @if (Session["RoleName"].ToString() == "Admin")
-                                                {
-                                                    <th>Action</th>
-                                                }
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (Model != null)
-                                            {
-                                                if (Model.userList != null)
-                                                {
-                                                    if (Model.userList.Rows.Count > 0)
-                                                    {
-                                                        int j = 1;
-                                                        for (int i = 0; i <= Model.userList.Rows.Count - 1; i++)
-                                                        {
-                                                            <tr>
-                                                                <td>@j</td>
-                                                                <td>@Model.userList.Rows[i]["AssociateId"].ToString()</td>
-                                                                <td>@Model.userList.Rows[i]["AssociateName"].ToString()</td>
-                                                                @if (Session["RoleName"].ToString() == "Admin")
-                                                                {
-                                                                    <td><span style="font-size:14px;font-weight:600;" id="@i" onclick="fn_showPWD('@i','@RealEstateRegalSpace.Crypto.Decrypt(Model.userList.Rows[i]["Password"].ToString())')">******</span></td>
-                                                                }
+            </div>
+        </div>
 
-                                                                <td>@Model.userList.Rows[i]["FK_DesignationID"].ToString()</td>
-                                                                <td>
-                                                                    @Model.userList.Rows[i]["SponsorId"].ToString()
-                                                                    <br />
-                                                                    @Model.userList.Rows[i]["SponsorName"].ToString()
-                                                                </td>
-                                                                <td>@Model.userList.Rows[i]["JoiningDate"].ToString()</td>
-                                                                <td>@Model.userList.Rows[i]["Mobile"].ToString()</td>
-                                                                @if (Session["RoleName"].ToString() == "Admin")
-                                                                {
-                                                                    <td>
-                                                                        <a href="/Admin/GetKYC?LoginId=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["AssociateId"].ToString())" class="btn btn-primary btn-sm">View KYC</a>
-
-                                                                        <a href="/Admin/AssociateRegistration?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-info btn-sm">Edit</a>
-                                                                        @*<a href="/Admin/DeleteAssociate?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this Associate?');">Delete</a>*@
-                                                                        @if (Model.userList.Rows[i]["IsBlocked"].ToString() == "True")
-                                                                        {
-                                                                            <a href="/Admin/UnBlockMember?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-success btn-sm" onclick="return confirm('Are you sure you want to UnBlock this Associate?');">UnBlock</a>
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <a href="/Admin/UnBlockMember?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to Block this Associate?');">Block</a>
-                                                                        }
-
-                                                                    </td>
-                                                                }
-                                                            </tr>
-                                                            j++;
-                                                        }
-
-                                                    }
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Search & Filter
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="font-weight-bold text-dark">Associate Id</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter LoginId", @style="height: 45px;" })
                     </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="font-weight-bold text-dark">Mobile No</label>
+                        @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @Placeholder = "Enter Mobile No", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="font-weight-bold text-dark">Sponsor Id</label>
+                        @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Enter Sponsor Id", @style="height: 45px;" })
+                    </div>
+                </div>
+                <div class="row align-items-end mt-2">
+                    <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold text-dark">From Date</label>
+                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="font-weight-bold text-dark">To Date</label>
+                        @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <button type="submit" class="btn btn-primary btn-block shadow-sm" style="height: 45px;" name="btnSearch" value="Search">
+                            <i class="fas fa-search mr-1"></i> Get Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Associate Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-users-cog mr-2"></i> Associate Directory
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Sr No</th>
+                                <th>LoginId</th>
+                                <th>Name</th>
+                                @if (Session["RoleName"].ToString() == "Admin")
+                                {
+                                    <th>Password</th>
+                                }
+                                <th>Designation</th>
+                                <th>Sponsor Details</th>
+                                <th>Joining Date</th>
+                                <th>Mobile</th>
+                                @if (Session["RoleName"].ToString() == "Admin")
+                                {
+                                    <th class="text-center">Action</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.userList != null && Model.userList.Rows.Count > 0)
+                            {
+                                int j = 1;
+                                for (int i = 0; i <= Model.userList.Rows.Count - 1; i++)
+                                {
+                                    <tr>
+                                        <td>@j</td>
+                                        <td class="font-weight-bold text-primary">@Model.userList.Rows[i]["AssociateId"].ToString()</td>
+                                        <td class="text-dark font-weight-bold">@Model.userList.Rows[i]["AssociateName"].ToString()</td>
+                                        @if (Session["RoleName"].ToString() == "Admin")
+                                        {
+                                            <td>
+                                                <div class="pwd-mask" id="@i" onclick="fn_showPWD('@i','@RealEstateRegalSpace.Crypto.Decrypt(Model.userList.Rows[i]["Password"].ToString())')" style="cursor:pointer; background:#f1f3f4; padding:2px 10px; border-radius:15px; display:inline-block; font-family:monospace;">
+                                                    ******
+                                                </div>
+                                            </td>
+                                        }
+                                        <td><span class="badge badge-light border">@Model.userList.Rows[i]["FK_DesignationID"].ToString()</span></td>
+                                        <td>
+                                            <div class="text-dark">@Model.userList.Rows[i]["SponsorId"].ToString()</div>
+                                            <small class="text-info">@Model.userList.Rows[i]["SponsorName"].ToString()</small>
+                                        </td>
+                                        <td><i class="fas fa-calendar-alt mr-1 small"></i> @Model.userList.Rows[i]["JoiningDate"].ToString()</td>
+                                        <td><i class="fas fa-phone mr-1 small"></i> @Model.userList.Rows[i]["Mobile"].ToString()</td>
+                                        @if (Session["RoleName"].ToString() == "Admin")
+                                        {
+                                            <td class="text-center">
+                                                <div class="btn-group">
+                                                    <a href="/Admin/GetKYC?LoginId=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["AssociateId"].ToString())" class="btn btn-sm btn-outline-primary mr-2 rounded-circle" title="View KYC">
+                                                        <i class="fas fa-id-card"></i>
+                                                    </a>
+                                                    <a href="/Admin/AssociateRegistration?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-sm btn-outline-success mr-2 rounded-circle" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    @if (Model.userList.Rows[i]["IsBlocked"].ToString() == "True")
+                                                    {
+                                                        <a href="/Admin/UnBlockMember?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-sm btn-success rounded-circle" onclick="return confirm('Are you sure you want to UnBlock this Associate?');" title="UnBlock">
+                                                            <i class="fas fa-lock-open"></i>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="/Admin/UnBlockMember?UserID=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_UserId"].ToString())" class="btn btn-sm btn-danger rounded-circle" onclick="return confirm('Are you sure you want to Block this Associate?');" title="Block">
+                                                            <i class="fas fa-lock"></i>
+                                                        </a>
+                                                    }
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
+                                    j++;
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

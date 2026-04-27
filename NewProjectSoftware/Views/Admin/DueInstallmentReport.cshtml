@@ -1,251 +1,198 @@
 @model RealEstateRegalSpace.Models.Reports
 
 @{
-    ViewBag.Title = "DueInstallmentReport";
+    ViewBag.Title = "Due Installment Report";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
 @using (Html.BeginForm("DueInstallmentReport", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-
-            <div class="card-block">
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Due Installment Report</h4>
-                        </div>
-                        
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Due Installment Statement</h4>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
+            </div>
+        </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Site
-                                    @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Sector
-                                    @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Block
-                                    @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Plot Number
-                                    @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "PlotNumber" })
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row gutters">
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Associate Id
-                                    @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Associate Id" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Customer Id
-                                    @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Customer Id" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Booking No
-                                    @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Booking No" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    From Date
-                                    @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "From Date" })
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row gutters">
-
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    To Date
-                                    @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @Placeholder = "To Date" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <br />
-                                    <input class="btn btn-success" type="submit" value="Search" id="btnSearch" name="Search" />
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row gutters table-responsive">
-                            <table id="example23" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Sr No.</th>
-                                        <th>Customer Info</th>
-                                        <th>Associate Info</th>
-
-                                        <th>Plot Info</th>
-
-                                        <th>BookingNo</th>
-                                        <th>BookingAmt</th>
-                                        <th>TotalPaidAmount</th>
-                                        <th>PaymentPlan</th>
-                                        <th>Total EMI</th>
-                                        <th>DueAmount</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null)
-                                    {
-                                        if (Model.lstDetails != null)
-                                        {
-                                            if (Model.lstDetails.Rows.Count > 0)
-                                            {
-                                                int j = 1;
-                                                for (int i = 0; i <= Model.lstDetails.Rows.Count - 1; i++)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @j
-                                                        </td>
-                                                        <td>
-                                                            <b>@Model.lstDetails.Rows[i]["CustomerId"].ToString()</b>
-                                                            <br />
-                                                            @Model.lstDetails.Rows[i]["CustomerName"].ToString()
-                                                            <br />
-                                                            @Model.lstDetails.Rows[i]["CustomerMobile"].ToString()
-                                                        </td>
-
-                                                        <td>
-                                                            <b>@Model.lstDetails.Rows[i]["AssociateId"].ToString()</b>
-                                                            <br />
-                                                            @Model.lstDetails.Rows[i]["AssociateName"].ToString()
-                                                            <br />
-                                                            @Model.lstDetails.Rows[i]["AssociateMobile"].ToString()
-                                                        </td>
-                                                        <td>
-                                                            @Model.lstDetails.Rows[i]["SiteName"].ToString()/@Model.lstDetails.Rows[i]["SectorName"].ToString()/@Model.lstDetails.Rows[i]["BlockName"].ToString()/@Model.lstDetails.Rows[i]["PlotNumber"].ToString()
-                                                        </td>
-
-
-                                                        <td>@Model.lstDetails.Rows[i]["BookingNo"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["BookingAmt"].ToString()</td>
-                                                        <td>
-                                                            @Model.lstDetails.Rows[i]["TotalPaidAmount"].ToString()<br />
-
-                                                        </td>
-                                                        <td>@Model.lstDetails.Rows[i]["PaymentPlan"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["noOfEMI"].ToString()*@Model.lstDetails.Rows[i]["InstallmentAmt"].ToString()=@Model.lstDetails.Rows[i]["TotalEMI"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["DueAmount"].ToString()</td>
-                                                    </tr>
-                                                    j++;
-                                                }
-
-                                            }
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Filter Installments
+            </div>
+            <div class="p-4">
+                <!-- Row 1: Location Filters -->
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style = "height: 48px;" })
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Plot Number</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "e.g. A-101", @style = "height: 48px;" })
+                    </div>
+                </div>
+
+                <!-- Row 2: Search & Dates -->
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Associate/Customer ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Search ID", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> From Date</label>
+                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @readonly = "readonly", @Placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> To Date</label>
+                        @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @readonly = "readonly", @Placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px;">
+                            <i class="fas fa-search mr-2"></i> Get Due List
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-money-bill-wave mr-2"></i> Pending Installments Overview
+            </div>
+            <div class="p-0">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th>Customer Info</th>
+                                <th>Associate Info</th>
+                                <th class="text-center">Plot Info</th>
+                                <th class="text-center">Booking No</th>
+                                <th class="text-right">Total Booking</th>
+                                <th class="text-right">Paid Amount</th>
+                                <th class="text-center">Plan / EMI Info</th>
+                                <th class="text-right font-weight-bold text-danger">Due Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstDetails.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Model.lstDetails.Rows[i]["CustomerName"].ToString()</div>
+                                            <div class="small text-muted">ID: @Model.lstDetails.Rows[i]["CustomerId"].ToString()</div>
+                                            <div class="small text-info"><i class="fas fa-phone mr-1"></i> @Model.lstDetails.Rows[i]["CustomerMobile"].ToString()</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-dark font-weight-bold">@Model.lstDetails.Rows[i]["AssociateName"].ToString()</div>
+                                            <div class="small text-muted">ID: @Model.lstDetails.Rows[i]["AssociateId"].ToString()</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-soft-primary mb-1">Plot: @Model.lstDetails.Rows[i]["PlotNumber"].ToString()</span>
+                                            <div class="small text-muted">@Model.lstDetails.Rows[i]["SiteName"].ToString()</div>
+                                        </td>
+                                        <td class="text-center small font-weight-bold">@Model.lstDetails.Rows[i]["BookingNo"].ToString()</td>
+                                        <td class="text-right font-weight-bold">₹ @Model.lstDetails.Rows[i]["BookingAmt"].ToString()</td>
+                                        <td class="text-right text-success font-weight-bold">₹ @Model.lstDetails.Rows[i]["TotalPaidAmount"].ToString()</td>
+                                        <td class="text-center">
+                                            <span class="badge badge-soft-info mb-1">@Model.lstDetails.Rows[i]["PaymentPlan"].ToString()</span>
+                                            <div class="small text-muted">
+                                                @Model.lstDetails.Rows[i]["noOfEMI"].ToString() x ₹ @Model.lstDetails.Rows[i]["InstallmentAmt"].ToString()
+                                            </div>
+                                        </td>
+                                        <td class="text-right font-weight-bold text-danger" style="font-size: 1.1rem;">
+                                            ₹ @Model.lstDetails.Rows[i]["DueAmount"].ToString()
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="9" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-calendar-times fa-3x mb-3 d-block opacity-50"></i>
+                                            No pending installment records found for the selected criteria.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 }
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
 
-<script>
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true
+            });
+            $('#Todate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true
+            });
+        });
 
+        function onSiteChange() {
+            $("#divload").css({ 'display': '' });
+            var value = $('#SiteID').val();
+            $.ajax({
+                url: "/Masters/GetSiteDetails",
+                Type: "Get",
+                DataType: "JSON",
+                data: { SiteID: value },
+                success: function (data) {
+                    $("#divload").css({ 'display': 'none' });
+                    if (data.Result == "yes") {
+                        $("#SectorID").empty().append($('<option></option>').val(0).html('Select Sector'));
+                        $.each(data.ddlSector, function (index, Sectorcount) {
+                            $("#SectorID").append($('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+                        });
+                    }
+                }
+            });
+        }
 
-    $('#FromDate').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeYear: true,
-        changeMonth: true
-    });
-    $('#Todate').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeYear: true,
-        changeMonth: true
-    });
-    function onSiteChange() {
-        $("#divload").css({ 'display': '' });
-        var value = $('#SiteID').val();
-        var values = $('#SectorID').val();
-        var tr = [];
-        $.ajax({
-            url: "/Masters/GetSiteDetails",
-            Type: "Get",
-            DataType: "JSON",
-            data: { SiteID: value },
-            success: function (data) {
-                $("#divload").css({ 'display': 'none' });
-                var j = 1;
-                if (data.Result == "yes") {
-
-                    $("#SectorID").html(""); // clear before appending new list
-                    $("#SectorID").empty();
-                    $("#SectorID").append(
-                        $('<option></option>').val(0).html('Select Sector'));
-                    $.each(data.ddlSector, function (index, Sectorcount) {
-                        $("#SectorID").append(
-                            $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
-
+        function onSectorChange() {
+            $("#divload").css({ 'display': '' });
+            var siteID = $('#SiteID').val();
+            var sectorID = $('#SectorID').val();
+            $.ajax({
+                url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+                data: { 'SiteID': siteID, 'sectorID': sectorID },
+                success: function (data) {
+                    $("#divload").css({ 'display': 'none' });
+                    $("#BlockID").empty().append($('<option></option>').val(0).html('Select Block'));
+                    $.each(data.lstBlock, function (index, BlockCount) {
+                        $("#BlockID").append($('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
                     });
                 }
-                else {
-                    $("#SectorID").empty();
+            });
+        }
+    </script>
+}
 
-                }
-            }
-
-        });
-
-    }
-
-    function onSectorChange() {
-
-        $("#divload").css({ 'display': '' });
-        var siteID = $('#SiteID').val();
-        var sectorID = $('#SectorID').val();
-        $.ajax({
-            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
-            data: { 'SiteID': siteID, 'sectorID': sectorID },
-            success: function (data) {
-                $("#divload").css({ 'display': 'none' });
-                $("#BlockID").html(""); // clear before appending new list
-                $("#BlockID").empty();
-                $("#BlockID").append(
-                    $('<option></option>').val(0).html('Select Block'));
-                $.each(data.lstBlock, function (index, BlockCount) {
-                    $("#BlockID").append(
-                        $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
-                });
-
-            }
-
-        });
-    }
-</script>

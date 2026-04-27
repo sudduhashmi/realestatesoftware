@@ -7,104 +7,95 @@
 
 @using (Html.BeginForm("HoldPlot", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-            <!-- Page-Title -->
-            <div class="page-title-box">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <h4 class="page-title"> Hold Plot</h4>
-                    </div>
-                    
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Hold Plot Management</h4>
                 </div>
-                <!-- end row -->
             </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    Select Site <span style="color: red">*</span>
-                    @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                </div>
-                <div class="col-sm-4">
-                    Select Sector <span style="color: red">*</span>
-                    @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                </div>
-                <div class="col-sm-4">
-                    Select Block <span style="color: red">*</span>
-                    @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                </div>
+        </div>
 
-            </div>
-
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Plot Number <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Plot Number", @onchange = "return CheckPlotStatus();", @style = "text-transform:uppercase" })
-                        @Html.HiddenFor(m => m.PlotID)
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Plot Selection Card -->
+                <div class="wizard-card animate-up">
+                    <div class="card-header-premium">
+                        <i class="fas fa-search-location mr-2"></i> Select Plot to Hold
+                    </div>
+                    <div class="p-4">
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Site <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Sector <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Block <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Plot Number <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Enter Plot No", @onchange = "return CheckPlotStatus();", @style = "text-transform:uppercase; height: 45px;" })
+                                @Html.HiddenFor(m => m.PlotID)
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Amount <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "Amount", onkeypress = "return isNumberOrDecimal(event);" })
-
+                <!-- Hold Details Card -->
+                <div class="wizard-card animate-up mt-4">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-clock mr-2"></i> Hold Duration & Customer Information
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Hold From Date <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.HoldFrom, new { @class = "form-control", @Placeholder = "Select Hold From Date", @readonly = "readonly", @onchange = "return SelectDate();" })
-                    </div>
-                </div>
-
-            </div>
-            <div class="row">
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Hold To Date<span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.HoldTo, new { @class = "form-control", @Placeholder = "Select Hold To Date", @readonly = "readonly", @onchange = "return  CheckDate() ;" })
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Name <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @Placeholder = "Name" })
-
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Mobile <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @Placeholder = "Mobile", onkeypress = "return isNumberOrDecimal(event);", @maxlength = "10" })
-
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div class="row">
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        Remark
-                        @Html.TextAreaFor(m => m.Remark, new { @class = "form-control", @Placeholder = "Remark" })
-
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-
-                        <input class="btn btn-success pull-right" type="submit" onclick="return validateform();" value="Save" id="btnSave" name="Save" />
-                        <br />
-                        <p style="color:red">@TempData["PlotHold"]</p>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold Amount <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "0.00", onkeypress = "return isNumberOrDecimal(event);", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold From Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.HoldFrom, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @onchange = "return SelectDate();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold To Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.HoldTo, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @onchange = "return CheckDate();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Customer Name <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @Placeholder = "Enter Full Name", @style="height: 45px;" })
+                            </div>
+                        </div>
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Mobile Number <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @Placeholder = "10 Digit Mobile", onkeypress = "return isNumberOrDecimal(event);", @maxlength = "10", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-dark">Internal Remark</label>
+                                @Html.TextBoxFor(m => m.Remark, new { @class = "form-control", @Placeholder = "Enter any notes...", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3 text-right">
+                                <button type="submit" onclick="return validateform();" class="btn btn-success btn-block shadow-sm" style="height: 45px;" id="btnSave" name="Save" value="Save">
+                                    <i class="fas fa-lock mr-2"></i> Confirm Hold Plot
+                                </button>
+                            </div>
+                        </div>
+                        @if (TempData["PlotHold"] != null)
+                        {
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="alert alert-soft-danger border-0">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i> @TempData["PlotHold"]
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

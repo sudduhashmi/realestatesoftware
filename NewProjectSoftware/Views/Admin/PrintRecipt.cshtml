@@ -5,165 +5,148 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
+<style>
+    .table-responsive {
+        overflow-x: auto !important;
+        width: 100% !important;
+        display: block !important;
+    }
+    /* DataTables specific override */
+    .dataTables_wrapper {
+        width: 100% !important;
+        overflow-x: auto !important;
+    }
+</style>
+
 @using (Html.BeginForm("PrintRecipt", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
 
-    <div class="wrapper">
-        <div class="container-fluid">
-
-            <div class="card-block">
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Print Reciept</h4>
-                        </div>
-                       
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Receipt Printing Hub</h4>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Customer ID
-                                    @Html.TextBoxFor(m => m.CustomerID, new { @class = "form-control", @Placeholder = "Customer ID" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Associate ID
-                                    @Html.TextBoxFor(m => m.AssociateID, new { @class = "form-control", @Placeholder = "Associate ID" })
-                                </div>
-                            </div>
+            </div>
+        </div>
 
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    From Date
-                                    @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "From Date", @readonly = "readonly" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    To Date
-                                    @Html.TextBoxFor(m => m.ToDate, new { @class = "form-control", @Placeholder = "To Date", @readonly = "readonly" })
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Site <span style="color: red">*</span>
-                                    @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Sector <span style="color: red">*</span>
-                                    @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Select Block <span style="color: red">*</span>
-                                    @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Plot Number
-                                    @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Search by Plot Number" })
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    Booking Number
-                                    @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Search by Booking Number" })
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <br />
-                                    <input class="btn btn-success pull-left" type="submit" value="Search" id="btnSearch" name="Search" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="dt-responsive table-responsive">
-                            <table id="example23" class="table table-striped table-bordered nowrap">
-                                <thead>
-                                    <tr>
-
-                                        <th>S No.</th>
-                                        <th>Customer ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Associate ID</th>
-                                        <th>Allotment Date</th>
-                                        <th>Amount</th>
-                                        <th>Booking Number</th>
-                                        <th>Plot</th>
-                                        <th>Mode</th>
-                                        <th>Action</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null)
-                                    {
-                                        if (Model.lstPlot != null)
-                                        {
-                                            int i = 1;
-                                            foreach (var Item in Model.lstPlot)
-                                            {
-                                                <tr class="text-left">
-
-                                                    <td>@i</td>
-                                                    <td>@Item.CustomerID</td>
-                                                    <td>@Item.CustomerName</td>
-                                                    <td>@Item.AssociateID</td>
-                                                    <td>@Item.PaymentDate</td>
-                                                    <td>@Item.PaidAmount</td>
-                                                    <td>@Item.BookingNumber</td>
-                                                    <td>@Item.PlotNumber</td>
-                                                    <td>@Item.PaymentMode</td>
-                                                    <td>
-                                                        @*<a href="/Reports/PrintAllotment?PK_BookingId=@Item.PK_BookingId" class="btn btn-primary btn-sm" type="submit" name="Print" >Print</a>*@
-                                                        <a href="/Admin/PrintAllotment?id=@Item.EncryptKey" class="btn btn-success btn-sm" target="_blank">Print</a>
-                                                    </td>
-                                                </tr>
-                                                i++;
-                                            }
-                                        }
-                                    }
-
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-
-                                        <th>S No.</th>
-                                        <th>Customer ID</th>
-                                        <th>Customer Name</th>
-                                        <th>Associate ID</th>
-                                        <th>Allotment Date</th>
-                                        <th>Amount</th>
-                                        <th>Booking Number</th>
-                                        <th>Plot</th>
-                                        <th>Mode</th>
-                                        <th>Action</th>
-
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Search Allotments to Print
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Customer ID</label>
+                        @Html.TextBoxFor(m => m.CustomerID, new { @class = "form-control", @Placeholder = "Enter Customer ID", @style="height: 45px;" })
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Associate ID</label>
+                        @Html.TextBoxFor(m => m.AssociateID, new { @class = "form-control", @Placeholder = "Enter Associate ID", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">From Date</label>
+                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">To Date</label>
+                        @Html.TextBoxFor(m => m.ToDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 45px;" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot Number</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Plot Number", @style="height: 45px;" })
+                    </div>
+                </div>
+                <div class="row align-items-end mt-2">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Booking Number</label>
+                        @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Booking No", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block shadow-sm" style="height: 45px;" id="btnSearch" name="Search" value="Search">
+                            <i class="fas fa-search mr-1"></i> Filter Records
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-print mr-2"></i> Allotment Receipts
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>S No.</th>
+                                <th>Customer Details</th>
+                                <th>Associate Details</th>
+                                <th>Allotment Date</th>
+                                <th>Amount Paid</th>
+                                <th>Booking Info</th>
+                                <th>Payment Mode</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstPlot != null)
+                            {
+                                int i = 1;
+                                foreach (var Item in Model.lstPlot)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Item.CustomerName</div>
+                                            <div class="small text-muted">ID: @Item.CustomerID</div>
+                                        </td>
+                                        <td>
+                                            <div class="small font-weight-bold">@Item.AssociateID</div>
+                                        </td>
+                                        <td><i class="fas fa-calendar-alt mr-1 small text-primary"></i> @Item.PaymentDate</td>
+                                        <td class="font-weight-bold text-success">@Item.PaidAmount</td>
+                                        <td>
+                                            <div class="small">No: <span class="font-weight-bold">@Item.BookingNumber</span></div>
+                                            <div><span class="badge badge-soft-info">Plot: @Item.PlotNumber</span></div>
+                                        </td>
+                                        <td><span class="badge badge-light border">@Item.PaymentMode</span></td>
+                                        <td class="text-center">
+                                            <a href="/Admin/PrintAllotment?id=@Item.EncryptKey" class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-sm" target="_blank">
+                                                <i class="fas fa-file-invoice mr-1"></i> Print
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 }
+
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">

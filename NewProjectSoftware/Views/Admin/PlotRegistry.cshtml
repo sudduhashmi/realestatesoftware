@@ -7,213 +7,122 @@
 
 
 @using (Html.BeginForm("PlotRegistry", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
-{<div class="wrapper">
-        <div class="container-fluid">
-            <!-- Page-Title -->
-            <div class="page-title-box">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <h4 class="page-title">Plot Registry</h4>
-                    </div>
-                 
+{    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Registry Management</h4>
                 </div>
-                <!-- end row -->
             </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="form-group">
-                        Select Site <span style="color: red">*</span>
-                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        Select Sector <span style="color: red">*</span>
-                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-group">
-                        Select Block <span style="color: red">*</span>
-                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                    </div>
-                </div>
+        </div>
 
-                <div class="col-md-2">
-                    <div class="form-group">
-                        Plot Number <span style="color: red">*</span>
-                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Plot Number" })
+        <!-- Search Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Find Plot for Registry
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Site <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Sector <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Block <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot Number <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Plot Number", @style="height: 45px;" })
                         @Html.HiddenFor(m => m.PlotID)
                     </div>
-                </div>
-
-                <div class="col-md-2">
-                    <br />
-                    <div class="form-group">
-                        <input type="submit" name="GetDetails" value="Search" id="GetDetails" class="btn btn-success" onclick="return GetDetails(); " />
-                        <p style="color:red">@TempData["PlotRegistry"]</p>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" name="GetDetails" value="Search" id="GetDetails" class="btn btn-primary btn-block shadow-sm" style="height: 45px;" onclick="return GetDetails();">
+                            <i class="fas fa-search mr-1"></i> Search
+                        </button>
                     </div>
                 </div>
-            </div>
-
-
-            @if (Model != null)
-            {
-
-                if (Model.AssociateLoginID != null)
+                @if (TempData["PlotRegistry"] != null)
                 {
-                    <div class="row" id="Details1">
-                        <div class="col-md-12 col-sm-12 col-xs-12">
-                            <div class="x_panel">
-                                <div class="x_title">
-                                    <h2>Plot Details @*<small>List Of Sites</small>*@</h2>
-                                    <ul class="nav navbar-right panel_toolbox">
-                                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-                                    </ul>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="row ">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Associate ID :</b></label>
-                                            <input type="text" class="form-control" value="@Model.AssociateLoginID" disabled="disabled" />
+                    <div class="alert alert-soft-danger border-0 mb-0 mt-2">
+                        <i class="fas fa-exclamation-circle mr-2"></i> @TempData["PlotRegistry"]
+                    </div>
+                }
+            </div>
+        </div>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Associate Name :</b></label>
-                                            <input type="text" class="form-control" value="@Model.AssociateName" disabled="disabled" />
+        @if (Model != null && Model.AssociateLoginID != null)
+        {
+            <!-- Registry Details Card -->
+            <div class="wizard-card animate-up mt-4" id="Details1">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-file-contract mr-2"></i> Allotment & Registry Information
+                </div>
+                <div class="p-4">
+                    <!-- Summary Info -->
+                    <div class="row">
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Associate Details</label>
+                            <div class="font-weight-bold text-dark">@Model.AssociateName</div>
+                            <div class="text-info small">ID: @Model.AssociateLoginID</div>
+                        </div>
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Customer Details</label>
+                            <div class="font-weight-bold text-dark">@Model.CustomerName</div>
+                            <div class="text-primary small">ID: @Model.CustomerLoginID</div>
+                        </div>
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Plot Stats</label>
+                            <div class="small">Rate: <span class="font-weight-bold">@Model.PlotRate</span></div>
+                            <div class="small">Area: <span class="font-weight-bold">@Model.PlotArea</span></div>
+                            <div class="small">Total: <span class="font-weight-bold text-success">@Model.PlotAmount</span></div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="small text-muted font-weight-bold text-uppercase">Financials</label>
+                            <div class="small">Paid: <span class="font-weight-bold text-primary">@Model.PaidAmount</span></div>
+                            <div class="small">Balance: <span class="font-weight-bold text-danger">@Model.Balance</span></div>
+                            <div><span class="badge badge-soft-info">Plan: @Model.PlanName</span></div>
+                        </div>
+                    </div>
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b> Customer ID :</b></label>
-                                            <input type="text" class="form-control" value="@Model.CustomerLoginID" disabled="disabled" />
+                    <hr class="my-4 border-dashed" />
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label> <b>Customer Name :</b></label>
-                                            <input type="text" class="form-control" value="@Model.CustomerName" disabled="disabled" />
+                    <!-- Registry Form -->
+                    <div class="bg-light p-4 rounded-lg border border-primary-soft">
+                        <h6 class="font-weight-bold text-primary mb-4"><i class="fas fa-pen-nib mr-2"></i> Registry Submission Details</h6>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label class="font-weight-bold text-dark">Khasra No <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.KhadraNo, new { @class = "form-control", @Placeholder = "Enter Khasra No", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="font-weight-bold text-dark">Registree No <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.RegistreeNo, new { @class = "form-control", @Placeholder = "Enter Registree No", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="font-weight-bold text-dark">Registree Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.RegistrationDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly="readonly", @style="height: 45px;" })
+                            </div>
+                        </div>
 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Plot Rate :</b></label>
-                                            <input type="text" class="form-control" value="@Model.PlotRate" disabled="disabled" />
-
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Plot Area :</b></label>
-                                            <input type="text" class="form-control" value="@Model.PlotArea" disabled="disabled" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Actual Plot Amount :</b></label>
-                                            <input type="text" class="form-control" value="@Model.PlotAmount" disabled="disabled" />
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Discount :</b></label>
-                                            <input type="text" class="form-control" value="@Model.Discount" disabled="disabled" />
-                                            @Html.HiddenFor(m => m.PK_BookingId)
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Booking Amount :</b></label>
-                                            <input type="text" class="form-control" value="@Model.BookingAmount" disabled="disabled" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Booking Date :</b></label>
-                                            <input type="text" class="form-control" value="@Model.BookingDate" disabled="disabled" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Paid Amount:</b></label>
-                                            <input type="text" class="form-control" value="@Model.PaidAmount" disabled="disabled" />
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Payment Plan :</b></label>
-                                            <input type="text" class="form-control" value="@Model.PlanName" disabled="disabled" />
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="row">
-
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            <label><b>Balance</b></label>
-                                            <input type="text" class="form-control" value="@Model.Balance" disabled="disabled" />
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            Khasra No<span style="color: red">*</span>
-                                            @Html.TextBoxFor(m => m.KhadraNo, new { @class = "form-control", @Placeholder = "Khasra No" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            Registree No<span style="color: red">*</span>
-                                            @Html.TextBoxFor(m => m.RegistreeNo, new { @class = "form-control", @Placeholder = "Registree No" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            Registree Date<span style="color: red">*</span>
-                                            @Html.TextBoxFor(m => m.RegistrationDate, new { @class = "form-control", @Placeholder = "select Registree Date" })
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                                <div class="row ">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="submit" name="SaveRegistry" value="Save" id="SaveRegistry" class="btn btn-success" onclick="return validateform();" />
-                                            <p style="color:red">@TempData["PlotRegistry"]</p>
-                                            @*   <input type="submit" name="SaveAndPrint" value="Save And Print" id="SaveAndPrint" class="btn btn-primary" onclick="return validateform();" formtarget="_blank" />*@
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="row mt-4">
+                            <div class="col-12 text-center">
+                                @Html.HiddenFor(m => m.PK_BookingId)
+                                <button type="submit" name="SaveRegistry" value="Save" id="SaveRegistry" class="btn btn-success btn-lg px-5 shadow-sm" onclick="return validateform();">
+                                    <i class="fas fa-save mr-2"></i> Complete Registry Process
+                                </button>
                             </div>
                         </div>
                     </div>
-                }
-
-            }
-
-
-        </div>
+                </div>
+            </div>
+        }
     </div>
 
 }

@@ -4,111 +4,95 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-@using (Html.BeginForm("CreditOtherIncome", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
-{
-    <div class="wrapper">
-        <div class="container-fluid">
-            <div class="page-title-box">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <h4 class="page-title">Credit Other Income</h4>
+<div class="container-fluid">
+    <!-- Page-Title -->
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Credit Other Income</h4>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("CreditOtherIncome", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+    {
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-hand-holding-usd mr-2"></i> Deposit Miscellaneous Income
+            </div>
+            <div class="p-4">
+                @if (TempData["CreditOtherIncome"] != null)
+                {
+                    <div class="alert alert-soft-info border-0 mb-4">
+                        <i class="fas fa-info-circle mr-2"></i> @TempData["CreditOtherIncome"]
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <label class="font-weight-bold text-dark mb-0">Associate ID <span class="text-danger">*</span></label>
+                            <span id="txtMemberName" class="font-weight-bold text-primary small"></span>
+                        </div>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter Associate ID", @onchange = "return getMemberDetails();", @style = "height: 48px;" })
+                        @Html.HiddenFor(m => m.Fk_UserId)
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Amount <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "0.00", @onkeypress = "return isNumberOrDecimal(event);", @style = "height: 48px;" })
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Date <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @style = "height: 48px;" })
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <h6 style="color:red">@TempData["CreditOtherIncome"]</h6>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        Associate ID <span style="color: red">*</span>
-                                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Associate ID", @onchange="return getMemberDetails();" })
-                                        @Html.HiddenFor(m=>m.Fk_UserId)
-                                        <span id="txtMemberName" style="color:blue"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        Amount <span style="color: red">*</span>
-                                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "Amount", @onkeypress="return isNumberOrDecimal(event);" })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        Date <span style="color: red">*</span>
-                                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "Date", @readonly="readonly" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        Remark
-                                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control", @Placeholder = "Remark" })
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <br />
-                                    <input type="submit" name="Save" value="Credit Income" class="btn btn-success" onclick="return validate();" />
-                                </div>
-                            </div>
-                        </div>
+
+                <div class="row align-items-end">
+                    <div class="col-md-8 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Remark / Narration</label>
+                        @Html.TextBoxFor(m => m.Particular, new { @class = "form-control", @Placeholder = "Enter any specific details...", @style = "height: 48px;" })
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="submit" name="Save" value="Credit Income" class="btn btn-success btn-block shadow-sm font-weight-bold" style="height: 48px;" onclick="return validate();">
+                            <i class="fas fa-check-circle mr-2"></i> Credit Income Now
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
 
-<script src="../../Scripts/jquery-1.10.2.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
-
-<script>
-    $('#FromDate').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeYear: true,
-        changeMonth: true
-    });
-
-    function getMemberDetails() {
-        var loginId = $('#LoginId').val();
-        $.ajax({
-            url: '/Home/GetSponserDetails', type: 'post', dataType: 'json',
-            data: { 'ReferBy': loginId },
-            success: function (data) {
-                if (data.Result == 'Yes') {
-                    $('#txtMemberName').text(data.DisplayName);
-                } else {
-                    alert(data.Result);
-                    $('#LoginId').val('');
-                    $('#txtMemberName').text('');
-                }
-            }
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true,
+                maxDate: 0
+            });
         });
-    }
 
-    function isNumberOrDecimal(evt) {
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) return false;
-        return true;
-    }
-
-    function validate() {
-        if ($('#LoginId').val() == '') {
-            alert('Please enter Associate ID');
-            return false;
+        function validate() {
+            if ($('#LoginId').val() == '') {
+                alert('Please enter Associate ID');
+                return false;
+            }
+            if ($('#Amount').val() == '' || $('#Amount').val() == '0') {
+                alert('Please enter Amount');
+                return false;
+            }
+            if ($('#FromDate').val() == '') {
+                alert('Please select Date');
+                return false;
+            }
+            return true;
         }
-        if ($('#Amount').val() == '' || $('#Amount').val() == '0') {
-            alert('Please enter Amount');
-            return false;
-        }
-        if ($('#FromDate').val() == '') {
-            alert('Please select Date');
-            return false;
-        }
-        return true;
-    }
-</script>
+    </script>
+}

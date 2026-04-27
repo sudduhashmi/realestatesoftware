@@ -11,8 +11,7 @@ namespace RealEstateRegalSpace.Controllers
     {
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            HttpSessionStateBase session = filterContext.HttpContext.Session;
-            if (session["Pk_AdminId"] == null)
+            if (filterContext.HttpContext.Session == null || filterContext.HttpContext.Session["Pk_AdminId"] == null)
             {
                 filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary(
                      new { action = "Login", Controller = "Home" }));

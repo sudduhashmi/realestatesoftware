@@ -1064,6 +1064,15 @@ namespace RealEstateRegalSpace.Controllers
                     obj.HeightFeet = r["HeightFeet"].ToString();
                     obj.HeightInch = (r["HeightInch"].ToString());
                     obj.PlotArea = (r["PlotArea"].ToString());
+                    
+                    if (ds.Tables[0].Columns.Contains("FK_UnitID"))
+                    {
+                        obj.UnitID = r["FK_UnitID"].ToString();
+                        obj.UnitName = r["FK_UnitID"].ToString() == "2" ? "Sq/Mt" : "Sq/Ft";
+                    }
+                    else {
+                        obj.UnitName = obj.PlotArea.ToLower().Contains("mt") ? "Sq/Mt" : "Sq/Ft";
+                    }
 
                     lst.Add(obj);
                 }

@@ -1,136 +1,125 @@
 @model RealEstateRegalSpace.Models.Reports
 
 @{
-    /**/
-
-    ViewBag.Title = "PlotCountReport";
+    ViewBag.Title = "Plot Count Report";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
 @using (Html.BeginForm("PlotCountReport", "Admin", FormMethod.Post, new { @id = "form1" }))
 {
-
-    <div class="wrapper">
-        <div class="container-fluid">
-
-            <div class="card-block">
-
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Plot Count Report</h4>
-                        </div>
-                       
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Inventory Summary</h4>
                 </div>
+            </div>
+        </div>
 
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                Side Name
-                                @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control" })
-                            </div>
-
-                            <div class="col-sm-3">
-                                <br />
-                                <input type="submit" value="Get Details" class="btn btn-primary" />
-                            </div>
-                        </div>
-                        <div class="dt-responsive table-responsive">
-                            <table id="example23" class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>Sr No</th>
-
-                                        <th>Side Name</th>
-                                        <th>Total Plots</th>
-                                        <th>Total Area</th>
-                                        <th>Booked Plots</th>
-                                        <th>Booked Area</th>
-                                        <th>Registered Plots</th>
-                                        <th>Registered Area</th>
-                                        <th>Alloted Plots</th>
-                                        <th>Alloted Area</th>
-                                        <th>Hold Plots</th>
-                                        <th>Hold Area</th>
-                                        <th>Available Plots</th>
-                                        <th>Available Area</th>
-
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null)
-                                    {
-                                        if (Model.lstDetails != null)
-                                        {
-                                            int j = 1;
-                                            if (Model.lstDetails.Rows.Count > 0)
-                                            {
-                                                for (int i = 0; i <= Model.lstDetails.Rows.Count - 1; i++)
-                                                {
-                                                    <tr>
-                                                        <td>@j</td>
-
-                                                        <td>@Model.lstDetails.Rows[i]["SiteName"].ToString()</td>
-
-                                                        <td>@Model.lstDetails.Rows[i]["TotalPlots"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["TotalArea"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["BookedPlots"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["BookedArea"].ToString()</td>
-                                                        <td>
-                                                            @Model.lstDetails.Rows[i]["RegisteredPlots"].ToString()
-
-                                                        </td>
-                                                        <td>@Model.lstDetails.Rows[i]["RegistryArea"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["AllotedPlots"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["AllotedArea"].ToString()</td>
-                                                        <td>
-
-                                                            @Model.lstDetails.Rows[i]["HoldPlots"].ToString()
-                                                        </td>
-                                                        <td>@Model.lstDetails.Rows[i]["HoldArea"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["AvailablePlots"].ToString()</td>
-                                                        <td>@Model.lstDetails.Rows[i]["AvailableArea"].ToString()</td>
-                                                    </tr>
-                                                    j++;
-                                                }
-
-                                            }
-                                        }
-                                    }
-
-                                </tbody>
-
-                            </table>
-                        </div>
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-map-marked-alt mr-2"></i> Inventory Filters
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-4 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Site / Project</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @style = "height: 48px;" })
                     </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px; white-space: nowrap;">
+                            <i class="fas fa-search mr-2"></i> Get Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-table mr-2"></i> Project-wise Plot Count & Area Details
+            </div>
+            <div class="p-0">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-center text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th rowspan="2" class="align-middle">Sr No</th>
+                                <th rowspan="2" class="align-middle text-left">Site Name</th>
+                                <th colspan="2" class="bg-soft-dark border-bottom-0">Total</th>
+                                <th colspan="2" class="bg-soft-warning border-bottom-0 text-warning">Booked</th>
+                                <th colspan="2" class="bg-soft-success border-bottom-0 text-success">Registered</th>
+                                <th colspan="2" class="bg-soft-info border-bottom-0 text-info">Allotted</th>
+                                <th colspan="2" class="bg-soft-danger border-bottom-0 text-danger">Hold</th>
+                                <th colspan="2" class="bg-soft-primary border-bottom-0 text-primary">Available</th>
+                            </tr>
+                            <tr class="bg-light small">
+                                <th>Plots</th><th>Area</th>
+                                <th>Plots</th><th>Area</th>
+                                <th>Plots</th><th>Area</th>
+                                <th>Plots</th><th>Area</th>
+                                <th>Plots</th><th>Area</th>
+                                <th>Plots</th><th>Area</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstDetails.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-muted">@(i + 1)</td>
+                                        <td class="text-left font-weight-bold text-dark">@Model.lstDetails.Rows[i]["SiteName"].ToString()</td>
+                                        
+                                        <td class="font-weight-bold">@Model.lstDetails.Rows[i]["TotalPlots"].ToString()</td>
+                                        <td class="small">@Model.lstDetails.Rows[i]["TotalArea"].ToString()</td>
+                                        
+                                        <td class="text-warning font-weight-bold">@Model.lstDetails.Rows[i]["BookedPlots"].ToString()</td>
+                                        <td class="small text-warning">@Model.lstDetails.Rows[i]["BookedArea"].ToString()</td>
+                                        
+                                        <td class="text-success font-weight-bold">@Model.lstDetails.Rows[i]["RegisteredPlots"].ToString()</td>
+                                        <td class="small text-success">@Model.lstDetails.Rows[i]["RegistryArea"].ToString()</td>
+                                        
+                                        <td class="text-info font-weight-bold">@Model.lstDetails.Rows[i]["AllotedPlots"].ToString()</td>
+                                        <td class="small text-info">@Model.lstDetails.Rows[i]["AllotedArea"].ToString()</td>
+                                        
+                                        <td class="text-danger font-weight-bold">@Model.lstDetails.Rows[i]["HoldPlots"].ToString()</td>
+                                        <td class="small text-danger">@Model.lstDetails.Rows[i]["HoldArea"].ToString()</td>
+                                        
+                                        <td class="text-primary font-weight-bold">@Model.lstDetails.Rows[i]["AvailablePlots"].ToString()</td>
+                                        <td class="small text-primary">@Model.lstDetails.Rows[i]["AvailableArea"].ToString()</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="14" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-layer-group fa-3x mb-3 d-block opacity-50"></i>
+                                            Select a site to view the plot inventory report.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 }
-<script src="../../assets/js/jquery.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
-<script>
+@section Script {
+    <script>
+        $(document).ready(function () {
+            // Optional: Initialize tooltips or specific table sorting here if needed
+        });
+    </script>
+}
 
-    $('#FromDate').datepicker({
-        dateFormat: 'dd/mm/yy',
-        changeYear: true,
-        maxDate: 0,
-        changeMonth: true
-    });
-    $('#Todate').datepicker({
-        dateFormat: 'dd/mm/yy',
-        maxDate: 0,
-        changeYear: true,
-        changeMonth: true
-    });
-</script>
 

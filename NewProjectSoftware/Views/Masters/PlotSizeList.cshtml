@@ -32,12 +32,13 @@
                                     <thead>
                                         <tr>
                                             <th>S No.</th>
-                                            <th>Width Feet</th>
+                                            <th>Width (Ft/Mt)</th>
                                             <th>Width Inch</th>
-                                            <th>Height Feet</th>
+                                            <th>Height (Ft/Mt)</th>
                                             <th>Height Inch</th>
                                             <th>Plot Area</th>
-                                            <th></th>
+                                            <th>Unit</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -51,13 +52,35 @@
                                                     <tr class="text-left">
                                                         <td>@i</td>
                                                         <td>@Item.WidthFeet</td>
-                                                        <td>@Item.WidthInch</td>
+                                                        <td>@(Item.UnitID == "2" ? "-" : Item.WidthInch)</td>
                                                         <td>@Item.HeightFeet</td>
-                                                        <td>@Item.HeightInch</td>
+                                                        <td>@(Item.UnitID == "2" ? "-" : Item.HeightInch)</td>
                                                         <td>@Item.PlotArea</td>
                                                         <td>
-                                                            <a href="/Masters/PlotSizeMaster?plotSizeID=@Item.EncryptKey" class="btn btn-info btn-sm">Edit</a>
-                                                            <a href="/Masters/DeletePlotSize?id=@Item.PlotSizeID" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you wish to delete this Plot Size?');">Delete</a>
+                                                            @{
+                                                                string displayUnit = "Sq/Ft"; // Default
+                                                                string areaText = (Item.PlotArea ?? "").ToLower();
+                                                                
+                                                                if (Item.UnitID == "2" || areaText.Contains("mt") || areaText.Contains("meter"))
+                                                                {
+                                                                    displayUnit = "Sq/Mt";
+                                                                }
+                                                                else if (Item.UnitID == "1" || areaText.Contains("ft") || areaText.Contains("feet"))
+                                                                {
+                                                                    displayUnit = "Sq/Ft";
+                                                                }
+                                                            }
+                                                            <span class="badge @(displayUnit == "Sq/Mt" ? "badge-success" : "badge-primary")" style="font-size: 11px; padding: 5px 10px;">
+                                                                @displayUnit
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/Masters/PlotSizeMaster?plotSizeID=@Item.EncryptKey" class="btn btn-info btn-sm">
+                                                                <i class="fas fa-edit"></i> Edit
+                                                            </a>
+                                                            <a href="/Masters/DeletePlotSize?id=@Item.PlotSizeID" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you wish to delete this Plot Size?');">
+                                                                <i class="fas fa-trash"></i> Delete
+                                                            </a>
                                                         </td>
 
                                                     </tr>

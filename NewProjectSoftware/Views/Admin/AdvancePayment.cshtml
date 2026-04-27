@@ -7,258 +7,188 @@
 
 @using (Html.BeginForm("AdvancePayment", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-            <div class="card-block">
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Advance Payment</h4>
-                        </div>
-                      
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Advance Payment Processing</h4>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <h6 style="color: red">
+            </div>
+        </div>
 
-                            @TempData["AdvancePayment"]
+        @if (TempData["AdvancePayment"] != null)
+        {
+            <div class="alert alert-soft-info border-0 mb-3 animate-up">
+                <i class="fas fa-info-circle mr-2"></i> @TempData["AdvancePayment"]
+            </div>
+        }
 
-                        </h6>
+        <div class="row">
+            <!-- Member Search Card -->
+            <div class="col-md-4">
+                <div class="wizard-card animate-up h-100">
+                    <div class="card-header-premium">
+                        <i class="fas fa-user-search mr-2"></i> Member Lookup
+                    </div>
+                    <div class="p-4">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-dark">Member Login ID <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @onchange = "return GetMemberName();", @Placeholder = "Enter ID", @style="height: 45px;" })
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-dark">Member Name</label>
+                            @Html.TextBoxFor(m => m.sponsorName, new { @class = "form-control bg-light", @readonly = "readonly", @style="height: 45px;" })
+                        </div>
+                        <div class="text-center mt-4 pt-2">
+                            <div class="profile-pic-container mx-auto shadow-sm border rounded-circle overflow-hidden bg-light" style="width: 120px; height: 120px;">
+                                <img src="~/assets/images/Logo.png" id="ProfilePic" class="w-100 h-100 object-fit-cover" alt="Profile" />
+                            </div>
+                            <p class="small text-muted mt-2 mb-0">Member Profile Image</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info Grid -->
+            <div class="col-md-8">
+                <div class="wizard-card animate-up h-100">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-id-card mr-2"></i> Quick Information Summary
+                    </div>
+                    <div class="p-4">
                         <div class="row">
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>LoginId</label>
-                                    @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @onchange = "return GetMemberName();" })
-
-
+                            <!-- Contact Column -->
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-primary font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-address-book mr-2"></i> Contact Details
+                                </h6>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Email Address</label>
+                                    <input type="text" id="EmailId" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Mobile Number</label>
+                                    <input type="text" id="Mobile" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-0">
+                                    <label class="small text-muted d-block mb-1">Residential Address</label>
+                                    <input type="text" id="Addres" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
                                 </div>
                             </div>
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Name</label>
-                                    @Html.TextBoxFor(m => m.sponsorName, new { @class = "form-control", @readonly = "fd" })
+                            <!-- Bank Column -->
+                            <div class="col-md-6 mb-4 border-left">
+                                <h6 class="text-success font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-university mr-2"></i> Banking Information
+                                </h6>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Account Number</label>
+                                    <input type="text" id="MemberAccNo" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Bank Name</label>
+                                    <input type="text" id="MemberBankName" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-0">
+                                    <label class="small text-muted d-block mb-1">IFSC Code</label>
+                                    <input type="text" id="IFSCCode" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-12 col-md-12">
-                                <div class="panel panel-primary" style="border-color: #0029ff;
-    margin-bottom: 20px;
-    background-color: #fff;
-    border: 2px solid #0029ff;
-    border-radius: 4px;
-    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
-    box-shadow: 0 1px 1px rgba(0,0,0,.05);">
-                                    <div class="panel-heading" style="color: #fff;
-    background-color: #0029ff;
-    border-color: #0029ff;
-    padding: 10px 15px;
-    border-bottom: 1px solid transparent;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;">
-                                        <div class="row">
-                                            <div class="col-xs-12" style="position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;">
-                                                Quick Info
-                                            </div>
-
-                                        </div>
+                            <!-- KYC Column -->
+                            <div class="col-12">
+                                <h6 class="text-warning font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-shield-alt mr-2"></i> KYC Documents
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="small text-muted d-block mb-1">Aadhar Number</label>
+                                        <input type="text" id="AdharNumber" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="table table-responsive">
-                                                <table class="display nowrap table table-hover table-striped table-bordered">
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <th>Email</th>
-                                                            <th><input type="text" id="EmailId" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Mobile</th>
-                                                            <th><input type="text" id="Mobile" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Addres</th>
-                                                            <th><input type="text" id="Addres" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-
-                                                    </tbody>
-
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="table table-responsive">
-                                                <table class="display nowrap table table-hover table-striped table-bordered">
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <th>A/C No</th>
-                                                            <th><input type="text" id="MemberAccNo" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Bank Name</th>
-                                                            <th><input type="text" id="MemberBankName" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-                                                        <tr>
-                                                            <th>IFSCCode</th>
-                                                            <th><input type="text" id="IFSCCode" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-
-                                                    </tbody>
-
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-6">
-                                            <div class="table table-responsive">
-                                                <table class="display nowrap table table-hover table-striped table-bordered">
-
-                                                    <tbody>
-                                                        <tr>
-                                                            <th>Adhar Number</th>
-                                                            <th><input type="text" id="AdharNumber" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-                                                        <tr>
-                                                            <th>Pan Number</th>
-                                                            <th><input type="text" id="PanNumber" readonly="readonly" class="form-control" style="color:blue" /></th>
-
-
-
-                                                        </tr>
-
-
-                                                    </tbody>
-
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-
-                                            <img src="~/assets/images/Logo.png" id="ProfilePic" style="width:100px" />
-                                        </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="small text-muted d-block mb-1">PAN Number</label>
+                                        <input type="text" id="PanNumber" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Amount</label>
-                                    @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @onkeypress = "return isNumberOrDecimal(event);" })
-
-
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Payment Mode</label>
-                                    @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlpaymentmode, "Value", "Text"), new { @class = "form-control", @onchange = "return getpaymentdetails();" })
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-4 col-lg col-md-4 col-sm-4 col-4">
-                                <div class="form-group">
-                                    <label>Payment Date</label>
-                                    @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @placeholder = "Transaction Date", @readonly = "readonly" })
-                                </div>
-                            </div>
-                            <div class="col-xl-8 col-lg col-md-8 col-sm-8 col-8">
-                                <div class="form-group">
-                                    <label>Description</label>
-                                    @Html.TextBoxFor(m => m.Narration, new { @class = "form-control" })
-                                    @Html.HiddenFor(m => m.PK_AdvancePaymentID)
-
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12" id="bankname" style="display: none">
-                                <div class="form-group">
-                                    <label>Bank Name</label>
-                                    @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @placeholder = "Bank Name" })
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12" id="chequeno" style="display: none">
-                                <div class="form-group">
-                                    <label>Transaction No</label>
-                                    @Html.TextBoxFor(m => m.TransactionNo, new { @class = "form-control", @placeholder = "Transaction No" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12" id="chequdate" style="display: none">
-                                <div class="form-group">
-                                    <label>Transaction Date</label>
-
-                                    @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control", @placeholder = "Transaction Date", @readonly = "readonly" })
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12" id="bankbranch" style="display: none">
-                                <div class="form-group">
-                                    <label>Bank Branch</label>
-                                    @Html.TextBoxFor(m => m.BankBranch, new { @class = "form-control", @placeholder = "Bank Branch" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xl-6 col-lg col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label>Debit To</label>
-
-                                    @Html.DropDownListFor(m => m.CreditTo, new SelectList(ViewBag.ddlBank, "Value", "Text"), new { @class = "form-control" })
-                                </div>
-                            </div>
-                            @if (Model.PK_AdvancePaymentID == null)
-                            {
-                                <input type="submit" class="btn btn-success ml-3" onclick="return validateform();" value="Advance Payment" id="btnSave" name="btnSave" style="height: 35px; margin-top: 2%;" />
-
-
-                            }
-                            else
-                            {
-
-                                <input class="btn btn-success pull-left" type="submit" onclick="return validateform();" value="Update Payment" id="btnUpdate" name="btnUpdate" style="height: 35px; margin-top: 2%;" />
-                            }
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Payment Entry Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium info">
+                <i class="fas fa-hand-holding-usd mr-2"></i> Payment Details Entry
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Amount <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @onkeypress = "return isNumberOrDecimal(event);", @Placeholder = "0.00", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Payment Mode <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlpaymentmode, "Value", "Text"), new { @class = "form-control", @onchange = "return getpaymentdetails();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Payment Date <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Debit To Bank</label>
+                        @Html.DropDownListFor(m => m.CreditTo, new SelectList(ViewBag.ddlBank, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                </div>
+
+                <!-- Conditional Bank Details -->
+                <div class="row bg-light rounded p-3 mb-3 border" id="bank_details_section" style="display:none;">
+                    <div class="col-12 mb-3">
+                        <h6 class="font-weight-bold text-info mb-0"><i class="fas fa-university mr-2"></i> Bank Transaction Info</h6>
+                    </div>
+                    <div class="col-md-3 mb-3" id="bankname" style="display: none">
+                        <label class="small font-weight-bold">Bank Name</label>
+                        @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @placeholder = "Enter Bank Name", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="chequeno" style="display: none">
+                        <label class="small font-weight-bold">Transaction/Cheque No</label>
+                        @Html.TextBoxFor(m => m.TransactionNo, new { @class = "form-control", @placeholder = "Enter Number", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="chequdate" style="display: none">
+                        <label class="small font-weight-bold">Transaction Date</label>
+                        @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="bankbranch" style="display: none">
+                        <label class="small font-weight-bold">Bank Branch</label>
+                        @Html.TextBoxFor(m => m.BankBranch, new { @class = "form-control", @placeholder = "Enter Branch", @style="height: 40px;" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <label class="font-weight-bold text-dark">Description / Narration</label>
+                        @Html.TextBoxFor(m => m.Narration, new { @class = "form-control", @Placeholder = "Enter payment description...", @style="height: 45px;" })
+                        @Html.HiddenFor(m => m.PK_AdvancePaymentID)
+                    </div>
+                    <div class="col-12 text-center">
+                        @if (Model.PK_AdvancePaymentID == null)
+                        {
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm" onclick="return validateform();" id="btnSave" name="btnSave" value="Advance Payment">
+                                <i class="fas fa-check-circle mr-2"></i> Submit Advance Payment
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" onclick="return validateform();" id="btnUpdate" name="btnUpdate" value="Update Payment">
+                                <i class="fas fa-edit mr-2"></i> Update Payment Details
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>

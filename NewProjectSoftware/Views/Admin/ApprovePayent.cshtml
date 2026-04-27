@@ -6,102 +6,110 @@
 }
 @using (Html.BeginForm("ApprovePayent", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-            <!-- Page-Title -->
-            <div class="page-title-box">
-                <div class="row align-items-center">
-                    <div class="col-sm-6">
-                        <h4 class="page-title">Approve Payment</h4>
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Payment Verification & Approval</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Find Pending Payments
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Customer Login ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter Login ID", @style="height: 45px;" })
                     </div>
-                    
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Booking No.</label>
+                        @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Enter Booking No", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Associate ID</label>
+                        @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Enter Associate ID", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block shadow-sm" style="height: 45px;">
+                            <i class="fas fa-sync-alt mr-1"></i> Get Details
+                        </button>
+                    </div>
                 </div>
-                <!-- end row -->
             </div>
-            <div class="row">
-                <div class="col-sm-3">
-                    Customer LoginId
-                    @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "LoginId" })
-                </div>
-                <div class="col-sm-3">
-                    Booking No
-                    @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Mobile No" })
-                </div>
-                <div class="col-sm-3">
-                    Associate LoginId
-                    @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Sponsor Id" })
-                </div>
+        </div>
 
-                <div class="col-sm-3">
-                    <br />
-                    <input type="submit" value="Get Details" class="btn btn-primary" />
-                </div>
-
+        <!-- Results Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-clipboard-check mr-2"></i> Pending Transactions for Approval
             </div>
-            <br />
-            <table id="basicExample" class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Associate Details</th>
-                        <th>Customer Details</th>
-                        <th>Payment Mode</th>
-                        <th>Transaction No</th>
-                        <th>Transaction Date</th>
-                        <th>Plot No</th>
-                        <th>Amount</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null)
-                    {
-                        if (Model.userList != null)
-                        {
-                            if (Model.userList.Rows.Count > 0)
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="basicExample" class="table table-hover mb-0 custom-table">
+                        <thead>
+                            <tr>
+                                <th>S No.</th>
+                                <th>Associate Details</th>
+                                <th>Customer Details</th>
+                                <th>Plot Info</th>
+                                <th>Payment Mode</th>
+                                <th>Transaction Dtl</th>
+                                <th>Amount</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.userList != null && Model.userList.Rows.Count > 0)
                             {
                                 for (int i = 0; i <= Model.userList.Rows.Count - 1; i++)
                                 {
                                     <tr>
+                                        <td>@(i + 1)</td>
                                         <td>
-                                            @Model.userList.Rows[i]["associateName"].ToString()
-                                            <br />
-                                            <label class="btn btn-warning btn-sm">@Model.userList.Rows[i]["associateId"].ToString()</label>
+                                            <div class="font-weight-bold text-dark">@Model.userList.Rows[i]["associateName"].ToString()</div>
+                                            <span class="badge badge-soft-info">ID: @Model.userList.Rows[i]["associateId"].ToString()</span>
                                         </td>
                                         <td>
-                                            @Model.userList.Rows[i]["customerName"].ToString()
-                                            <br />
-                                            <label class="btn btn-warning btn-sm">@Model.userList.Rows[i]["customerId"].ToString()</label>
+                                            <div class="font-weight-bold text-dark">@Model.userList.Rows[i]["customerName"].ToString()</div>
+                                            <span class="badge badge-soft-warning">ID: @Model.userList.Rows[i]["customerId"].ToString()</span>
                                         </td>
-                                        <td> @Model.userList.Rows[i]["PaymentMode"].ToString()</td>
-                                        <td> @Model.userList.Rows[i]["TransactionNo"].ToString()</td>
-                                        <td> @Model.userList.Rows[i]["TransactionDate"].ToString()</td>
-                                        <td> @Model.userList.Rows[i]["PlotNumber"].ToString()</td>
-
-                                        <td> @Model.userList.Rows[i]["PaidAmount"].ToString()</td>
                                         <td>
-                                            <a class="btn btn-success btn-sm" href="/Admin/ApprovePendingPayment?id=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_BookingDetailsId"].ToString())"
-                                               onclick="return confirm('Are you sure you want to approve payment?');">
-                                                Approve Payment
+                                            <span class="badge badge-light border font-weight-bold">Plot: @Model.userList.Rows[i]["PlotNumber"].ToString()</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-primary font-weight-bold"><i class="fas fa-wallet mr-1"></i> @Model.userList.Rows[i]["PaymentMode"].ToString()</span>
+                                        </td>
+                                        <td>
+                                            <div class="small">No: <span class="text-dark font-weight-bold">@Model.userList.Rows[i]["TransactionNo"].ToString()</span></div>
+                                            <div class="small text-muted"><i class="fas fa-calendar-alt mr-1"></i> @Model.userList.Rows[i]["TransactionDate"].ToString()</div>
+                                        </td>
+                                        <td>
+                                            <span class="font-weight-bold text-success h6">@Model.userList.Rows[i]["PaidAmount"].ToString()</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a class="btn btn-outline-success btn-sm rounded-pill px-3 shadow-sm" 
+                                               href="/Admin/ApprovePendingPayment?id=@RealEstateRegalSpace.Crypto.Encrypt(Model.userList.Rows[i]["PK_BookingDetailsId"].ToString())"
+                                               onclick="return confirm('Are you sure you want to approve this payment?');">
+                                                <i class="fas fa-check mr-1"></i> Approve
                                             </a>
-                                            @*<a class="btn btn-success btn-sm" href="/Admin/RejectPendingPayment?id=@RisingBrother.Crypto.Encrypt(Model.userList.Rows[i]["PK_BookingDetailsId"].ToString())"
-                                                   onclick="return confirm('Are you sure you want to reject payment?');">
-                                                    Reject Payment
-                                                </a>
-                                                <a class="btn btn-danger btn-sm" href="/Admin/DeletePayment?id=@RisingBrother.Crypto.Encrypt(Model.userList.Rows[i]["PK_BookingDetailsId"].ToString())"
-                                                   onclick="return confirm('Are you sure you want to delete payment?');">
-                                                    Delete Payment
-                                                </a>*@
                                         </td>
                                     </tr>
                                 }
-
                             }
-                        }
-                    }
-                </tbody>
-            </table>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+}
 
 }
 

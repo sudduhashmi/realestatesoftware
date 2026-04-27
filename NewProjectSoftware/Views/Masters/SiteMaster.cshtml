@@ -6,52 +6,83 @@
 
 @using (Html.BeginForm("SiteMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-            <!-- Page-Title -->
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item active">
+                <div class="step-counter">1</div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">2</div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">3</div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">4</div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">5</div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">6</div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
             <div class="page-title-box">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <h4 class="page-title"> Project Master</h4>
-                    </div>                 
+                        <h4 class="page-title">Create Project Master</h4>
+                    </div>
                 </div>
-                <!-- end row -->
             </div>
-            <div class="row">
 
+            <div class="row mt-4">
                 <div class="col-sm-6">
-                    <label class="float-label">Project Name<span style="color:red">*</span></label>
-                    @Html.TextBoxFor(m => m.SiteName, new { @class = "form-control", @Placeholder = "Project Name" })
-                    <span class="form-bar"></span>
+                    <label class="font-weight-bold">Project Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.SiteName, new { @class = "form-control", @Placeholder = "e.g. Dream City" })
                 </div>
-                @*<div class="col-sm-6">
-                        <label class="float-label">Rate<span style="color:red">*</span></label>
-                        @Html.TextBoxFor(m => m.Rate, new { @class = "form-control", @Placeholder = "Rate" })
-                        <span class="form-bar"></span>
-                    </div>*@
                 <div class="col-sm-6">
-                    <label class="float-label">Location<span style="color:red">*</span></label>
-                    @Html.TextAreaFor(m => m.Location, new { @class = "form-control", @Placeholder = "Location" })
-                    <span class="form-bar"></span>
+                    <label class="font-weight-bold">Location <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(m => m.Location, new { @class = "form-control", @Placeholder = "Full Address" })
                 </div>
             </div>
-            <br/>
-            <div class="form-group row">
-                <div class="col-md-6">
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary" href="/Masters/SiteList">
+                        <i class="fas fa-list mr-2"></i> View Project List
+                    </a>
+                </div>
+                <div class="right-actions">
                     @if (Model.SiteID == null)
                     {
-                        <input class="btn btn-success pull-left" type="submit" onclick="return validateform();" value="Save" id="btnSave" name="btnSave" />
+                        <input class="btn btn-primary btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
                     }
                     else
                     {
-                        @Html.HiddenFor(m => m.SiteID, new { @Value = @Model.SiteID })
-                        <input class="btn btn-success pull-left" type="submit" onclick="return validateform();" value="Update" id="btnUpdate" />
+                        @Html.HiddenFor(m => m.SiteID)
+                        <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Update Project" id="btnUpdate" name="btnUpdate" />
                     }
-                    <a class="btn btn-info" href="/Masters/SiteList">Back To List</a>
-                    <p style="color:red">@TempData["SiteMaster"]</p>
                 </div>
-
-
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["SiteMaster"]</p>
             </div>
         </div>
     </div>

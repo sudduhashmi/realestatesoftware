@@ -105,8 +105,8 @@ label,
 }
 
 .form-control,
-select,
-textarea {
+input.form-control,
+select.form-control {
     height: 50px !important;
     background-color: #fdfdfd !important;
     border: 1.5px solid #e2e8f0 !important;
@@ -119,8 +119,17 @@ textarea {
 }
 
 textarea.form-control {
-    height: auto !important;
+    background-color: #fdfdfd !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 12px 20px !important;
+    font-size: 0.95rem !important;
+    color: #1a202c !important;
+    transition: all 0.2s ease !important;
+    box-shadow: none !important;
     min-height: 100px !important;
+    height: auto !important;
+    resize: vertical !important;
 }
 
 .form-control:focus {
@@ -208,6 +217,40 @@ select.form-control {
     padding: 15px !important;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.02) !important;
     margin-top: 20px;
+    margin-bottom: 20px;
+    overflow-x: scroll !important;
+    /* Forced scrollbar */
+    overflow-y: hidden !important;
+    display: block !important;
+    width: 100% !important;
+    scrollbar-width: auto;
+    scrollbar-color: #004191 #f8fafc;
+}
+
+/* Custom Horizontal Scrollbar for Modern Browsers */
+.table-responsive::-webkit-scrollbar {
+    height: 14px !important;
+    /* Even thicker */
+    display: block !important;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f8fafc !important;
+    border-radius: 10px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #004191 !important;
+    /* Solid color for better visibility */
+    border-radius: 10px;
+    border: 2px solid #f8fafc;
+}
+
+.custom-table {
+    min-width: 1500px !important;
+    /* Force overflow on almost all screens */
+    width: 100% !important;
 }
 
 .table {
@@ -241,7 +284,7 @@ select.form-control {
 .dataTables_wrapper {
     padding: 20px 0 !important;
     display: block !important;
-    overflow: hidden !important;
+    /* overflow: hidden !important; */
 }
 
 .dt-buttons {
@@ -336,7 +379,7 @@ select.form-control {
     /* Changed from flex to block to keep text and asterisk on same line */
     padding-left: 15px !important;
     padding-right: 15px !important;
-    margin-bottom: 25px !important;
+    /* margin-bottom: 25px !important; */
     color: #4a5568 !important;
     font-weight: 600 !important;
     font-size: 0.88rem !important;
@@ -355,32 +398,136 @@ label span[style*="color:red"] {
 }
 
 /* Ensure all form controls have consistent spacing and alignment */
-.form-control,
-select,
-textarea {
+.form-control {
     display: block !important;
     width: 100% !important;
-    margin-top: 10px !important;
-    /* Standardized gap from text to input */
-    height: 48px !important;
-    border: 1.2px solid #cbd5e0 !important;
-    border-radius: 10px !important;
+    margin-top: 8px !important;
     background-color: #fff !important;
 }
 
-textarea.form-control {
-    min-height: 48px !important;
+input.form-control,
+select.form-control {
     height: 48px !important;
-    resize: none !important;
+    border: 1.2px solid #cbd5e0 !important;
+    border-radius: 10px !important;
 }
 
-textarea.form-control:focus {
-    height: 100px !important;
+textarea.form-control {
+    min-height: 80px !important;
+    border: 1.2px solid #cbd5e0 !important;
+    border-radius: 10px !important;
+    resize: vertical !important;
+}
+
+/* Stepper Wizard Styling */
+.stepper-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding: 20px 0;
+    position: relative;
+    max-width: 1200px;
+    /* Increased width for more steps */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.stepper-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #e2e8f0;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+
+.step-item {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 0 15px;
+}
+
+.step-counter {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+}
+
+.step-item.active .step-counter {
+    border-color: #004191;
+    background: #004191;
+    color: #fff;
+    box-shadow: 0 0 0 5px rgba(0, 65, 145, 0.15);
+}
+
+.step-item.completed .step-counter {
+    border-color: #28a745;
+    background: #28a745;
+    color: #fff;
+}
+
+.step-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.step-item.active .step-name {
+    color: #004191;
+}
+
+.wizard-card {
+    background: #fff;
+    border-radius: 20px;
+    /* padding: 35px 40px !important; */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.wizard-card-c {
+    background: #fff;
+    border-radius: 20px;
+    padding: 35px 40px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.wizard-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 10px;
+    border-top: 1px solid #edf2f7;
+    margin-top: 30px;
 }
 
 /* Fix for buttons and alignment */
 .btn {
-    margin-top: 15px !important;
+    margin-top: 0 !important;
+    /* Overriding previous margin */
 }
 
 /* Extra safety for row alignment */
@@ -395,4 +542,72 @@ textarea.form-control:focus {
 .card br,
 .row br {
     display: none !important;
+}
+
+/* Multi-Card Registration Styles */
+.card-header-premium {
+    background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%);
+    color: white;
+    padding: 15px 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.card-header-premium.secondary {
+    background: linear-gradient(135deg, #455a64 0%, #78909c 100%);
+}
+
+.profile-upload-container {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border: 2px dashed #dee2e6;
+}
+
+.profile-preview-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-placeholder {
+    width: 120px;
+    height: 120px;
+    background: #e9ecef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.h-100 {
+    height: 100% !important;
+}
+
+/* Footer & Developer Link */
+.footer {
+    background: #fff !important;
+    padding: 15px 0 !important;
+    border-top: 1px solid #edf2f7 !important;
+    color: #718096 !important;
+    font-size: 0.88rem !important;
+    width: 100% !important;
+}
+
+.developer-link {
+    color: #004191 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: all 0.3s ease !important;
+}
+
+.developer-link:hover {
+    color: #3949ab !important;
+    text-decoration: underline !important;
 }

@@ -72,6 +72,16 @@
         font-weight: 500;
         margin-top: 15px;
     }
+    .card {
+    background: var(--card-bg);
+    border: none !important;
+    border-radius: var(--border-radius) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important;
+    padding: 30px !important;
+    margin-bottom: 30px !important;
+    transition: var(--transition);
+    height: 100%;
+}
 </style>
 
 <div class="wrapper">
@@ -94,7 +104,7 @@
                 </div>
             </div>
         </div>
-        <div class="page-body">
+        <div class="page-body" style="margin-top: 25px;">
             @if (Session["Pk_AdminId"].ToString() == "11")
             {
 
@@ -421,10 +431,25 @@
                                                     int count = 0;
                                                     foreach (System.Data.DataRow row in recent.Rows) {
                                                         if (count >= 5) { break; }
+                                                        string cName = "N/A";
+                                                        if (recent.Columns.Contains("CustomerName")) { cName = row["CustomerName"].ToString(); }
+                                                        else if (recent.Columns.Contains("Name")) { cName = row["Name"].ToString(); }
+                                                        else if (recent.Columns.Contains("FullName")) { cName = row["FullName"].ToString(); }
+                                                        else if (recent.Columns.Contains("UserName")) { cName = row["UserName"].ToString(); }
+
+                                                        string pNo = "N/A";
+                                                        if (recent.Columns.Contains("PlotNumber")) { pNo = row["PlotNumber"].ToString(); }
+                                                        else if (recent.Columns.Contains("PlotNo")) { pNo = row["PlotNo"].ToString(); }
+                                                        else if (recent.Columns.Contains("PlotInfo")) { pNo = row["PlotInfo"].ToString(); }
+
+                                                        string amt = "0";
+                                                        if (recent.Columns.Contains("PaidAmount")) { amt = row["PaidAmount"].ToString(); }
+                                                        else if (recent.Columns.Contains("Amount")) { amt = row["Amount"].ToString(); }
+                                                        
                                                         <tr>
-                                                            <td class="py-3 pl-0">@(recent.Columns.Contains("CustomerName") ? row["CustomerName"] : (recent.Columns.Contains("Name") ? row["Name"] : "N/A"))</td>
-                                                            <td class="py-3 text-center text-muted">@(recent.Columns.Contains("PlotNumber") ? row["PlotNumber"] : "N/A")</td>
-                                                            <td class="py-3 text-right">&#8377;@(recent.Columns.Contains("PaidAmount") ? row["PaidAmount"] : "0")</td>
+                                                            <td class="py-3 pl-0">@cName</td>
+                                                            <td class="py-3 text-center text-muted">@pNo</td>
+                                                            <td class="py-3 text-right">Rs. @amt</td>
                                                             <td class="py-3 text-right pr-0">
                                                                 <span class="badge badge-pill badge-soft-success px-2 py-1">Success</span>
                                                             </td>

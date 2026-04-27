@@ -7,179 +7,188 @@
 
 @using (Html.BeginForm("PlotList", "Masters", FormMethod.Post, new { @id = "form1" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
-
-            <div class="card-block">
-
-                <!-- Page-Title -->
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-sm-6">
-                            <h4 class="page-title">Plot List</h4>
-                        </div>
-                       
-                    </div>
-                    <!-- end row -->
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Management</h4>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-12">
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <label class="float-label">Site</label>
-                                @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
-                                <span class="form-bar"></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="float-label">Sector</label>
-                                @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
-                                <span class="form-bar"></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="float-label">Block</label>
-                                @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
-                                <span class="form-bar"></span>
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="float-label">Plot No</label>
-                                @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Plot Number" })
-                                @Html.HiddenFor(m => m.PlotID)
-                                <span class="form-bar"></span>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-3">
-                                <input type="submit" name="SearchPlot" value="Search" id="btnSearchPlot" class="btn btn-success" onclick="return load();" />
-                            </div>
-                        </div>
-                        <table id="example23" class="table table-striped table-bordered nowrap table-responsive">
-                            <thead>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="wizard-card  animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Search & Filter Plots
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot Number</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "e.g. A-101" })
+                        @Html.HiddenFor(m => m.PlotID)
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <button type="submit" name="SearchPlot" value="Search" id="btnSearchPlot" class="btn btn-primary btn-block shadow-sm" onclick="return load();">
+                            <i class="fas fa-search mr-2"></i> Search Plots
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="wizard-card  animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-th-list mr-2"></i> Plot Inventory List
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>S No.</th>
+                                <th>Site Name</th>
+                                <th>Sector / Block</th>
+                                <th>Plot Number</th>
+                                <th>Area (Sqft)</th>
+                                <th>Rate/Amt</th>
+                                <th>PLC Charge</th>
+                                <th>Booking/Allot %</th>
+                                <th>Status</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstPlot != null)
+                            {
+                                int i = 1;
+                                foreach (var Item in Model.lstPlot)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td><span class="font-weight-bold text-dark">@Item.SiteName</span></td>
+                                        <td>
+                                            <div class="small">Sec: @Item.SectorName</div>
+                                            <div class="small font-weight-bold text-primary">Blk: @Item.BlockName</div>
+                                        </td>
+                                        <td><span class="badge badge-light border px-2 py-1">@Item.PlotNumber</span></td>
+                                        <td>@Item.PlotArea</td>
+                                        <td>
+                                            <div class="small">Rate: @Item.PlotRate</div>
+                                            <div class="font-weight-bold text-success">Rs. @Item.PlotAmount</div>
+                                        </td>
+                                        <td>@Item.PLCCharge</td>
+                                        <td>
+                                            <div class="small text-muted">Bnk: @Item.BookingPercent%</div>
+                                            <div class="small text-muted">Alt: @Item.AllottmentPercent%</div>
+                                        </td>
+                                        <td>
+                                            @{
+                                                string badgeClass = Item.PlotStatus == "Available" ? "badge-soft-success" : 
+                                                                  (Item.PlotStatus == "Booked" ? "badge-soft-primary" : "badge-soft-danger");
+                                            }
+                                            <span class="badge badge-pill @badgeClass px-2 py-1">@Item.PlotStatus</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                @if (Item.PlotStatus == "Available")
+                                                {
+                                                    <a href="/Masters/PlotMaster?PlotID=@Item.EncryptKey" class="btn btn-sm btn-outline-primary mr-1" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button type="button" onclick="return openpopup('@Item.EncryptKey');" class="btn btn-sm btn-outline-info mr-1" data-toggle="modal" data-target="#updateLocation" title="Location">
+                                                        <i class="fas fa-map-marker-alt"></i>
+                                                    </button>
+                                                    <a href="/Masters/DeletePlot?id=@Item.PlotID" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you wish to delete this Plot?');" title="Delete">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </a>
+                                                }
+                                                else if (Item.PlotStatus != "Allotted")
+                                                {
+                                                    <a href="/Masters/AllotPlot?PlotID=@Item.EncryptKey" target="_blank" class="btn btn-sm btn-success">
+                                                        <i class="fas fa-check-circle mr-1"></i> Allot
+                                                    </a>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modernized -->
+    <div class="modal fade" id="updateLocation" aria-hidden="true" role="dialog">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+                <div class="modal-header bg-primary text-white py-3">
+                    <h5 class="modal-title"><i class="fas fa-map-marker-alt mr-2"></i> Update Plot Location / PLC</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover border">
+                            <thead class="bg-light">
                                 <tr>
-                                    <th>S No.</th>
-                                    <th>SiteName</th>
-                                    <th>SectorName</th>
-                                    <th>BlockName</th>
-                                    <th>PlotNumber</th>
-                                    <th>PlotArea</th>
-                                    <th>PlotRate</th>
-                                    <th>PlotAmount</th>
-                                    <th>PLCCharge</th>
-                                    <th>BookingPercent</th>
-                                    <th>AllottmentPercent</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
+                                    <th width="50">Select</th>
+                                    <th>Location / PLC Name</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model != null)
+                                @if (Model != null && Model.dtPLC != null && Model.dtPLC.Rows.Count > 0)
                                 {
-                                    if (Model.lstPlot != null)
+                                    int j = 1;
+                                    for (int i = 0; i <= Model.dtPLC.Rows.Count - 1; i++)
                                     {
-                                        int i = 1;
-                                        foreach (var Item in Model.lstPlot)
-                                        {
-                                            <tr class="text-left">
-                                                <td>@i</td>
-                                                <td>@Item.SiteName</td>
-                                                <td>@Item.SectorName</td>
-                                                <td>@Item.BlockName</td>
-                                                <td>@Item.PlotNumber</td>
-                                                <td>@Item.PlotArea</td>
-                                                <td>@Item.PlotRate</td>
-                                                <td>@Item.PlotAmount</td>
-                                                <td>@Item.PLCCharge</td>
-                                                <td>@Item.BookingPercent</td>
-                                                <td>@Item.AllottmentPercent</td>
-                                                <td><a class="@Item.ColorCSS">@Item.PlotStatus</a></td>
-                                                <td>
-                                                    @if (Item.PlotStatus == "Available")
-                                                    {
-                                                        <a href="/Masters/PlotMaster?PlotID=@Item.EncryptKey" class="btn btn-info btn-sm">Edit</a>
-                                                        <a onclick="return openpopup('@Item.EncryptKey');" href="#" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#updateLocation">Update Location</a>
-                                                        <a href="/Masters/DeletePlot?id=@Item.PlotID" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you wish to delete this Plot?');">Delete</a>
-                                                    }
-                                                    else
-                                                    {
-                                                        if (Item.PlotStatus == "Allotted")
-                                                        {
-
-                                                        }
-                                                        else
-                                                        {
-                                                            <a href="/Masters/AllotPlot?PlotID=@Item.EncryptKey" target="_blank" class="btn btn-info btn-sm">Allot Plot</a>
-                                                        }
-                                                    }
-                                                </td>
-                                            </tr>
-
-                                            i++;
-                                        }
+                                        <tr>
+                                            <td class="text-center">
+                                                @{
+                                                    bool isChecked = @Model.dtPLC.Rows[i]["Item"].ToString() != "";
+                                                }
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="chk_@j" name="chk_@j" @(isChecked ? "checked" : "") />
+                                                    <label class="custom-control-label" for="chk_@j"></label>
+                                                </div>
+                                                <input type="hidden" id="plcid_@j" name="plcid_@j" value="@Model.dtPLC.Rows[i]["PK_PLCID"].ToString()" />
+                                            </td>
+                                            <td class="font-weight-bold">@Model.dtPLC.Rows[i]["PLCName"].ToString()</td>
+                                        </tr>
+                                        j++;
                                     }
+                                    <input type="hidden" id="hdRows" name="hdRows" value="@(Model.dtPLC.Rows.Count + 1)" />
+                                    @Html.HiddenFor(m => m.PlotID)
                                 }
                             </tbody>
-
                         </table>
                     </div>
-                </div>
-                <div class="modal fade" id="updateLocation" aria-hidden="true" role="dialog">
-                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Location Details</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row gutters">
-                                    <div class="col-sm-12">
-                                        <table id="basicExample" class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th></th>
-                                                    <th>Location</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (Model != null)
-                                                {
-                                                    if (Model.dtPLC != null)
-                                                    {
-                                                        if (Model.dtPLC.Rows.Count > 0)
-                                                        {
-                                                            int j = 1;
-                                                            for (int i = 0; i <= Model.dtPLC.Rows.Count - 1; i++)
-                                                            {
-                                                                <tr>
-                                                                    <td>
-                                                                        @if (@Model.dtPLC.Rows[i]["Item"].ToString() != "")
-                                                                        {
-                                                                            <input type="checkbox" id="chk_@j" name="chk_@j" checked />
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                            <input type="checkbox" id="chk_@j" name="chk_@j" />
-                                                                        }
-                                                                        <input type="hidden" id="plcid_@j" name="plcid_@j" value="@Model.dtPLC.Rows[i]["PK_PLCID"].ToString()" />
-                                                                    </td>
-                                                                    <td>@Model.dtPLC.Rows[i]["PLCName"].ToString()</td>
-
-                                                                </tr>
-                                                                j++;
-                                                            }
-                                                            <input type="hidden" id="hdRows" name="hdRows" value="@j" />
-                                                            @Html.HiddenFor(m => m.PlotID)
-
-                                                        }
-                                                    }
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <input type="submit" id="btnupdateLocation" name="btnupdateLocation" value="Update Location" />
-                                </div>
-                            </div>
-                        </div>
+                    <div class="mt-4 text-right">
+                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="btnupdateLocation" name="btnupdateLocation" class="btn btn-primary px-4 shadow-sm">
+                            <i class="fas fa-save mr-2"></i> Save Changes
+                        </button>
                     </div>
                 </div>
             </div>

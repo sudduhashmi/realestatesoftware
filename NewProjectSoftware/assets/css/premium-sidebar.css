@@ -113,30 +113,28 @@ body {
     vertical-align: middle;
 }
 
-/* Active State - Match Screenshot */
-#side-menu li.active>a,
-#side-menu li.has-submenu.open>a {
-    background-color: rgba(255, 255, 255, 0.15);
+/* Active State - Text Highlight Only */
+.sidebar-menu li.active>a {
+    background: transparent !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.sidebar-menu li.active>a i {
+    color: #fff !important;
+}
+
+.submenu li.active a {
+    color: #fff !important;
+    font-weight: 700;
+}
+
+/* .submenu li.active a::before {
+    content: '●';
+    margin-right: 8px;
+    font-size: 10px;
     color: #fff;
-}
-
-#side-menu li.active>a::before {
-    content: '';
-    position: absolute;
-    left: -12px;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background-color: #fff;
-    /* In the latest image, it looks white or very light blue, but let's use white for contrast */
-    border-radius: 0 2px 2px 0;
-}
-
-#side-menu li.active>a i,
-#side-menu li.has-submenu.open>a i {
-    background-color: transparent !important;
-    box-shadow: none;
-}
+} */
 
 #side-menu li a:hover {
     background-color: rgba(255, 255, 255, 0.05);
@@ -394,7 +392,8 @@ body {
 .collapsed-sidebar .sidebar-menu {
     overflow-y: auto !important;
     overflow-x: visible !important;
-    height: calc(100vh - 160px); /* Adjust based on header/footer height */
+    height: calc(100vh - 160px);
+    /* Adjust based on header/footer height */
     scrollbar-width: none;
 }
 
@@ -405,7 +404,8 @@ body {
 .collapsed-sidebar #side-menu li {
     margin: 4px 0;
     position: relative;
-    padding: 0 10px; /* Keep icons centered but allow li to detect hover better */
+    padding: 0 10px;
+    /* Keep icons centered but allow li to detect hover better */
 }
 
 /* Invisible bridge to keep hover active while moving to submenu */
@@ -423,7 +423,8 @@ body {
 .collapsed-sidebar #side-menu li a {
     justify-content: center;
     padding: 12px 0;
-    border-radius: 10px; /* Restored some rounding for premium feel */
+    border-radius: 10px;
+    /* Restored some rounding for premium feel */
     transition: all 0.3s ease;
 }
 
@@ -432,17 +433,20 @@ body {
     font-size: 1.3rem !important;
 }
 
-.collapsed-sidebar #side-menu li.active > a {
+.collapsed-sidebar #side-menu li.active>a {
     background-color: rgba(255, 255, 255, 0.2) !important;
-    border-left: 3px solid var(--accent-color); /* Add a small indicator for active item */
+    border-left: 3px solid var(--accent-color);
+    /* Add a small indicator for active item */
 }
 
 /* Submenu on Hover - Super Smooth */
 .collapsed-sidebar .has-submenu .submenu {
     display: block !important;
-    position: fixed; /* Changed to fixed to avoid clipping by scrollable parent */
+    position: fixed;
+    /* Changed to fixed to avoid clipping by scrollable parent */
     left: 80px;
-    top: 0; /* Will be set by JS */
+    top: 0;
+    /* Will be set by JS */
     width: 240px;
     background: #003366 !important;
     opacity: 0;
@@ -451,10 +455,11 @@ body {
     transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s, visibility 0.3s 0.1s;
     z-index: 10000;
     border-radius: 0 15px 15px 0;
-    box-shadow: 15px 0 40px rgba(0,0,0,0.4);
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.4);
     padding: 15px 0 !important;
     margin: 0 !important;
-    border-left: none; /* Ensure it touches the sidebar perfectly */
+    border-left: none;
+    /* Ensure it touches the sidebar perfectly */
     pointer-events: none;
     scrollbar-width: none;
 }
@@ -466,7 +471,8 @@ body {
 .collapsed-sidebar .has-submenu:hover .submenu {
     opacity: 1;
     visibility: visible;
-    transform: translateX(0); /* Removed the 5px gap */
+    transform: translateX(0);
+    /* Removed the 5px gap */
     pointer-events: auto;
     transition-delay: 0s;
 }
@@ -479,7 +485,7 @@ body {
     justify-content: flex-start !important;
     padding: 12px 25px 12px 50px !important;
     border-radius: 0 !important;
-    color: rgba(255,255,255,0.8) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
     font-size: 0.88rem !important;
     transition: all 0.2s ease;
 }

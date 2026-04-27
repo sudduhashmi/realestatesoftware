@@ -8,26 +8,74 @@
 
 @using (Html.BeginForm("AddBank", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
 {
-    <div class="wrapper">
-        <div class="container-fluid">
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
             <div class="page-title-box">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <h4 class="page-title">Bank Master</h4>
-                    </div>                   
+                        <h4 class="page-title">Create Bank Master</h4>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    Bank Name
-                    @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @Placeholder = "Bank Name" })
+
+            <div class="row mt-4">
+                <div class="col-sm-12">
+                    <label class="font-weight-bold">Bank Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @Placeholder = "e.g. State Bank of India" })
                 </div>
-                <div class="col-sm-6">
-                    <br />
-                    <input type="submit" value="Save" class="btn btn-primary" onclick="return fvalidate();" />
-                    <a class="btn btn-info" href="/Masters/BankList">Back To List</a>
-                    <p style="color:red">@TempData["AddBank"]</p>
+            </div>
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary mr-2" href="/Masters/PlotMaster">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </a>
+                    <a class="btn btn-outline-primary" href="/Masters/BankList">
+                        <i class="fas fa-list mr-2"></i> View Bank List
+                    </a>
                 </div>
+                <div class="right-actions">
+                    <input type="submit" value="Save & Continue" class="btn btn-primary btn-lg" onclick="return fvalidate();" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["AddBank"]</p>
             </div>
         </div>
     </div>
