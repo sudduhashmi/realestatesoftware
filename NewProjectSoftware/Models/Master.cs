@@ -377,13 +377,13 @@ new SqlParameter("@SiteRate", Rate),
 
         public DataSet SavePlotSize()
         {
-            SqlParameter[] para = { new SqlParameter("@WidthFeet", WidthFeet),
-                                      new SqlParameter("@WidthInch", WidthInch),
-                                      new SqlParameter("@HeightFeet", HeightFeet),
-                                      new SqlParameter("@HeightInch", HeightInch),
-                                      new SqlParameter("@TotalArea", PlotArea),
-                                      new SqlParameter("@UnitID", UnitID),
-                                      new SqlParameter("@AddedBy", AddedBy) };
+            SqlParameter[] para = { new SqlParameter("@WidthFeet", WidthFeet ?? (object)DBNull.Value),
+                                      new SqlParameter("@WidthInch", WidthInch ?? (object)DBNull.Value),
+                                      new SqlParameter("@HeightFeet", HeightFeet ?? (object)DBNull.Value),
+                                      new SqlParameter("@HeightInch", HeightInch ?? (object)DBNull.Value),
+                                      new SqlParameter("@TotalArea", PlotArea ?? (object)DBNull.Value),
+                                      new SqlParameter("@UnitID", UnitID ?? (object)DBNull.Value),
+                                      new SqlParameter("@AddedBy", AddedBy ?? (object)DBNull.Value) };
             DataSet ds = Connection.ExecuteQuery("SavePlotSize", para);
             return ds;
         }
@@ -403,14 +403,14 @@ new SqlParameter("@SiteRate", Rate),
         }
         public DataSet UpdatePlotSize()
         {
-            SqlParameter[] para = { new SqlParameter("@PK_PlotSizeMasterID", PlotSizeID),
-                                      new SqlParameter("@WidthFeet", WidthFeet),
-                                      new SqlParameter("@WidthInch", WidthInch),
-                                      new SqlParameter("@HeightFeet", HeightFeet),
-                                      new SqlParameter("@HeightInch", HeightInch),
-                                      new SqlParameter("@TotalArea", PlotArea),
-                                      new SqlParameter("@UnitID", UnitID),
-                                      new SqlParameter("@UpdatedBy", AddedBy) };
+            SqlParameter[] para = { new SqlParameter("@PK_PlotSizeMasterID", PlotSizeID ?? (object)DBNull.Value),
+                                      new SqlParameter("@WidthFeet", WidthFeet ?? (object)DBNull.Value),
+                                      new SqlParameter("@WidthInch", WidthInch ?? (object)DBNull.Value),
+                                      new SqlParameter("@HeightFeet", HeightFeet ?? (object)DBNull.Value),
+                                      new SqlParameter("@HeightInch", HeightInch ?? (object)DBNull.Value),
+                                      new SqlParameter("@TotalArea", PlotArea ?? (object)DBNull.Value),
+                                      new SqlParameter("@UnitID", UnitID ?? (object)DBNull.Value),
+                                      new SqlParameter("@UpdatedBy", AddedBy ?? (object)DBNull.Value) };
             DataSet ds = Connection.ExecuteQuery("UpdatePlotSize", para);
             return ds;
         }

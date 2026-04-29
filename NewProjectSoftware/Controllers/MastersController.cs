@@ -1137,20 +1137,20 @@ namespace RealEstateRegalSpace.Controllers
                     obj.AddedBy = Session["Pk_AdminId"].ToString();
                     DataSet ds = new DataSet();
                     ds = obj.SavePlotSize();
-                    if (ds != null && ds.Tables[0].Rows.Count > 0)
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                     {
                         if (ds.Tables[0].Rows[0][0].ToString() == "1")
                         {
                             TempData["PlotSize"] = "Plot Size saved successfully";
                         }
-                        else if (ds.Tables[0].Rows[0][0].ToString() == "0")
+                        else 
                         {
                             TempData["PlotSize"] = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
                         }
                     }
                     else
                     {
-                        TempData["PlotSize"] = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                        TempData["PlotSize"] = "Error while saving plot size.";
                     }
 
                 }
@@ -1167,20 +1167,20 @@ namespace RealEstateRegalSpace.Controllers
                     obj.AddedBy = Session["Pk_AdminId"].ToString();
                     DataSet ds = new DataSet();
                     ds = obj.UpdatePlotSize();
-                    if (ds != null && ds.Tables[0].Rows.Count > 0)
+                    if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
                     {
                         if (ds.Tables[0].Rows[0][0].ToString() == "1")
                         {
                             TempData["PlotSize"] = "Plot Size updated successfully";
                         }
-                        else if (ds.Tables[0].Rows[0][0].ToString() == "0")
+                        else 
                         {
                             TempData["PlotSize"] = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
                         }
                     }
                     else
                     {
-                        TempData["PlotSize"] = ds.Tables[0].Rows[0]["ErrorMessage"].ToString();
+                        TempData["PlotSize"] = "Error while updating plot size.";
                     }
 
                 }
