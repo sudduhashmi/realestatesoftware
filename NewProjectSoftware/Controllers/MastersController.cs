@@ -830,11 +830,37 @@ namespace RealEstateRegalSpace.Controllers
             DataSet ds = model.AllotPlot();
             return RedirectToAction("PlotList");
         }
-        public ActionResult PlotList()
+        public ActionResult PlotList(Master model)
         {
-            Master model = new Master();
+            model.SiteID = model.SiteID == "0" ? null : model.SiteID;
+            model.SectorID = model.SectorID == "0" ? null : model.SectorID;
+            model.BlockID = model.BlockID == "0" ? null : model.BlockID;
+            
             DataSet ds = model.GetPlotList();
-
+            List<Master> lst = new List<Master>();
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow r in ds.Tables[0].Rows)
+                {
+                    Master obj = new Master();
+                    obj.PlotID = r["PK_PlotID"].ToString();
+                    obj.EncryptKey = Crypto.Encrypt(r["PK_PlotID"].ToString());
+                    obj.SiteName = r["SiteName"].ToString();
+                    obj.SectorName = r["SectorName"].ToString();
+                    obj.BlockName = r["BlockName"].ToString();
+                    obj.PlotNumber = r["PlotNumber"].ToString();
+                    obj.PlotArea = r["TotalArea"].ToString();
+                    obj.PlotRate = r["PlotRate"].ToString();
+                    obj.PlotAmount = r["PlotAmount"].ToString();
+                    obj.PLCCharge = r["PLCCharge"].ToString();
+                    obj.BookingPercent = r["BookingPercent"].ToString();
+                    obj.AllottmentPercent = (r["AllottmentPercent"].ToString());
+                    obj.PlotStatus = (r["PlotStatus"].ToString());
+                    obj.ColorCSS = (r["StatusColor"].ToString());
+                    lst.Add(obj);
+                }
+                model.lstPlot = lst;
+            }
 
             List<SelectListItem> ddlSector = new List<SelectListItem>();
             ddlSector.Add(new SelectListItem { Text = "Select Sector", Value = "0" });
@@ -864,9 +890,6 @@ namespace RealEstateRegalSpace.Controllers
             }
             ViewBag.ddlSite = ddlSite;
             #endregion
-
-
-
 
             return View(model);
         }

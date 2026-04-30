@@ -222,10 +222,10 @@ namespace RealEstateRegalSpace.Controllers
             return Json(obj, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult PlotAvailbility()
+        public ActionResult PlotAvailbility(Master model)
         {
-            #region ddlSites
             Master obj = new Master();
+            #region ddlSites
             int count = 0;
             List<SelectListItem> ddlSite = new List<SelectListItem>();
             DataSet ds1 = obj.GetSiteList();
@@ -241,19 +241,93 @@ namespace RealEstateRegalSpace.Controllers
                     count = count + 1;
                 }
             }
-
             ViewBag.ddlSite = ddlSite;
-
             #endregion
 
+            #region ddlSector
             List<SelectListItem> ddlSector = new List<SelectListItem>();
             ddlSector.Add(new SelectListItem { Text = "Select Sector", Value = "0" });
+            if (!string.IsNullOrEmpty(model.SiteID) && model.SiteID != "0")
+            {
+                obj.SiteID = model.SiteID;
+                DataSet dsSector = obj.GetSectorList();
+                if (dsSector != null && dsSector.Tables.Count > 0)
+                {
+                    foreach (DataRow r in dsSector.Tables[0].Rows)
+                    {
+                        ddlSector.Add(new SelectListItem { Text = r["SectorName"].ToString(), Value = r["PK_SectorID"].ToString() });
+                    }
+                }
+            }
             ViewBag.ddlSector = ddlSector;
+            #endregion
 
+            #region ddlBlock
             List<SelectListItem> ddlBlock = new List<SelectListItem>();
             ddlBlock.Add(new SelectListItem { Text = "Select Block", Value = "0" });
+            if (!string.IsNullOrEmpty(model.SectorID) && model.SectorID != "0")
+            {
+                obj.SectorID = model.SectorID;
+                DataSet dsBlock = obj.GetBlockList();
+                if (dsBlock != null && dsBlock.Tables.Count > 0)
+                {
+                    foreach (DataRow r in dsBlock.Tables[0].Rows)
+                    {
+                        ddlBlock.Add(new SelectListItem { Text = r["BlockName"].ToString(), Value = r["PK_BlockID"].ToString() });
+                    }
+                }
+            }
             ViewBag.ddlBlock = ddlBlock;
-            return View();
+            #endregion
+
+            // Fetch list if any filter is applied (Dashboard redirect or manual selection)
+            if (!string.IsNullOrEmpty(model.SiteID) || !string.IsNullOrEmpty(model.PlotStatus))
+            {
+                List<Master> lst = new List<Master>();
+                string originalStatus = model.PlotStatus;
+
+                // Map UI Codes to DB Status Strings
+                if (model.PlotStatus == "A") model.PlotStatus = "Available";
+                else if (model.PlotStatus == "H") model.PlotStatus = "Hold";
+                else if (model.PlotStatus == "B") model.PlotStatus = "Booked";
+                else if (model.PlotStatus == "AL") model.PlotStatus = "Allotted";
+                else if (model.PlotStatus == "C") model.PlotStatus = "Cancelled";
+
+                model.SiteID = (model.SiteID == "0") ? null : model.SiteID;
+                model.SectorID = (model.SectorID == "0") ? null : model.SectorID;
+                model.BlockID = (model.BlockID == "0") ? null : model.BlockID;
+
+                DataSet ds = model.GetPlotList();
+
+                if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    foreach (DataRow r in ds.Tables[0].Rows)
+                    {
+                        Master plotObj = new Master();
+                        plotObj.PlotID = r["PK_PlotID"].ToString();
+                        plotObj.EncryptKey = Crypto.Encrypt(r["PK_PlotID"].ToString());
+                        plotObj.SiteName = r["SiteName"].ToString();
+                        plotObj.SectorName = r["SectorName"].ToString();
+                        plotObj.BlockName = r["BlockName"].ToString();
+                        plotObj.PlotNumber = r["PlotNumber"].ToString();
+                        plotObj.PlotArea = r["TotalArea"].ToString();
+                        plotObj.PlotRate = r["PlotRate"].ToString();
+                        plotObj.PlotAmount = r["PlotAmount"].ToString();
+                        plotObj.PLCCharge = r["PLCCharge"].ToString();
+                        plotObj.BookingPercent = r["BookingPercent"].ToString();
+                        plotObj.PLCNames = r["plcnames"].ToString();
+                        plotObj.AllottmentPercent = r["AllottmentPercent"].ToString();
+                        plotObj.PlotStatus = r["PlotStatus"].ToString();
+                        plotObj.ColorCSS = r["StatusColor"].ToString();
+                        lst.Add(plotObj);
+                    }
+                    model.lstPlot = lst;
+                }
+                // Restore the original code (A, B, etc.) so the dropdown stays selected
+                model.PlotStatus = originalStatus;
+            }
+
+            return View(model);
         }
         public ActionResult GetBlockList(string SiteID, string SectorID)
         {

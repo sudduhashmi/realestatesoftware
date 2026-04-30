@@ -392,13 +392,14 @@
                         </div>
                         <div class="col-md-3 mb-3">
                             <label>Plot Status</label>
-                            <select class="form-control" id="PlotStatus" name="PlotStatus">
-                                <option value="">All Plots</option>
-                                <option value="A">Available</option>
-                                <option value="H">On Hold</option>
-                                <option value="B">Booked</option>
-                                <option value="AL">Allotted</option>
-                            </select>
+                            @Html.DropDownListFor(m => m.PlotStatus, new List<SelectListItem> {
+                                new SelectListItem { Text = "All Plots", Value = "" },
+                                new SelectListItem { Text = "Available", Value = "A" },
+                                new SelectListItem { Text = "On Hold", Value = "H" },
+                                new SelectListItem { Text = "Booked", Value = "B" },
+                                new SelectListItem { Text = "Allotted", Value = "AL" },
+                                new SelectListItem { Text = "Cancelled", Value = "C" }
+                            }, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="row mt-3">

@@ -450,7 +450,11 @@
                         <td>BASIC AMOUNT</td>
                         <td style="text-align: right; font-weight: 700;">@ViewBag.PaidAmount</td>
                     </tr>
-                    @if (Convert.ToDecimal(ViewBag.TotalPLC) > 0)
+                    @{
+                        decimal totalPLC = 0;
+                        decimal.TryParse(Convert.ToString(ViewBag.TotalPLC), out totalPLC);
+                    }
+                    @if (totalPLC > 0)
                     {
                         <tr>
                             <td>PLC Charges</td>

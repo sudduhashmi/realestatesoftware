@@ -77,7 +77,7 @@
     border: none !important;
     border-radius: var(--border-radius) !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04) !important;
-    padding: 30px !important;
+    padding: 20px !important;
     margin-bottom: 30px !important;
     transition: var(--transition);
     height: 100%;
@@ -150,7 +150,7 @@
                             </div>
                             <span class="stat-badge badge-soft-secondary">@(ViewBag.BookingPercentage ?? 0)%</span>
                             <div class="stat-card-footer text-warning">
-                                Active booking
+                               View Active Bookings
                             </div>
                         </a>
                     </div>
@@ -160,7 +160,7 @@
                         <a href="/Admin/AssociateList?status=P" class="stat-card stat-card-border-left" style="--card-color: #6f42c1;">
                             <div>
                                 <h3 class="stat-card-value">@ViewBag.TotalActiveAssociate</h3>
-                                <p class="stat-card-title">Total Active Assoc</p>
+                                <p class="stat-card-title">Total Active Associate</p>
                             </div>
                             <span class="stat-badge badge-soft-danger">-@(ViewBag.TotalInactiveAssociate ?? "0")</span>
                             <div class="stat-card-footer text-purple" style="color: #6f42c1;">
@@ -226,56 +226,6 @@
                     }
                 </div>
 
-                <!-- Top KPI Row 3 -->
-                <div class="row dashboard-row">
-                    <!-- Inactive Associate -->
-                    <div class="col-xl-3 col-md-6 mb-4">
-                        <a href="/Admin/AssociateList?status=T" class="stat-card stat-card-border-bottom" style="--card-color: #dc3545;">
-                            <div>
-                                <h3 class="stat-card-value">@ViewBag.TotalInactiveAssociate</h3>
-                                <p class="stat-card-title">Inactive Associates</p>
-                            </div>
-                            <span class="stat-badge text-danger bg-transparent p-0" style="font-weight: 500;">Action required</span>
-                        </a>
-                    </div>
-
-                    @if (Session["RoleName"].ToString() == "Admin")
-                    {
-                        <!-- Pending Document -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="/Admin/ApproveKYC" class="stat-card stat-card-border-bottom" style="--card-color: #ffc107;">
-                                <div>
-                                    <h3 class="stat-card-value">@ViewBag.PendingDocument</h3>
-                                    <p class="stat-card-title">Pending Documents</p>
-                                </div>
-                                <span class="stat-badge badge-soft-danger">Pending</span>
-                            </a>
-                        </div>
-
-                        <!-- Alloted Area -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="/Admin/GetPlotAreaReport?Status=Alloted" class="stat-card stat-card-border-bottom" style="--card-color: #20c997;">
-                                <div>
-                                    <h3 class="stat-card-value">@ViewBag.AllotedArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
-                                    <p class="stat-card-title">Alloted Area</p>
-                                </div>
-                                <span class="stat-badge badge-soft-success">Alloted</span>
-                            </a>
-                        </div>
-
-                        <!-- Registered Area -->
-                        <div class="col-xl-3 col-md-6 mb-4">
-                            <a href="/Admin/GetPlotAreaReport?Status=Registered" class="stat-card stat-card-border-bottom" style="--card-color: #6610f2;">
-                                <div>
-                                    <h3 class="stat-card-value">@ViewBag.RegisteredArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
-                                    <p class="stat-card-title">Registered Area</p>
-                                </div>
-                                <span class="stat-badge badge-soft-secondary">Registered</span>
-                            </a>
-                        </div>
-                    }
-                </div>
-
                 <!-- Plot Status & Recent Bookings -->
                 <div class="row dashboard-row ">
                     <!-- Plot Status Overview -->
@@ -284,33 +234,80 @@
                             <div class="card-body ">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <h5 class="mb-0 font-weight-bold" style="color: #212529; font-size: 1.1rem;">Plot Status Overview</h5>
-                                    <a href="/Admin/PlotList" class="text-primary font-weight-bold" style="font-size: 0.85rem; text-decoration: none;">All Sites <i class="fas fa-caret-down ml-1"></i></a>
+                                    <div class="dropdown">
+                                        <button class="btn btn-sm dropdown-toggle text-primary font-weight-bold p-0 bg-transparent border-0" type="button" id="siteFilter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="font-size: 0.85rem;">
+                                            @{
+                                                string selectedSiteName = "All Sites";
+                                                
+                                                // Fetch Site List directly in View to bypass DLL recompilation issues
+                                                RealEstateRegalSpace.Models.Master masterObj = new RealEstateRegalSpace.Models.Master();
+                                                System.Data.DataSet dsSites = masterObj.GetSiteList();
+                                                System.Data.DataTable dtSites = (dsSites != null && dsSites.Tables.Count > 0) ? dsSites.Tables[0] : null;
+                                                
+                                                if (dtSites != null && !string.IsNullOrEmpty(ViewBag.SiteID))
+                                                {
+                                                    foreach (System.Data.DataRow row in dtSites.Rows)
+                                                    {
+                                                        if (row["PK_SiteID"].ToString() == ViewBag.SiteID.ToString())
+                                                        {
+                                                            selectedSiteName = row["SiteName"].ToString();
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            <span id="selectedSiteText">@selectedSiteName</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right shadow border-0" aria-labelledby="siteFilter" style="border-radius: 10px;">
+                                            <a class="dropdown-item site-filter-item @(string.IsNullOrEmpty(ViewBag.SiteID) ? "active" : "")" href="javascript:void(0);" onclick="filterSite('', 'All Sites')">
+                                                <i class="fas fa-globe-asia mr-2 text-muted"></i> All Sites
+                                            </a>
+                                            @if (dtSites != null)
+                                            {
+                                                foreach (System.Data.DataRow row in dtSites.Rows)
+                                                {
+                                                    <a class="dropdown-item site-filter-item @(ViewBag.SiteID != null && ViewBag.SiteID.ToString() == row["PK_SiteID"].ToString() ? "active" : "")" href="javascript:void(0);" onclick="filterSite('@row["PK_SiteID"]', '@row["SiteName"]')">
+                                                        <i class="fas fa-map-marker-alt mr-2 text-muted"></i> @row["SiteName"]
+                                                    </a>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                                 
-                                @{
-                                    var plotStats = ViewBag.PlotStats as System.Data.DataTable;
-                                    int totalPlots = 0;
-                                    int available = 0, booked = 0, onHold = 0, registered = 0, cancelled = 0;
-                                    
-                                    if (plotStats != null) {
-                                        foreach (System.Data.DataRow row in plotStats.Rows) {
-                                            totalPlots += plotStats.Columns.Contains("TotalPlots") ? Convert.ToInt32(row["TotalPlots"]) : 0;
-                                            available += plotStats.Columns.Contains("AvailablePlots") ? Convert.ToInt32(row["AvailablePlots"]) : 0;
-                                            booked += plotStats.Columns.Contains("BookedPlots") ? Convert.ToInt32(row["BookedPlots"]) : 0;
-                                            onHold += plotStats.Columns.Contains("HoldPlots") ? Convert.ToInt32(row["HoldPlots"]) : 0;
-                                            registered += plotStats.Columns.Contains("RegisteredPlots") ? Convert.ToInt32(row["RegisteredPlots"]) : 0;
+                                <div id="plotStatusBoxContent">
+                                    @{
+                                        // Fetch Plot Stats directly in View to bypass DLL issues
+                                        string currentSiteID = Request.QueryString["SiteID"];
+                                        RealEstateRegalSpace.Models.Reports plotObj = new RealEstateRegalSpace.Models.Reports();
+                                        plotObj.SiteID = currentSiteID;
+                                        System.Data.DataSet dsPlotStats = plotObj.GetPlotCount();
+                                        System.Data.DataTable plotStats = (dsPlotStats != null && dsPlotStats.Tables.Count > 0) ? dsPlotStats.Tables[0] : null;
+                                        
+                                        int totalPlots = 0;
+                                        int available = 0, booked = 0, onHold = 0, registered = 0, cancelled = 0;
+                                        
+                                        if (plotStats != null) {
+                                            foreach (System.Data.DataRow row in plotStats.Rows) {
+                                                totalPlots += plotStats.Columns.Contains("TotalPlots") ? Convert.ToInt32(row["TotalPlots"]) : 0;
+                                                available += plotStats.Columns.Contains("AvailablePlots") ? Convert.ToInt32(row["AvailablePlots"]) : 0;
+                                                booked += plotStats.Columns.Contains("BookedPlots") ? Convert.ToInt32(row["BookedPlots"]) : 0;
+                                                onHold += plotStats.Columns.Contains("HoldPlots") ? Convert.ToInt32(row["HoldPlots"]) : 0;
+                                                registered += plotStats.Columns.Contains("RegisteredPlots") ? Convert.ToInt32(row["RegisteredPlots"]) : 0;
+                                                cancelled += plotStats.Columns.Contains("CancelledPlots") ? Convert.ToInt32(row["CancelledPlots"]) : 0;
+                                            }
                                         }
+                                        if (totalPlots == 0) { totalPlots = 1; } // Prevent div by zero
+                                        string siteParam = string.IsNullOrEmpty(currentSiteID) ? "" : "&SiteID=" + currentSiteID;
                                     }
-                                    if (totalPlots == 0) { totalPlots = 1; } // Prevent div by zero
-                                }
 
                                 <!-- Available -->
-                                <div class="d-flex align-items-center mb-3">
+                                <a href="/Home/PlotAvailbility?PlotStatus=A@siteParam" class="d-flex align-items-center mb-3 text-decoration-none status-item-row" style="transition: all 0.2s;">
                                     <div style="width: 90px;">
                                         <span class="text-muted" style="font-size: 0.95rem;">Available</span>
                                     </div>
                                     <div style="width: 40px;" class="text-right pr-3">
-                                        <span class="font-weight-bold text-dark" >@available</span>
+                                        <span class="font-weight-bold text-dark">@available</span>
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="progress" style="height: 8px; border-radius: 4px; background-color: #e9ecef;">
@@ -320,10 +317,10 @@
                                     <div style="width: 40px;" class="text-right pl-2">
                                         <span class="text-muted" style="font-size: 0.85rem;">@((available * 100) / totalPlots)%</span>
                                     </div>
-                                </div>
+                                </a>
 
                                 <!-- Booked -->
-                                <div class="d-flex align-items-center mb-3">
+                                <a href="/Home/PlotAvailbility?PlotStatus=B@siteParam" class="d-flex align-items-center mb-3 text-decoration-none status-item-row" style="transition: all 0.2s;">
                                     <div style="width: 90px;">
                                         <span class="text-muted" style="font-size: 0.95rem;">Booked</span>
                                     </div>
@@ -338,10 +335,10 @@
                                     <div style="width: 40px;" class="text-right pl-2">
                                         <span class="text-muted" style="font-size: 0.85rem;">@((booked * 100) / totalPlots)%</span>
                                     </div>
-                                </div>
+                                </a>
 
                                 <!-- On Hold -->
-                                <div class="d-flex align-items-center mb-3">
+                                <a href="/Home/PlotAvailbility?PlotStatus=H@siteParam" class="d-flex align-items-center mb-3 text-decoration-none status-item-row" style="transition: all 0.2s;">
                                     <div style="width: 90px;">
                                         <span class="text-muted" style="font-size: 0.95rem;">On Hold</span>
                                     </div>
@@ -356,10 +353,10 @@
                                     <div style="width: 40px;" class="text-right pl-2">
                                         <span class="text-muted" style="font-size: 0.85rem;">@((onHold * 100) / totalPlots)%</span>
                                     </div>
-                                </div>
+                                </a>
 
                                 <!-- Registered -->
-                                <div class="d-flex align-items-center mb-3">
+                                <a href="/Home/PlotAvailbility?PlotStatus=AL@siteParam" class="d-flex align-items-center mb-3 text-decoration-none status-item-row" style="transition: all 0.2s;">
                                     <div style="width: 90px;">
                                         <span class="text-muted" style="font-size: 0.95rem;">Registered</span>
                                     </div>
@@ -374,10 +371,10 @@
                                     <div style="width: 40px;" class="text-right pl-2">
                                         <span class="text-muted" style="font-size: 0.85rem;">@((registered * 100) / totalPlots)%</span>
                                     </div>
-                                </div>
+                                </a>
 
                                 <!-- Cancelled -->
-                                <div class="d-flex align-items-center mb-2">
+                                <a href="/Home/PlotAvailbility?PlotStatus=C@siteParam" class="d-flex align-items-center mb-2 text-decoration-none status-item-row" style="transition: all 0.2s;">
                                     <div style="width: 90px;">
                                         <span class="text-muted" style="font-size: 0.95rem;">Cancelled</span>
                                     </div>
@@ -392,7 +389,7 @@
                                     <div style="width: 40px;" class="text-right pl-2">
                                         <span class="text-muted" style="font-size: 0.85rem;">@((cancelled * 100) / totalPlots)%</span>
                                     </div>
-                                </div>
+                                </a>
 
                                 <!-- Legend -->
                                 <div class="d-flex flex-wrap mt-4 pt-2">
@@ -401,6 +398,14 @@
                                     <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #fd7e14; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">On Hold</span></div>
                                     <div class="mr-2 mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #6f42c1; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Registered</span></div>
                                     <div class="mb-2 d-flex align-items-center"><i class="fas fa-circle mr-2" style="color: #dc3545; font-size: 10px;"></i> <span class="text-muted" style="font-size: 0.85rem;">Cancelled</span></div>
+                                </div>
+                                <style>
+                                    .status-item-row:hover {
+                                        background-color: rgba(0,0,0,0.02);
+                                        border-radius: 8px;
+                                        transform: translateX(5px);
+                                    }
+                                </style>
                                 </div>
                             </div>
                         </div>
@@ -468,6 +473,56 @@
                     </div>
                 </div>
 
+                <!-- Top KPI Row 3 -->
+                <div class="row dashboard-row">
+                    <!-- Inactive Associate -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <a href="/Admin/AssociateList?status=T" class="stat-card stat-card-border-bottom" style="--card-color: #dc3545;">
+                            <div>
+                                <h3 class="stat-card-value">@ViewBag.TotalInactiveAssociate</h3>
+                                <p class="stat-card-title">Inactive Associates</p>
+                            </div>
+                            <span class="stat-badge text-danger bg-transparent p-0" style="font-weight: 500;">Action required</span>
+                        </a>
+                    </div>
+
+                    @if (Session["RoleName"].ToString() == "Admin")
+                    {
+                        <!-- Pending Document -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/ApproveKYC" class="stat-card stat-card-border-bottom" style="--card-color: #ffc107;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.PendingDocument</h3>
+                                    <p class="stat-card-title">Pending Documents</p>
+                                </div>
+                                <span class="stat-badge badge-soft-danger">Pending</span>
+                            </a>
+                        </div>
+
+                        <!-- Alloted Area -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/GetPlotAreaReport?Status=Alloted" class="stat-card stat-card-border-bottom" style="--card-color: #20c997;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.AllotedArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
+                                    <p class="stat-card-title">Alloted Area</p>
+                                </div>
+                                <span class="stat-badge badge-soft-success">Alloted</span>
+                            </a>
+                        </div>
+
+                        <!-- Registered Area -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <a href="/Admin/GetPlotAreaReport?Status=Registered" class="stat-card stat-card-border-bottom" style="--card-color: #6610f2;">
+                                <div>
+                                    <h3 class="stat-card-value">@ViewBag.RegisteredArea <span style="font-size: 1rem; color: #6c757d; font-weight: 600;">Sq.ft.</span></h3>
+                                    <p class="stat-card-title">Registered Area</p>
+                                </div>
+                                <span class="stat-badge badge-soft-secondary">Registered</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+
                 <!-- Pending Actions & Top Performers -->
                 <div class="row dashboard-row">
                     <!-- Pending Actions -->
@@ -477,30 +532,45 @@
                                 <h5 class="mb-4 font-weight-bold" style="color: #444;">Pending Actions</h5>
                                 <div class="row">
                                     <div class="col-6 mb-3">
-                                        <div class="p-3 text-center" style="background: #eef2ff; border-radius: 12px;">
-                                            <h3 class="mb-1 font-weight-bold" style="color: #4f46e5;">@ViewBag.PendingDocument</h3>
-                                            <p class="small text-muted mb-0">Pending Documents</p>
-                                        </div>
+                                        <a href="/Admin/ApproveKYC" class="text-decoration-none d-block action-card" style="transition: transform 0.2s;">
+                                            <div class="p-3 text-center" style="background: #eef2ff; border-radius: 12px; border: 1px solid transparent;">
+                                                <h3 class="mb-1 font-weight-bold" style="color: #4f46e5;">@ViewBag.PendingDocument</h3>
+                                                <p class="small text-muted mb-0">Pending Documents</p>
+                                            </div>
+                                        </a>
                                     </div>
                                     <div class="col-6 mb-3">
-                                        <div class="p-3 text-center" style="background: #fff7ed; border-radius: 12px;">
-                                            <h3 class="mb-1 font-weight-bold" style="color: #ea580c;">0</h3>
-                                            <p class="small text-muted mb-0">EMI Due Today</p>
-                                        </div>
+                                        <a href="/Admin/DueInstallmentReport" class="text-decoration-none d-block action-card" style="transition: transform 0.2s;">
+                                            <div class="p-3 text-center" style="background: #fff7ed; border-radius: 12px; border: 1px solid transparent;">
+                                                <h3 class="mb-1 font-weight-bold" style="color: #ea580c;">0</h3>
+                                                <p class="small text-muted mb-0">EMI Due Today</p>
+                                            </div>
+                                        </a>
                                     </div>
                                     <div class="col-6">
-                                        <div class="p-3 text-center" style="background: #f0fdf4; border-radius: 12px;">
-                                            <h3 class="mb-1 font-weight-bold" style="color: #16a34a;">0</h3>
-                                            <p class="small text-muted mb-0">Approve Payments</p>
-                                        </div>
+                                        <a href="/Admin/ApprovePayent" class="text-decoration-none d-block action-card" style="transition: transform 0.2s;">
+                                            <div class="p-3 text-center" style="background: #f0fdf4; border-radius: 12px; border: 1px solid transparent;">
+                                                <h3 class="mb-1 font-weight-bold" style="color: #16a34a;">0</h3>
+                                                <p class="small text-muted mb-0">Approve Payments</p>
+                                            </div>
+                                        </a>
                                     </div>
                                     <div class="col-6">
-                                        <div class="p-3 text-center" style="background: #fef2f2; border-radius: 12px;">
-                                            <h3 class="mb-1 font-weight-bold" style="color: #dc2626;">0</h3>
-                                            <p class="small text-muted mb-0">Expiring Holds</p>
-                                        </div>
+                                        <a href="/Admin/HoldList" class="text-decoration-none d-block action-card" style="transition: transform 0.2s;">
+                                            <div class="p-3 text-center" style="background: #fef2f2; border-radius: 12px; border: 1px solid transparent;">
+                                                <h3 class="mb-1 font-weight-bold" style="color: #dc2626;">0</h3>
+                                                <p class="small text-muted mb-0">Expiring Holds</p>
+                                            </div>
+                                        </a>
                                     </div>
                                 </div>
+                                <style>
+                                    .action-card:hover div {
+                                        transform: translateY(-3px);
+                                        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                                        border-color: rgba(0,0,0,0.05) !important;
+                                    }
+                                </style>
                             </div>
                         </div>
                     </div>
@@ -582,3 +652,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    function filterSite(siteID, siteName) {
+        // Update the dropdown text immediately for responsiveness
+        $('#selectedSiteText').text(siteName);
+        
+        // Add a loading effect
+        $('#plotStatusBoxContent').css('opacity', '0.5');
+        
+        // Perform AJAX partial load
+        var url = '/Admin/DashBoard?SiteID=' + siteID;
+        
+        // We use jQuery load to fetch the full page but only extract the box content
+        // Note: we target the inner content of the box
+        $('#plotStatusBoxContent').load(url + ' #plotStatusBoxContent > *', function(response, status, xhr) {
+            $('#plotStatusBoxContent').css('opacity', '1');
+            
+            if (status == "error") {
+                console.error("AJAX Error: " + xhr.status + " " + xhr.statusText);
+                // Fallback to full page refresh if AJAX fails
+                window.location.href = url;
+            } else {
+                // Update active state in dropdown
+                $('.site-filter-item').removeClass('active');
+                if (siteID === '') {
+                    $('.site-filter-item').first().addClass('active');
+                } else {
+                    // Update active class on the selected item
+                    $('a[onclick*="filterSite(\'' + siteID + '\'"]').addClass('active');
+                }
+            }
+        });
+    }
+</script>

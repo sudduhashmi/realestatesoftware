@@ -16,10 +16,17 @@ namespace RealEstateRegalSpace.Controllers
     public class AdminController : AdminBaseController
     {
         // GET: Admin
-        public ActionResult DashBoard()
+        public ActionResult DashBoard(string SiteID)
         {
             Dashboard obj = new Dashboard();
-
+            Reports report = new Reports();
+            
+            // Set SiteID for filtering if provided
+            if (!string.IsNullOrEmpty(SiteID) && SiteID != "0")
+            {
+                report.SiteID = SiteID;
+                ViewBag.SiteID = SiteID;
+            }
 
             DataSet ds = obj.GetAdminDashBoard();
             if (ds != null)
@@ -46,22 +53,30 @@ namespace RealEstateRegalSpace.Controllers
                 }
                 
                 // Fetch Recent Bookings
-                Reports report = new Reports();
-                DataSet dsRecent = report.GetCollectionReport();
+                Reports reportRecent = new Reports();
+                DataSet dsRecent = reportRecent.GetCollectionReport();
                 if (dsRecent != null && dsRecent.Tables.Count > 0)
                 {
                     ViewBag.RecentBookings = dsRecent.Tables[0];
                 }
 
-                // Fetch Plot Count for Plot Status Overview
+                // Fetch Plot Count for Plot Status Overview (filtered by SiteID if set)
                 DataSet dsPlots = report.GetPlotCount();
                 if (dsPlots != null && dsPlots.Tables.Count > 0)
                 {
                     ViewBag.PlotStats = dsPlots.Tables[0];
                 }
 
+                // Fetch Site List for Dropdown
+                Master master = new Master();
+                DataSet dsSite = master.GetSiteList();
+                if (dsSite != null && dsSite.Tables.Count > 0 && dsSite.Tables[0].Rows.Count > 0)
+                {
+                    ViewBag.ddlSite = dsSite.Tables[0];
+                }
+
                 // Fetch Top Performers (Using Associate List for now)
-                DataSet dsPerformers = report.GetAssociateList();
+                DataSet dsPerformers = reportRecent.GetAssociateList();
                 if (dsPerformers != null && dsPerformers.Tables.Count > 0)
                 {
                     ViewBag.TopPerformers = dsPerformers.Tables[0];
