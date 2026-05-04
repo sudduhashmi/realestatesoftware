@@ -1,0 +1,119 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Employee Ledger";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("GetEmpLedger", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Employee Financial Ledger</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Search Employee
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-4 mb-3">
+                        <label class="small font-weight-bold text-muted">Employee Login ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @placeholder = "Enter Login ID", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px;" onclick="return fvalidate();">
+                            <i class="fas fa-eye mr-2"></i> View Ledger
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ledger Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-list-ul mr-2"></i> Salary & Advance Statement
+            </div>
+            <div class="p-0">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th class="text-center">Transaction Date</th>
+                                <th>Narration / Details</th>
+                                <th class="text-right">Salary (Credit)</th>
+                                <th class="text-right">Advance (Debit)</th>
+                                <th class="text-right font-weight-bold">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstDetails.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td class="text-center small">@Model.lstDetails.Rows[i]["TransactionDate"].ToString()</td>
+                                        <td class="small">@Model.lstDetails.Rows[i]["Narration"].ToString()</td>
+                                        <td class="text-right text-success font-weight-bold">
+                                            @if (Model.lstDetails.Rows[i]["CrAmount"].ToString() != "0")
+                                            {
+                                                <span>₹ @Model.lstDetails.Rows[i]["CrAmount"].ToString()</span>
+                                            }
+                                        </td>
+                                        <td class="text-right text-danger font-weight-bold">
+                                            @if (Model.lstDetails.Rows[i]["DrAmount"].ToString() != "0")
+                                            {
+                                                <span>₹ @Model.lstDetails.Rows[i]["DrAmount"].ToString()</span>
+                                            }
+                                        </td>
+                                        <td class="text-right font-weight-bold text-dark">₹ @Model.lstDetails.Rows[i]["Balance"].ToString()</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-user-tie fa-3x mb-3 d-block opacity-50"></i>
+                                            Enter Employee Login ID to view the financial ledger.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        function fvalidate() {
+            if ($('#LoginId').val() == '') {
+                $('#LoginId').addClass('is-invalid').focus();
+                return false;
+            }
+            $('#LoginId').removeClass('is-invalid');
+            $("#divload").css({ 'display': '' });
+            return true;
+        }
+    </script>
+}
+
+
+
+

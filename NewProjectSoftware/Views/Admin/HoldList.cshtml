@@ -1,0 +1,231 @@
+@model RealEstateRegalSpace.Models.Plot
+
+@{
+    ViewBag.Title = "HoldList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+@using (Html.BeginForm("HoldList", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Hold Records</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Search & Filter
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot Number</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Search by Plot No", @style="height: 45px;" })
+                    </div>
+                </div>
+                <div class="row align-items-end mt-2">
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-block shadow-sm" style="height: 45px;" id="btnSearch" name="Search" value="Search">
+                            <i class="fas fa-search mr-1"></i> Filter Hold List
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-clock mr-2"></i> Active Hold List
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table">
+                        <thead>
+                            <tr>
+                                <th>S No.</th>
+                                <th>Plot Details</th>
+                                <th>Hold Amount</th>
+                                <th>Hold Duration</th>
+                                <th>Customer Name</th>
+                                <th>Mobile Number</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstPlot != null)
+                            {
+                                int i = 1;
+                                foreach (var Item in Model.lstPlot)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td><span class="badge badge-light border font-weight-bold">@Item.PlotNumber</span></td>
+                                        <td class="font-weight-bold text-success">@Item.Amount</td>
+                                        <td>
+                                            <div class="small">From: <span class="font-weight-bold">@Item.HoldFrom</span></div>
+                                            <div class="small">To: <span class="font-weight-bold">@Item.HoldTo</span></div>
+                                        </td>
+                                        <td class="text-dark font-weight-bold">@Item.Name</td>
+                                        <td><i class="fas fa-phone mr-1 small text-info"></i> @Item.Mobile</td>
+                                        <td class="text-center">
+                                            <a href="/Admin/DeletePlotHold?PK_PlotHoldID=@Item.PK_PlotHoldID" class="btn btn-outline-danger btn-sm rounded-pill px-3" onclick="return confirm('Are you sure you want to Unhold this plot?');">
+                                                <i class="fas fa-unlock mr-1"></i> Unhold
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/files/bower_components/jquery/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+
+    function onSiteChange() {
+        $("#divload").css({ 'display': '' });
+        var value = $('#SiteID').val();
+        $.ajax({
+            url: "/Masters/GetSiteDetails",
+            Type: "Get",
+            DataType: "JSON",
+            data: { SiteID: value },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                if (data.Result == "yes") {
+                    $("#SectorID").empty();
+                    $("#SectorID").append($('<option></option>').val(0).html('Select Sector'));
+                    $.each(data.ddlSector, function (index, Sectorcount) {
+                        $("#SectorID").append($('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+                    });
+                }
+            }
+        });
+    }
+
+    function onSectorChange() {
+        $("#divload").css({ 'display': '' });
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        $.ajax({
+            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+            data: { 'SiteID': siteID, 'sectorID': sectorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                $("#BlockID").empty();
+                $("#BlockID").append($('<option></option>').val(0).html('Select Block'));
+                $.each(data.lstBlock, function (index, BlockCount) {
+                    $("#BlockID").append($('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                });
+            }
+        });
+    }
+</script>
+
+}
+
+<script src="~/files/bower_components/jquery/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+
+
+    function onSiteChange() {
+        $("#divload").css({ 'display': '' });
+        var value = $('#SiteID').val();
+        var values = $('#SectorID').val();
+        var tr = [];
+        $.ajax({
+            url: "/Masters/GetSiteDetails",
+            Type: "Get",
+            DataType: "JSON",
+            data: { SiteID: value },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                var j = 1;
+                if (data.Result == "yes") {
+                    $('#Rate').val(data.Rate);
+                    $("#SectorID").html(""); // clear before appending new list
+                    $("#SectorID").empty();
+                    $("#SectorID").append(
+                        $('<option></option>').val(0).html('Select Sector'));
+                    $.each(data.ddlSector, function (index, Sectorcount) {
+                        $("#SectorID").append(
+                            $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+
+                    });
+
+                }
+                else {
+                    $("#SectorID").empty();
+                    $('#Rate').val('');
+                }
+
+
+            }
+
+        });
+
+    }
+
+    function onSectorChange() {
+
+        $("#divload").css({ 'display': '' });
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        $.ajax({
+            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+            data: { 'SiteID': siteID, 'sectorID': sectorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                $("#BlockID").html(""); // clear before appending new list
+                $("#BlockID").empty();
+                $("#BlockID").append(
+                    $('<option></option>').val(0).html('Select Block'));
+                $.each(data.lstBlock, function (index, BlockCount) {
+                    $("#BlockID").append(
+                        $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                });
+
+            }
+
+        });
+    }
+
+
+</script>

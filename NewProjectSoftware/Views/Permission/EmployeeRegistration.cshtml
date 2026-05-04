@@ -1,0 +1,322 @@
+@model RealEstateRegalSpace.Models.EmployeeRegistrations
+
+@{
+    /**/
+
+    ViewBag.Title = "EmployeeRegistration";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EmployeeRegistration", "Permission", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Employee Registration</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Personal Info Card -->
+            <div class="col-lg-12 mb-4">
+                <div class="wizard-card animate-up">
+                    <div class="card-header-premium">
+                        <i class="fas fa-user-circle mr-2"></i> Personal Information
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Employee Code <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @readonly = "true", @placeholder = "Auto-generated" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Joining Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.DOJ, new { @class = "form-control", @placeholder = "dd/mm/yyyy" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">User Type <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.Fk_UserTypeId, new SelectList(ViewBag.ddlUserType, "Value", "Text"), new { @class = "form-control" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Full Name <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @placeholder = "Enter full name" })
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Mobile No <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @MaxLength = "10", @onkeypress = "return isNumberKey(event);", @placeholder = "10-digit mobile" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Email Id <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @Onchange = "checkEmail();", @placeholder = "example@email.com" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">DOB</label>
+                                @Html.TextBoxFor(m => m.DOB, new { @class = "form-control", @placeholder = "dd/mm/yyyy" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold">Qualification</label>
+                                @Html.TextBoxFor(m => m.EducationQualififcation, new { @class = "form-control", @placeholder = "Highest degree" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Second Row of Cards -->
+            <div class="col-lg-4 mb-4">
+                <div class="wizard-card h-100 animate-up" style="animation-delay: 0.1s;">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-university mr-2"></i> Bank Details
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Bank Name</label>
+                            @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @placeholder = "Enter bank name" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-weight-bold">A/C No</label>
+                            @Html.TextBoxFor(m => m.AccNo, new { @class = "form-control", @placeholder = "Account number" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-weight-bold">IFSC Code</label>
+                            @Html.TextBoxFor(m => m.IFSCCOde, new { @class = "form-control", @placeholder = "IFSC code" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="wizard-card h-100 animate-up" style="animation-delay: 0.2s;">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-phone-alt mr-2"></i> Emergency Contact
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Contact Person</label>
+                            @Html.TextBoxFor(m => m.ContactPerson, new { @class = "form-control", @placeholder = "Name" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Contact No</label>
+                            @Html.TextBoxFor(m => m.ContactNo, new { @class = "form-control", @placeholder = "Phone number" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Blood Group</label>
+                            @Html.TextBoxFor(m => m.BloodGroup, new { @class = "form-control", @placeholder = "e.g. O+" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 mb-4">
+                <div class="wizard-card h-100 animate-up" style="animation-delay: 0.3s;">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-id-card mr-2"></i> Identity & Photo
+                    </div>
+                    <div class="p-4">
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Document Type</label>
+                            @Html.TextBoxFor(m => m.DocumentType, new { @class = "form-control", @placeholder = "Aadhar/PAN/etc" })
+                        </div>
+                        <div class="mb-3">
+                            <label class="font-weight-bold">Document No</label>
+                            @Html.TextBoxFor(m => m.DocumentNo, new { @class = "form-control", @placeholder = "Document number" })
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">Expiry Date</label>
+                                @Html.TextBoxFor(m => m.ExpiryDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">Pan No</label>
+                                @Html.TextBoxFor(m => m.PanNo, new { @class = "form-control", @placeholder = "PAN" })
+                            </div>
+                        </div>
+                        
+                        <div class="mt-2 text-center">
+                            <div class="profile-upload-container">
+                                @if (!string.IsNullOrEmpty(Model.ProfilePic)) {
+                                    <img src="@Model.ProfilePic" class="profile-preview-img mb-2" id="imgPreview" />
+                                } else {
+                                    <div class="profile-placeholder mb-2" id="profilePlaceholder">
+                                        <i class="fas fa-user-tie fa-3x text-muted"></i>
+                                    </div>
+                                }
+                                <div class="custom-file-upload">
+                                    <label for="Image" class="btn btn-sm btn-outline-info">
+                                        <i class="fas fa-camera mr-1"></i> Upload Photo
+                                    </label>
+                                    <input type="file" name="fileProfilePicture" id="Image" style="display:none;" onchange="previewFile(this, 'imgPreview', 'profilePlaceholder')" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-3">
+                             <label class="font-weight-bold small text-muted">Document Scan (Optional)</label>
+                             <input type="file" name="flpdocument" id="flpdocument" class="form-control-file" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer with Save Button -->
+            <div class="col-lg-12">
+                <div class="wizard-footer mb-5">
+                    <div class="left-actions">
+                        <a href="/Permission/EmployeeDetails" class="btn btn-outline-primary">
+                            <i class="fas fa-users mr-2"></i> View User List
+                        </a>
+                    </div>
+                    <div class="right-actions">
+                        @Html.HiddenFor(m => m.PK_UserID)
+                        @if (Model.PK_UserID == null)
+                        {
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" onclick="return filldata();" name="Save" value="Save">
+                                <i class="fas fa-save mr-2"></i> Save User
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm" onclick="return filldata();" name="Update" value="Update">
+                                <i class="fas fa-sync-alt mr-2"></i> Update User
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            @if (TempData["EmployeeRegistration"] != null)
+            {
+                <div class="col-lg-12 text-center mt-2">
+                    <div class="alert alert-info shadow-sm animate-up">
+                        <i class="fas fa-info-circle mr-2"></i> @TempData["EmployeeRegistration"]
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript">
+    function previewFile(input, imgID, placeholderID) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                if (imgID) {
+                    var $img = $('#' + imgID);
+                    if ($img.length) {
+                        $img.attr('src', e.target.result).show();
+                    } else {
+                        // Create img if placeholder exists
+                        $('#' + placeholderID).replaceWith('<img src="' + e.target.result + '" class="profile-preview-img mb-2" id="' + imgID + '" />');
+                    }
+                }
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+
+    });
+    $('#DOJ').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true,
+
+    });
+    $('#DOB').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true,
+        yearRange: "1942:2030",
+        currentyear: false,
+
+    });
+    $('#ExpiryDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true,
+
+    });
+    function isNumberKey(evt) {
+        debugger;
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    function checkEmail() {
+        debugger;
+
+        if (($("#Email").val() != "")) {
+            if ($("#Email").val()) {
+
+                var email = document.getElementById('Email');
+                var filter = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+
+                if (!filter.test($("#Email").val())) {
+                    alert('Please provide a valid email address');
+                    $("#Email").val('');
+                    $("#Email").focus();
+                    return false;
+                }
+            }
+        }
+    }
+    function filldata() {
+        debugger;
+
+        $(".errortext").removeClass("errortext");
+        if ($("#LoginId").val() == "") {
+            $("#LoginId").addClass('errortext');
+            $("#LoginId").focus();
+            return false;
+        }
+        if ($("#DOJ").val() == "") {
+            $("#DOJ").addClass('errortext');
+            $("#DOJ").focus();
+            return false;
+        }
+        if ($("#Fk_UserTypeId").val() == "0") {
+            $("#Fk_UserTypeId").addClass('errortext');
+            $("#Fk_UserTypeId").focus();
+            return false;
+        }
+        if ($("#Name").val() == "") {
+            $("#Name").addClass('errortext');
+            $("#Name").focus();
+            return false;
+        }
+
+        if ($("#Mobile").val() == "") {
+            $("#Mobile").addClass('errortext');
+            $("#Mobile").focus();
+            return false;
+        }
+
+        if ($("#Email").val() == "") {
+            $("#Email").addClass('errortext');
+            $("#Email").focus();
+            return false;
+        }
+    }
+</script>
+
+
+
+
+

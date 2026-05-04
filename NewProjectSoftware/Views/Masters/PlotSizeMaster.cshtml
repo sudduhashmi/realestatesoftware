@@ -1,0 +1,223 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "PlotSizeMaster";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("PlotSizeMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-counter">4</div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">5</div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">6</div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Create Plot Size Master</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-12 mb-3">
+                    <label class="font-weight-bold mr-3">Select Measurement Unit: </label>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="unitFt" name="UnitType" class="custom-control-input" value="Ft" checked onchange="toggleUnit()">
+                        <label class="custom-control-label" for="unitFt">Sq/Ft (Feet & Inches)</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                        <input type="radio" id="unitMt" name="UnitType" class="custom-control-input" value="Mt" onchange="toggleUnit()">
+                        <label class="custom-control-label" for="unitMt">Sq/Mt (Meters)</label>
+                    </div>
+                    @Html.HiddenFor(m => m.UnitID)
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold" id="lblWidthMain">Width (Feet) <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.WidthFeet, new { @class = "form-control", @oninput = "calculatePlotArea()", @onkeypress = "return isNumberOrDecimal(event);", maxlength = "50", @placeholder = "0" })
+                    @Html.HiddenFor(m => m.WidthInch)
+                </div>
+                @* <div class="col-sm-3 divInches">
+                    <label class="font-weight-bold">Width (Inches) <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.WidthInch, new { @class = "form-control", @oninput = "calculatePlotArea()", @onkeypress = "return isNumberOrDecimal(event);", maxlength = "50", @placeholder = "0" })
+                </div> *@
+                <div class="col-sm-6">
+                    <label class="font-weight-bold" id="lblHeightMain">Height (Feet) <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.HeightFeet, new { @class = "form-control", @oninput = "calculatePlotArea()", @onkeypress = "return isNumberOrDecimal(event);", maxlength = "50", @placeholder = "0" })
+                    @Html.HiddenFor(m => m.HeightInch)
+                </div>
+                @* <div class="col-sm-3 divInches">
+                    <label class="font-weight-bold">Height (Inches) <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.HeightInch, new { @class = "form-control", @oninput = "calculatePlotArea()", @onkeypress = "return isNumberOrDecimal(event);", maxlength = "50", @placeholder = "0" })
+                </div> *@
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-sm-12">
+                    <label class="font-weight-bold">Total Plot Area <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        @Html.TextBoxFor(m => m.PlotArea, new { @class = "form-control form-control-lg bg-light text-primary font-weight-bold", @ReadOnly = "ReadOnly", @Placeholder = "0.00" })
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="areaUnitLabel">Sq/Ft</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="wizard-footer mt-4">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary mr-2" href="/Masters/BlockMaster">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </a>
+                    <a class="btn btn-outline-primary" href="/Masters/PlotSizeList">
+                        <i class="fas fa-list mr-2"></i> View Plot Size List
+                    </a>
+                </div>
+                <div class="right-actions">
+                    @if (Model.PlotSizeID == null)
+                    {
+                        <input class="btn btn-primary btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="Save" name="Save" style="padding-left: 30px; padding-right: 30px;" />
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.PlotSizeID)
+                        <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Update Size" id="btnUpdate" name="btnUpdate" />
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["PlotSize"]</p>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+    $(document).ready(function() {
+        // Initialize unit on load
+        if ($('#UnitID').val() == '2') {
+            $('#unitMt').prop('checked', true);
+        } else {
+            $('#unitFt').prop('checked', true);
+        }
+        toggleUnit();
+    });
+
+    function toggleUnit() {
+        var unit = $('input[name="UnitType"]:checked').val();
+        if (unit == "Mt") {
+            // $('.divInches').hide();
+            $('#lblWidthMain').text('Width (Meters)');
+            $('#lblHeightMain').text('Height (Meters)');
+            $('#areaUnitLabel').text('Sq/Mt');
+            $('#UnitID').val('2'); 
+            $('#WidthInch').val('0');
+            $('#HeightInch').val('0');
+        } else {
+            // $('.divInches').show();
+            $('#lblWidthMain').text('Width (Feet)');
+            $('#lblHeightMain').text('Height (Feet)');
+            $('#areaUnitLabel').text('Sq/Ft');
+            $('#UnitID').val('1'); 
+            $('#WidthInch').val('0');
+            $('#HeightInch').val('0');
+        }
+        calculatePlotArea();
+    }
+
+    function calculatePlotArea() {
+        var widthMain = Number($('#WidthFeet').val());
+        var heightMain = Number($('#HeightFeet').val());
+        var area = widthMain * heightMain;
+        document.getElementById("PlotArea").value = area.toFixed(2);
+    }
+
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#WidthFeet').val() == '' || $('#WidthFeet').val() == '0') {
+            $("#WidthFeet").addClass('errortext');
+            $('#WidthFeet').focus();
+            return false;
+        }
+        if ($('#HeightFeet').val() == '' || $('#HeightFeet').val() == '0') {
+            $("#HeightFeet").addClass('errortext');
+            $('#HeightFeet').focus();
+            return false;
+        }
+        if ($('#PlotArea').val() == '' || $('#PlotArea').val() == '0.00') {
+            $("#PlotArea").addClass('errortext');
+            return false;
+        }
+        
+        $("#divload").css({ 'display': '' });
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>

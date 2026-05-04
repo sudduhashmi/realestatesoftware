@@ -1,0 +1,244 @@
+@model RealEstateRegalSpace.Models.Customer
+
+@{
+    ViewBag.Title = "CustomerRegistration";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("CustomerRegistration", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Customer Registration</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Referral Details -->
+            <div class="col-lg-12 mb-4">
+                <div class="wizard-card animate-up">
+                    <div class="card-header-premium">
+                        <i class="fas fa-handshake mr-2"></i> Referral Information
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-dark">Associate Code <span class="text-danger">*</span></label>
+                                @if (Model.UserID == null)
+                                {
+                                    @Html.TextBoxFor(m => m.sponserId, new { @class = "form-control", @Placeholder = "Enter Sponsor ID", @onchange = "return getSponsorName();", @style="height: 45px;" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.sponserId, new { @class = "form-control", @Placeholder = "Sponsor ID", @readonly = "readonly", @style="height: 45px; background-color: #f8f9fa;" })
+                                }
+                                @Html.HiddenFor(m => m.UserID)
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-dark">Associate Name</label>
+                                @Html.TextBoxFor(m => m.sponsorName, new { @class = "form-control", @Placeholder = "Sponsor Name", @readonly = "readonly", @style="height: 45px; background-color: #f8f9fa;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Personal Details -->
+            <div class="col-lg-12 mb-4">
+                <div class="wizard-card animate-up" style="animation-delay: 0.1s;">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-user-plus mr-2"></i> Customer Information
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">First Name <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @Placeholder = "Enter First Name", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Last Name</label>
+                                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @Placeholder = "Enter Last Name", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Mobile No <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Contact, new { @class = "form-control", @Placeholder = "10-digit Mobile", @onkeypress = "return isNumberOrDecimal(event);", @maxlength = "10", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Email Address</label>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @Placeholder = "Enter Email", @style="height: 45px;" })
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">PAN Number</label>
+                                @Html.TextBoxFor(m => m.PanNo, new { @class = "form-control", @Placeholder = "Enter PAN", @maxlength = "10", @onchange = "return validatePan();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Relation</label>
+                                @Html.DropDownListFor(m => m.Relation, new SelectList(ViewBag.ddlRelation, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-dark">Relation Name</label>
+                                @Html.TextBoxFor(m => m.FatherName, new { @class = "form-control", @Placeholder = "Enter Relation Name", @style="height: 45px;" })
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12 mb-3">
+                                <label class="font-weight-bold text-dark">Full Address</label>
+                                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", @Placeholder = "Enter Complete Address", @rows="2" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="col-lg-12">
+                <div class="wizard-footer mb-5">
+                    <div class="left-actions">
+                        @if (TempData["Registration"] != null)
+                        {
+                            <div class="alert alert-info py-2 px-3 mb-0 shadow-sm animate-fade-in">
+                                <i class="fas fa-check-circle mr-1"></i> @TempData["Registration"]
+                            </div>
+                        }
+                    </div>
+                    <div class="right-actions d-flex align-items-center">
+                        <a class="btn btn-outline-info btn-lg px-4 mr-3 shadow-sm" href="/Admin/CustomerList">
+                            <i class="fas fa-list mr-1"></i> Back to List
+                        </a>
+                        @if (Model.UserID == null)
+                        {
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" onclick="return validateform();" name="btnRegistration" value="Save">
+                                <i class="fas fa-user-check mr-2"></i> Register Customer
+                            </button>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.UserID)
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm" onclick="return validateform();" name="btnUpdate" value="Update">
+                                <i class="fas fa-sync-alt mr-2"></i> Update Details
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+
+    function validatePan() {
+        var panVal = $('#PanNo').val();
+        var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+
+        if (regpan.test(panVal)) {
+            $("#PanNo").removeClass('errortext');
+        } else {
+            alert("Invalid PAN Number");
+            $("#PanNo").val('');
+            $("#PanNo").addClass('errortext');
+        }
+    }
+
+
+
+    function getSponsorName() {
+
+        $("#divload").css({ 'display': '' });
+        var sponsorID = $('#sponserId').val();
+        $.ajax({
+            url: '/Admin/GetSponsorNameForPlotBooking', type: 'post', dataType: 'json',
+            data: { 'SponsorID': sponsorID },
+            success: function (data) {
+
+                $("#divload").css({ 'display': 'none' });
+                if (data.Result == "yes") {
+                    $("#sponsorName").val(data.sponsorName);
+                    $("#UserID").val(data.UserID);
+                    $("#sponsorName").removeClass('errortext');
+                    $("#sponserId").removeClass('errortext');
+                }
+                else if (data.Result == "no") {
+                    alert("Invalid Sponsor ID");
+                    $("#sponsorName").val('');
+                    $("#sponsorName").addClass('errortext');
+                    $("#sponserId").addClass('errortext');
+                    $('#sponserId').focus();
+                    $('#sponserId').val('');
+
+                }
+            }
+        });
+    }
+
+    function validateform() {
+        $("#divload").css({ 'display': 'none' });
+        $(".errortext").removeClass("errortext");
+
+        if ($('#sponserId').val() == '') {
+            $("#sponserId").addClass('errortext');
+            $('#sponserId').focus();
+            return false;
+        }
+        if ($('#FirstName').val() == '') {
+            $("#FirstName").addClass('errortext');
+            $('#FirstName').focus();
+            return false;
+        }
+        if ($('#Contact').val() == '') {
+            $("#Contact").addClass('errortext');
+            $('#Contact').focus();
+            return false;
+        }
+
+
+        $("#divload").css({ 'display': '' });
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>
+
+
+

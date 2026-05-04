@@ -1,0 +1,98 @@
+@model RealEstateRegalSpace.Models.Reports
+@{
+    ViewBag.Title = "CreditOtherIncome";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <!-- Page-Title -->
+    <div class="page-title-box">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h4 class="page-title">Credit Other Income</h4>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("CreditOtherIncome", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+    {
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-hand-holding-usd mr-2"></i> Deposit Miscellaneous Income
+            </div>
+            <div class="p-4">
+                @if (TempData["CreditOtherIncome"] != null)
+                {
+                    <div class="alert alert-soft-info border-0 mb-4">
+                        <i class="fas fa-info-circle mr-2"></i> @TempData["CreditOtherIncome"]
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <label class="font-weight-bold text-dark mb-0">Associate ID <span class="text-danger">*</span></label>
+                            <span id="txtMemberName" class="font-weight-bold text-primary small"></span>
+                        </div>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter Associate ID", @onchange = "return getMemberDetails();", @style = "height: 48px;" })
+                        @Html.HiddenFor(m => m.Fk_UserId)
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Amount <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "0.00", @onkeypress = "return isNumberOrDecimal(event);", @style = "height: 48px;" })
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Date <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @style = "height: 48px;" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row align-items-end">
+                    <div class="col-md-8 mb-4">
+                        <label class="font-weight-bold text-dark mb-1">Remark / Narration</label>
+                        @Html.TextBoxFor(m => m.Particular, new { @class = "form-control", @Placeholder = "Enter any specific details...", @style = "height: 48px;" })
+                    </div>
+
+                    <div class="col-md-4 mb-4">
+                        <button type="submit" name="Save" value="Credit Income" class="btn btn-success btn-block shadow-sm font-weight-bold" style="height: 48px;" onclick="return validate();">
+                            <i class="fas fa-check-circle mr-2"></i> Credit Income Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true,
+                maxDate: 0
+            });
+        });
+
+        function validate() {
+            if ($('#LoginId').val() == '') {
+                alert('Please enter Associate ID');
+                return false;
+            }
+            if ($('#Amount').val() == '' || $('#Amount').val() == '0') {
+                alert('Please enter Amount');
+                return false;
+            }
+            if ($('#FromDate').val() == '') {
+                alert('Please select Date');
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

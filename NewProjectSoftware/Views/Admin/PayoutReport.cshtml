@@ -1,0 +1,140 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Payout Report";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("PayoutReport", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Commission Payout Report</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Filter Payouts
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label class="small font-weight-bold text-muted">Payout No</label>
+                            @Html.TextBoxFor(m => m.PayoutNo, new { @class = "form-control", @placeholder = "Enter Payout No", @onkeypress = "return isNumberOrDecimal(event);", @style = "height: 48px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> From Date</label>
+                            @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style = "height: 48px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group mb-0">
+                            <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> To Date</label>
+                            @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style = "height: 48px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" class="btn btn-primary btn-block shadow-sm font-weight-bold" name="Search" style="height: 48px;">
+                            <i class="fas fa-search mr-2"></i> Fetch Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-list-ul mr-2"></i> Payout Details
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="payoutTable" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th>Associate Info</th>
+                                <th class="text-center">Payout No</th>
+                                <th class="text-center">Closing Date</th>
+                                <th class="text-right">Direct</th>
+                                <th class="text-right">Diff.</th>
+                                <th class="text-right">Gross</th>
+                                <th class="text-right text-danger">TDS</th>
+                                <th class="text-right text-danger">Admin</th>
+                                <th class="text-right font-weight-bold text-success">Net Payable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.payoutData != null && Model.payoutData.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.payoutData.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td>
+                                            <div class="font-weight-bold">@Model.payoutData.Rows[i]["FirstName"].ToString()</div>
+                                            <div class="small text-muted">@Model.payoutData.Rows[i]["LoginId"].ToString()</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-soft-primary">#@Model.payoutData.Rows[i]["PayoutNo"].ToString()</span>
+                                        </td>
+                                        <td class="text-center small">@Model.payoutData.Rows[i]["ClosingDate"].ToString()</td>
+                                        <td class="text-right">@Model.payoutData.Rows[i]["DirectAmount"].ToString()</td>
+                                        <td class="text-right">@Model.payoutData.Rows[i]["DifferenceIncome"].ToString()</td>
+                                        <td class="text-right font-weight-bold">@Model.payoutData.Rows[i]["GrossAmount"].ToString()</td>
+                                        <td class="text-right text-danger">@Model.payoutData.Rows[i]["TDSAmount"].ToString()</td>
+                                        <td class="text-right text-danger">@Model.payoutData.Rows[i]["AdminCharges"].ToString()</td>
+                                        <td class="text-right font-weight-bold text-success">
+                                            ₹ @Model.payoutData.Rows[i]["NetAmount"].ToString()
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-receipt fa-3x mb-3 d-block opacity-50"></i>
+                                            No payout records found matching your criteria.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        $(document).ready(function() {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true
+            });
+            $('#Todate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+    </script>
+}
+
+
+

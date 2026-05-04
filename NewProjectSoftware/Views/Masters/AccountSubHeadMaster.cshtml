@@ -1,0 +1,125 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "AccountSubHeadMaster";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("AccountSubHeadMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Create Account Head Master</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Head Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.AccountHead, new { @class = "form-control", @placeholder = "e.g. Sales Revenue" })
+                </div>
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Head Type <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(m => m.HeadType, new SelectList(ViewBag.ddlHeadtTyppe, "Value", "Text"), new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary mr-2" href="/Masters/AddBank">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </a>
+                    <a class="btn btn-outline-primary" href="/Masters/AccountHeadList">
+                        <i class="fas fa-list mr-2"></i> View Account List
+                    </a>
+                </div>
+                <div class="right-actions">
+                    <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p id="finalStatus" class="text-danger font-weight-bold">@TempData["AccountHeadMaster"]</p>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        var msg = $('#finalStatus').text();
+        if (msg.toLowerCase().indexOf('success') !== -1 || msg.toLowerCase().indexOf('added') !== -1) {
+             Swal.fire({
+                title: 'Master Setup Complete!',
+                text: 'All master configurations have been successfully saved.',
+                icon: 'success',
+                confirmButtonText: 'Great!',
+                confirmButtonColor: '#28a745'
+            });
+        }
+    });
+</script>
+
+<script src="../../assets/js/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#AccountHead').val() == '') {
+            $("#AccountHead").addClass('errortext');
+            $('#AccountHead').focus();
+            $('#AccountHead').val('');
+            //   alert("Please Fill Sponsor ID .")
+            return false;
+        }
+
+        $("#divload").css({ 'display': '' });
+        return true;
+    }
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+</script>

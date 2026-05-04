@@ -1,0 +1,87 @@
+@model RealEstateRegalSpace.Models.DayBook
+
+@{
+    ViewBag.Title = "Create Head";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+
+
+@using (Html.BeginForm("CreateHead", "Admin", FormMethod.Post, new { @id = "form1" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+
+            <div class="card-block">
+
+                <!-- Page-Title -->
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Accounts</h4>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-right">
+
+                                <li class="breadcrumb-item active">Add Expense</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card m-b-30">
+                                    <div class="card-body">
+                                        <h6 style="color: red">
+                                        </h6>
+                                        <div class="row">
+
+                                            <div class="col-sm-6">
+                                                <label class="float-label">Head Type<span style="color:red">*</span></label>
+                                                @Html.DropDownListFor(m => m.HeadType, new SelectList(ViewBag.ddlHeadtTyppe, "Value", "Text"), new { @class = "form-control" })
+                                                <span class="form-bar"></span>
+                                            </div>
+
+
+
+
+                                            <div class="col-sm-6">
+                                                <label class="float-label">LoginId </label>  <span style="color:blue;text-align:right"></span>
+                                                @Html.TextBoxFor(n => n.AccountHead, new { @class = "form-control", @Placeholder = "LoginId" })
+                                                <span class="form-bar"></span>
+                                            </div>
+
+
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-3">
+
+                                                <input type="submit" class="btn btn-success" name="Save" id="Save" value="Save" onclick="return validateform();" />
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="../../assets/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+

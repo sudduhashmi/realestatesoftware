@@ -1,0 +1,147 @@
+@model RealEstateRegalSpace.Models.Master
+@{
+    ViewBag.Title = "SiteMaster";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("SiteMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item active">
+                <div class="step-counter">1</div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">2</div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">3</div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">4</div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">5</div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">6</div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Create Project Master</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Project Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.SiteName, new { @class = "form-control", @Placeholder = "e.g. Dream City" })
+                </div>
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Location <span class="text-danger">*</span></label>
+                    @Html.TextAreaFor(m => m.Location, new { @class = "form-control", @Placeholder = "Full Address" })
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary" href="/Masters/SiteList">
+                        <i class="fas fa-list mr-2"></i> View Project List
+                    </a>
+                </div>
+                <div class="right-actions">
+                    @if (Model.SiteID == null)
+                    {
+                        <input class="btn btn-primary btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.SiteID)
+                        <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Update Project" id="btnUpdate" name="btnUpdate" />
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["SiteMaster"]</p>
+            </div>
+        </div>
+    </div>
+
+}
+
+<script>
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+        if ($('#SiteName').val() == '') {
+            $("#SiteName").addClass('errortext');
+            $('#SiteName').focus();
+            return false;
+        }
+
+        if ($('#Location').val() == '') {
+            $("#Location").addClass('errortext');
+            $('#Location').focus();
+            return false;
+        }
+
+
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>
+
+
+<style>
+    .errortext {
+        border: 1px solid red !important;
+        background-color: #fff0f0 !important;
+    }
+</style>

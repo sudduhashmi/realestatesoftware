@@ -1,0 +1,145 @@
+@model RealEstateRegalSpace.Models.Master
+@{
+    ViewBag.Title = "Sector Master";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("SectorMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-counter">2</div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">3</div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">4</div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">5</div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">6</div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Create Sector Master</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Select Project <span class="text-danger">*</span></label>
+                    @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control" })
+                </div>
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">Sector Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.SectorName, new { @class = "form-control", @Placeholder = "e.g. Sector A" })
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary mr-2" href="/Masters/SiteMaster">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </a>
+                    <a class="btn btn-outline-primary" href="/Masters/SectorList">
+                        <i class="fas fa-list mr-2"></i> View Sector List
+                    </a>
+                </div>
+                <div class="right-actions">
+                    @if (Model.SectorID == null)
+                    {
+                        <input class="btn btn-primary btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.SectorID)
+                        <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Update Sector" id="btnUpdate" name="btnUpdate" />
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["SectorMaster"]</p>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#SiteID').val() == '0') {
+            $("#SiteID").addClass('errortext');
+            $('#SiteID').focus();
+            return false;
+        }
+        if ($('#SectorName').val() == '') {
+            $("#SectorName").addClass('errortext');
+            $('#SectorName').focus();
+            return false;
+        }
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+</script>
+<style>
+    .errortext {
+        border: 1px solid red !important;
+        background-color: #fff0f0 !important;
+    }
+</style>

@@ -1,0 +1,306 @@
+@model RealEstateRegalSpace.Models.Plot
+
+@{
+    ViewBag.Title = "PlotAllotment";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("PlotAllotment", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Allotment</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Find Plot for Allotment
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Site <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Sector <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Select Block <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot Number <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Enter Plot No", @style="height: 45px;" })
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-3">
+                        <button type="submit" id="GetDetails" name="GetDetails" value="GetDetails" class="btn btn-primary btn-block shadow-sm" style="height: 45px;">
+                            <i class="fas fa-file-invoice mr-2"></i> Fetch Plot Details
+                        </button>
+                    </div>
+                    @if (TempData["PlotAllotment"] != null)
+                    {
+                        <div class="col-md-9">
+                            <div class="alert alert-soft-danger border-0 mb-0 py-2">
+                                <i class="fas fa-exclamation-circle mr-2"></i> @TempData["PlotAllotment"]
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (Model != null && Model.AssociateLoginID != null)
+        {
+            <!-- Plot Details Section -->
+            <div class="wizard-card animate-up mt-4" id="Details1">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-info-circle mr-2"></i> Allotment Information & Summary
+                </div>
+                <div class="p-4">
+                    <div class="row">
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Associate Info</label>
+                            <div class="font-weight-bold text-dark">@Model.AssociateName</div>
+                            <div class="text-info">ID: @Model.AssociateLoginID</div>
+                        </div>
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Customer Info</label>
+                            <div class="font-weight-bold text-dark">@Model.CustomerName</div>
+                            <div class="text-primary">ID: @Model.CustomerLoginID</div>
+                        </div>
+                        <div class="col-md-3 mb-3 border-right">
+                            <label class="small text-muted font-weight-bold text-uppercase">Plot Summary</label>
+                            <div>Area: <span class="font-weight-bold">@Model.PlotArea</span></div>
+                            <div>Rate: <span class="font-weight-bold">@Model.PlotRate</span></div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="small text-muted font-weight-bold text-uppercase">Booking Info</label>
+                            <div class="text-success font-weight-bold">Amt: @Model.BookingAmount</div>
+                            <div>Date: @Model.BookingDate</div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 border-dashed" />
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="bg-light p-4 rounded-lg">
+                                <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-calculator mr-2"></i> Pricing Breakdown</h6>
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">Actual Amount</div>
+                                        <div class="h6 font-weight-bold mb-0">@Model.PlotAmount</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">Discount</div>
+                                        <div class="h6 font-weight-bold mb-0 text-danger">-@Model.Discount</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">PLC Charge</div>
+                                        <div class="h6 font-weight-bold mb-0 text-info">+@Model.PLCAmount</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="small text-muted">Net Plot Amt</div>
+                                        <div class="h6 font-weight-bold mb-0 text-success">@Model.NetPlotAmount</div>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 pt-4 border-top">
+                                    <div class="col-md-4">
+                                        <label class="small font-weight-bold text-uppercase">Total Allotment</label>
+                                        <div class="h5 font-weight-bold">@Model.TotalAllotmentAmount</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="small font-weight-bold text-uppercase">Paid Allotment</label>
+                                        <div class="h5 font-weight-bold text-primary">@Model.PaidAllotmentAmount</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="small font-weight-bold text-uppercase">Balance Allotment</label>
+                                        <div class="h5 font-weight-bold text-danger">@Model.BalanceAllotmentAmount</div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 bg-white mx-0 p-3 rounded shadow-sm border border-danger border-left-lg">
+                                    <div class="col-12">
+                                        <label class="small font-weight-bold text-uppercase text-danger mb-0">Remaining Balance to Pay</label>
+                                        <div class="h4 font-weight-bold text-dark mb-0">@Model.Balance</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 border-left">
+                            <h6 class="font-weight-bold text-dark mb-3 px-3"><i class="fas fa-credit-card mr-2 text-warning"></i> Payment Processing</h6>
+                            <div class="px-3">
+                                <div class="form-group">
+                                    <label class="small font-weight-bold">Pay Amount <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.PaidAmount, new { @class = "form-control", @Placeholder = "0.00", @onkeypress = "return isNumberOrDecimal(event);", @onchange = "return validatePayAmount()", @style="height: 45px;" })
+                                </div>
+                                <div class="form-group">
+                                    <label class="small font-weight-bold">Payment Date <span class="text-danger">*</span></label>
+                                    @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly="readonly", @style="height: 45px;" })
+                                </div>
+                                <div class="form-group">
+                                    <label class="small font-weight-bold">Payment Mode <span class="text-danger">*</span></label>
+                                    @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlPaymentMode, "Value", "Text"), new { @class = "form-control", @onchange = "return CheckPayMode()", @style="height: 45px;" })
+                                </div>
+                                <div class="form-group">
+                                    <label id="creditdebit" class="small font-weight-bold">Debit To</label>
+                                    @Html.DropDownListFor(m => m.CreditTo, new SelectList(ViewBag.ddlBank, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="divPaymentMode" style="display: none" class="mt-4 p-4 rounded-lg bg-light border">
+                        <h6 class="font-weight-bold text-primary mb-3"><i class="fas fa-university mr-2"></i> Transaction Details</h6>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="small font-weight-bold">Chq/Transaction No <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.TransactionNumber, new { @class = "form-control", @Placeholder = "Enter Number", @maxlength = "50", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="small font-weight-bold">Transaction Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="small font-weight-bold">Bank Name <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @Placeholder = "Enter Bank Name", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="small font-weight-bold">Bank Branch <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.BankBranch, new { @class = "form-control", @Placeholder = "Enter Branch", @style="height: 45px;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-md-12 text-center">
+                            @Html.HiddenFor(m => m.hdBookingNo)
+                            <button type="submit" name="Save" value="Save" id="btnSave" class="btn btn-success btn-lg px-5 shadow" onclick="return validateform();">
+                                <i class="fas fa-check-circle mr-2"></i> Process Plot Allotment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $('#PaymentDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+    $('#TransactionDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true,
+
+    });
+    $('#BookingDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+    function CheckPayMode() {
+        debugger
+        if ($('#PaymentMode').val() != '1' && $('#PaymentMode').val() != '7' && $('#PaymentMode').val() != '8') {
+            $("#divPaymentMode").show();
+            if ($('#PaymentMode').val() == '9') {
+                $('#creditdebit').html('Debit To');
+            }
+            else {
+                $('#creditdebit').html('Debit To');
+            }
+        }
+
+        else {
+            $("#divPaymentMode").hide();
+        }
+
+    }
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+
+
+
+
+
+    });
+    function onSiteChange() {
+        $("#divload").css({ 'display': '' });
+        var value = $('#SiteID').val();
+        var values = $('#SectorID').val();
+        var tr = [];
+        $.ajax({
+            url: "/Masters/GetSiteDetails",
+            Type: "Get",
+            DataType: "JSON",
+            data: { SiteID: value },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                var j = 1;
+                if (data.Result == "yes") {
+
+                    $("#SectorID").html(""); // clear before appending new list
+                    $("#SectorID").empty();
+                    $("#SectorID").append(
+                        $('<option></option>').val(0).html('Select Sector'));
+                    $.each(data.ddlSector, function (index, Sectorcount) {
+                        $("#SectorID").append(
+                            $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+
+                    });
+                }
+                else {
+                    $("#SectorID").empty();
+
+                }
+            }
+
+        });
+
+    }
+
+    function onSectorChange() {
+
+        $("#divload").css({ 'display': '' });
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        $.ajax({
+            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+            data: { 'SiteID': siteID, 'sectorID': sectorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                $("#BlockID").html(""); // clear before appending new list
+                $("#BlockID").empty();
+                $("#BlockID").append(
+                    $('<option></option>').val(0).html('Select Block'));
+                $.each(data.lstBlock, function (index, BlockCount) {
+                    $("#BlockID").append(
+                        $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                });
+
+            }
+
+        });
+    }
+</script>

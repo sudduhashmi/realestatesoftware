@@ -1,0 +1,98 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Club Income Report";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("ClubIncomeReport", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Club Income Statement</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-trophy mr-2"></i> Performance & Club Rewards
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th>Associate Info</th>
+                                <th>Club Name</th>
+                                <th class="text-right">Target</th>
+                                <th class="text-right">Highest Team Biz</th>
+                                <th class="text-right">Rest Business</th>
+                                <th class="text-right font-weight-bold">Total Business</th>
+                                <th class="text-center">Reward Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.payoutData != null && Model.payoutData.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.payoutData.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td>
+                                            <div class="font-weight-bold">@Model.payoutData.Rows[i]["Name"].ToString()</div>
+                                            <div class="small text-muted">@Model.payoutData.Rows[i]["LoginId"].ToString()</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge badge-soft-primary px-3">
+                                                <i class="fas fa-medal mr-1"></i> @Model.payoutData.Rows[i]["ClubName"].ToString()
+                                            </span>
+                                        </td>
+                                        <td class="text-right">@Model.payoutData.Rows[i]["Target"].ToString()</td>
+                                        <td class="text-right">@Model.payoutData.Rows[i]["HighestBusiness"].ToString()</td>
+                                        <td class="text-right">@Model.payoutData.Rows[i]["RestBusiness"].ToString()</td>
+                                        <td class="text-right font-weight-bold text-dark">
+                                            ₹ @Model.payoutData.Rows[i]["TotalBusiness"].ToString()
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="text-success font-weight-bold small">
+                                                <i class="fas fa-gift mr-1"></i> @Model.payoutData.Rows[i]["RewardName"].ToString()
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-award fa-3x mb-3 d-block opacity-50"></i>
+                                            No club income records found at this moment.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            // Placeholder for potential future filters or table enhancements
+        });
+    </script>
+}
+
+
+

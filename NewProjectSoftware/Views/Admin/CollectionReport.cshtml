@@ -1,0 +1,233 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Collection Report";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("CollectionReport", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Daily Collection Report</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Advanced Search Filters
+            </div>
+            <div class="p-4">
+                <!-- Location Filters -->
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Select Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Plot Number</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "e.g. A-101", @style = "height: 48px;" })
+                    </div>
+                </div>
+
+                <!-- Entity Filters -->
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Associate ID</label>
+                        @Html.TextBoxFor(m => m.SponsorId, new { @class = "form-control", @Placeholder = "Search by ID", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Customer ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Search by ID", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Booking Number</label>
+                        @Html.TextBoxFor(m => m.BookingNumber, new { @class = "form-control", @Placeholder = "Booking No", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Payment Type</label>
+                        @Html.DropDownListFor(m => m.PaymentType, new SelectList(ViewBag.BindPaymentType, "Value", "Text"), new { @class = "form-control", @style = "height: 48px;" })
+                    </div>
+                </div>
+
+                <!-- Mode & Date Filters -->
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Payment Mode</label>
+                        @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlPaymentMode, "Value", "Text"), new { @class = "form-control", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> From Date</label>
+                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @readonly = "readonly", @Placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> To Date</label>
+                        @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @readonly = "readonly", @Placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px;">
+                            <i class="fas fa-search mr-2"></i> Fetch Collection
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-receipt mr-2"></i> Collection Transactions
+            </div>
+            <div class="p-0">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th>Plot Holder</th>
+                                <th>Associate</th>
+                                <th class="text-center">Property Info</th>
+                                <th class="text-center">Receipt</th>
+                                <th class="text-center">Pmt Date</th>
+                                <th class="text-center">Mode</th>
+                                <th>Transaction Details</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-right font-weight-bold">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstDetails.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Model.lstDetails.Rows[i]["CustomerName"].ToString()</div>
+                                            <div class="small text-muted">ID: @Model.lstDetails.Rows[i]["CustomerId"].ToString()</div>
+                                            <div class="small text-info"><i class="fas fa-mobile-alt mr-1"></i> @Model.lstDetails.Rows[i]["CustomerMobile"].ToString()</div>
+                                        </td>
+                                        <td>
+                                            <div class="text-dark font-weight-bold">@Model.lstDetails.Rows[i]["AssociateName"].ToString()</div>
+                                            <div class="small text-muted">ID: @Model.lstDetails.Rows[i]["AssociateId"].ToString()</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge badge-soft-primary mb-1">Plot: @Model.lstDetails.Rows[i]["PlotNumber"].ToString()</span>
+                                            <div class="small text-muted">@Model.lstDetails.Rows[i]["SiteName"].ToString()</div>
+                                        </td>
+                                        <td class="text-center small font-weight-bold">@Model.lstDetails.Rows[i]["ReceiptNo"].ToString()</td>
+                                        <td class="text-center small">@Model.lstDetails.Rows[i]["PaymentDate"].ToString()</td>
+                                        <td class="text-center">
+                                            <span class="badge badge-pill badge-outline-secondary small">@Model.lstDetails.Rows[i]["PaymentMode"].ToString()</span>
+                                        </td>
+                                        <td class="small">
+                                            @if (Model.lstDetails.Rows[i]["PaymentMode"].ToString() != "Cash")
+                                            {
+                                                <div><i class="fas fa-university mr-1"></i> @Model.lstDetails.Rows[i]["BankName"].ToString()</div>
+                                                <div class="text-muted">Ref: @Model.lstDetails.Rows[i]["TransactionNo"].ToString()</div>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted italic">Cash Payment</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            @{
+                                                string status = Model.lstDetails.Rows[i]["PaymentStatus"].ToString();
+                                                string badgeClass = status == "Approved" ? "badge-soft-success" : (status == "Pending" ? "badge-soft-warning" : "badge-soft-danger");
+                                            }
+                                            <span class="badge @badgeClass">@status</span>
+                                        </td>
+                                        <td class="text-right font-weight-bold text-success" style="font-size: 1.05rem;">
+                                            ₹ @Model.lstDetails.Rows[i]["PaidAmount"].ToString()
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-folder-open fa-3x mb-3 d-block opacity-50"></i>
+                                            No collection records found for the selected criteria.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true
+            });
+            $('#Todate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true
+            });
+        });
+
+        function onSiteChange() {
+            $("#divload").css({ 'display': '' });
+            var value = $('#SiteID').val();
+            $.ajax({
+                url: "/Masters/GetSiteDetails",
+                Type: "Get",
+                DataType: "JSON",
+                data: { SiteID: value },
+                success: function (data) {
+                    $("#divload").css({ 'display': 'none' });
+                    if (data.Result == "yes") {
+                        $("#SectorID").empty().append($('<option></option>').val(0).html('Select Sector'));
+                        $.each(data.ddlSector, function (index, Sectorcount) {
+                            $("#SectorID").append($('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+                        });
+                    }
+                }
+            });
+        }
+
+        function onSectorChange() {
+            $("#divload").css({ 'display': '' });
+            var siteID = $('#SiteID').val();
+            var sectorID = $('#SectorID').val();
+            $.ajax({
+                url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+                data: { 'SiteID': siteID, 'sectorID': sectorID },
+                success: function (data) {
+                    $("#divload").css({ 'display': 'none' });
+                    $("#BlockID").empty().append($('<option></option>').val(0).html('Select Block'));
+                    $.each(data.lstBlock, function (index, BlockCount) {
+                        $("#BlockID").append($('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                    });
+                }
+            });
+        }
+    </script>
+}
+

@@ -1,0 +1,113 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "PLCMaster";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("PLCMaster", "Masters", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Stepper Wizard -->
+        <div class="stepper-wrapper animate-up">
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Project</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Sector</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Block</div>
+            </div>
+            <div class="step-item completed">
+                <div class="step-counter"><i class="fas fa-check"></i></div>
+                <div class="step-name">Size</div>
+            </div>
+            <div class="step-item active">
+                <div class="step-counter">5</div>
+                <div class="step-name">PLC</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">6</div>
+                <div class="step-name">Plot</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">7</div>
+                <div class="step-name">Bank</div>
+            </div>
+            <div class="step-item">
+                <div class="step-counter">8</div>
+                <div class="step-name">Account</div>
+            </div>
+        </div>
+
+        <div class="wizard-card wizard-card-c animate-up">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Create PLC Master</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">PLC Name <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.PLCName, new { @class = "form-control", @Placeholder = "e.g. Corner Plot" })
+                </div>
+                <div class="col-sm-6">
+                    <label class="font-weight-bold">PLC Charge (%) <span class="text-danger">*</span></label>
+                    @Html.TextBoxFor(m => m.PLCCharge, new { @class = "form-control", @Placeholder = "0.00" })
+                    @Html.HiddenFor(m => m.PLCID)
+                </div>
+            </div>
+
+            <div class="wizard-footer">
+                <div class="left-actions">
+                    <a class="btn btn-outline-secondary mr-2" href="/Masters/PlotSizeMaster">
+                        <i class="fas fa-arrow-left mr-2"></i> Previous
+                    </a>
+                    <a class="btn btn-outline-primary" href="/Masters/PLCList">
+                        <i class="fas fa-list mr-2"></i> View PLC List
+                    </a>
+                </div>
+                <div class="right-actions">
+                    @if (Model.PLCID == null)
+                    {
+                        <input class="btn btn-primary btn-lg" type="submit" onclick="return validateform();" value="Save & Continue" id="btnSave" name="btnSave" style="padding-left: 30px; padding-right: 30px;" />
+                    }
+                    else
+                    {
+                        @Html.HiddenFor(m => m.PLCID)
+                        <input class="btn btn-success btn-lg" type="submit" onclick="return validateform();" value="Update PLC" id="btnUpdate" name="btnUpdate" />
+                    }
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-danger font-weight-bold">@TempData["PLCMaster"]</p>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#PLCName').val() == '') {
+            $("#PLCName").addClass('errortext');
+            $('#PLCName').focus();
+            return false;
+        }
+        if ($('#PLCCharge').val() == '') {
+            $("#PLCCharge").addClass('errortext');
+            $('#PLCCharge').focus();
+            return false;
+        }
+        return true;
+    }
+</script>

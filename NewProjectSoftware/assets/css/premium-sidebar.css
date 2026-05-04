@@ -1,0 +1,541 @@
+:root {
+    --sidebar-bg: #004191;
+    /* Solid Dark Blue like the first image */
+    --sidebar-active: #003366;
+    --sidebar-hover: rgba(255, 255, 255, 0.1);
+    --accent-color: #ff9800;
+    --text-white: #ffffff;
+    --content-bg: #f8f9fa;
+    --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background-color: var(--content-bg);
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+#wrapper {
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background-color: var(--sidebar-bg);
+    color: var(--text-white);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sidebar-header img {
+    width: 35px;
+    height: 35px;
+    background-color: #ffffff;
+    padding: 6px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-header .brand-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.sidebar-header .brand-subtitle {
+    font-size: 0.65rem;
+    font-weight: 400;
+    opacity: 0.6;
+    display: block;
+    text-transform: uppercase;
+}
+
+.sidebar-menu {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+.sidebar-menu::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari and Opera */
+}
+
+#side-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#side-menu li {
+    margin: 4px 12px;
+}
+
+#side-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    transition: all 0.3s;
+    border-radius: 12px;
+    position: relative;
+}
+
+#side-menu li a i {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 15px;
+    font-size: 1.1rem !important;
+    color: #ffffff !important;
+    display: inline-block !important;
+    vertical-align: middle;
+}
+
+/* Active State - Text Highlight Only */
+.sidebar-menu li.active>a {
+    background: transparent !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.sidebar-menu li.active>a i {
+    color: #fff !important;
+}
+
+.submenu li.active a {
+    color: #fff !important;
+    font-weight: 700;
+}
+
+/* .submenu li.active a::before {
+    content: '●';
+    margin-right: 8px;
+    font-size: 10px;
+    color: #fff;
+} */
+
+#side-menu li a:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+#side-menu li a:hover i {
+    color: #ffc0c0 !important;
+}
+
+.sidebar-footer {
+    padding: 15px 20px;
+    background-color: rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-footer img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ff9800;
+}
+
+.user-info .user-name {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+.user-info .user-role {
+    display: block;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 260px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+}
+
+.content-body {
+    flex: 1;
+    padding: 15px;
+}
+
+.content-header {
+    background: #fff;
+    padding: 0 30px;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.breadcrumb-container {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.header-tools {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.btn-toggle {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    color: #5f6368;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-toggle:hover {
+    background: #f1f3f4;
+    color: var(--sidebar-bg);
+}
+
+.search-box {
+    position: relative;
+}
+
+.search-box input {
+    background-color: #f1f3f4;
+    border: none;
+    padding: 10px 15px 10px 40px;
+    border-radius: 10px;
+    width: 350px;
+    font-size: 0.85rem;
+}
+
+.search-box i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #5f6368;
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 1.4rem;
+    color: #5f6368;
+    white-space: nowrap;
+}
+
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0;
+}
+
+/* Submenu */
+.submenu {
+    display: none;
+    list-style: none;
+    padding: 5px 0;
+    background: rgba(0, 0, 0, 0.15);
+    margin: 5px 12px;
+    border-radius: 12px;
+}
+
+.has-submenu.open .submenu {
+    display: block;
+}
+
+.submenu li {
+    margin: 0 !important;
+}
+
+.submenu li a {
+    padding: 8px 15px 8px 52px !important;
+    font-size: 0.82rem !important;
+    background: transparent !important;
+    border-radius: 8px !important;
+}
+
+.submenu li a:hover {
+    color: #ff9800 !important;
+}
+
+.submenu li a::before {
+    content: '';
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+}
+
+.arrow {
+    margin-left: auto;
+    transition: transform 0.3s;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.has-submenu.open .arrow {
+    transform: rotate(180deg);
+}
+
+.wrapper {
+    padding-top: 0 !important;
+}
+
+/* Dashboard Cards - Premium Look */
+.dashboard-card {
+    border-radius: 15px !important;
+    border: none !important;
+    padding: 25px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05) !important;
+    color: #fff !important;
+}
+
+.stat-label {
+    font-size: 0.8rem !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.stat-number {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    margin-top: 10px;
+}
+
+/* Collapsed Sidebar State - Premium Smooth Version */
+.collapsed-sidebar .sidebar {
+    width: 80px;
+    overflow: visible !important;
+}
+
+.collapsed-sidebar .sidebar .brand-details,
+.collapsed-sidebar .sidebar span,
+.collapsed-sidebar .sidebar .arrow,
+.collapsed-sidebar #side-menu .arrow,
+.collapsed-sidebar .sidebar .user-info {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    display: none !important;
+    transition: all 0.2s ease;
+}
+
+.collapsed-sidebar .sidebar-header {
+    padding: 20px 0;
+    justify-content: center;
+}
+
+.collapsed-sidebar .sidebar-header img {
+    margin: 0;
+    width: 45px;
+    height: 45px;
+}
+
+.collapsed-sidebar .sidebar-footer {
+    padding: 15px 0;
+    justify-content: center;
+}
+
+.collapsed-sidebar .sidebar-footer img {
+    margin: 0;
+}
+
+.collapsed-sidebar .main-content {
+    margin-left: 80px;
+}
+
+.collapsed-sidebar .sidebar-menu {
+    overflow-y: auto !important;
+    overflow-x: visible !important;
+    height: calc(100vh - 160px);
+    /* Adjust based on header/footer height */
+    scrollbar-width: none;
+}
+
+.collapsed-sidebar .sidebar-menu::-webkit-scrollbar {
+    display: none;
+}
+
+.collapsed-sidebar #side-menu li {
+    margin: 4px 0;
+    position: relative;
+    padding: 0 10px;
+    /* Keep icons centered but allow li to detect hover better */
+}
+
+/* Invisible bridge to keep hover active while moving to submenu */
+.collapsed-sidebar .has-submenu::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: 0;
+    bottom: 0;
+    width: 25px;
+    background: transparent;
+    z-index: 1;
+}
+
+.collapsed-sidebar #side-menu li a {
+    justify-content: center;
+    padding: 12px 0;
+    border-radius: 10px;
+    /* Restored some rounding for premium feel */
+    transition: all 0.3s ease;
+}
+
+.collapsed-sidebar #side-menu li a i {
+    margin-right: 0;
+    font-size: 1.3rem !important;
+}
+
+.collapsed-sidebar #side-menu li.active>a {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-left: 3px solid var(--accent-color);
+    /* Add a small indicator for active item */
+}
+
+/* Submenu on Hover - Super Smooth */
+.collapsed-sidebar .has-submenu .submenu {
+    display: block !important;
+    position: fixed;
+    /* Changed to fixed to avoid clipping by scrollable parent */
+    left: 80px;
+    top: 0;
+    /* Will be set by JS */
+    width: 240px;
+    background: #003366 !important;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(15px);
+    transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s, visibility 0.3s 0.1s;
+    z-index: 10000;
+    border-radius: 0 15px 15px 0;
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.4);
+    padding: 15px 0 !important;
+    margin: 0 !important;
+    border-left: none;
+    /* Ensure it touches the sidebar perfectly */
+    pointer-events: none;
+    scrollbar-width: none;
+}
+
+.collapsed-sidebar .has-submenu .submenu::-webkit-scrollbar {
+    display: none;
+}
+
+.collapsed-sidebar .has-submenu:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    /* Removed the 5px gap */
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+.collapsed-sidebar .has-submenu .submenu li {
+    margin: 0 !important;
+}
+
+.collapsed-sidebar .has-submenu .submenu li a {
+    justify-content: flex-start !important;
+    padding: 12px 25px 12px 50px !important;
+    border-radius: 0 !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.88rem !important;
+    transition: all 0.2s ease;
+}
+
+.collapsed-sidebar .has-submenu .submenu li a:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    padding-left: 55px !important;
+}
+
+.collapsed-sidebar .has-submenu .submenu li a::before {
+    content: '';
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: var(--accent-color);
+    border-radius: 50%;
+}
+
+/* Hide any badges or extra indicators in collapsed submenus */
+.collapsed-sidebar .submenu span:not(:first-child),
+.collapsed-sidebar .submenu .badge,
+.collapsed-sidebar .submenu .label {
+    display: none !important;
+}
+
+/* Tooltip for single items */
+.collapsed-sidebar #side-menu li:not(.has-submenu):hover::after {
+    content: attr(data-title);
+    position: absolute;
+    left: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(15px);
+    background: #333;
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    z-index: 10001;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.collapsed-sidebar #side-menu li:not(.has-submenu):hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(5px);
+}

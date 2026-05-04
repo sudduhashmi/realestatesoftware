@@ -1,0 +1,222 @@
+@model RealEstateRegalSpace.Models.HRManagement
+
+@{
+    ViewBag.Title = "Attendance";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("Attendance", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+
+            <div class="card-block">
+
+                <!-- Page-Title -->
+                <div class="page-title-box">
+                    <div class="row align-items-center">
+                        <div class="col-sm-6">
+                            <h4 class="page-title">Employee Attendance</h4>
+                        </div>
+                       
+                    </div>
+                    <!-- end row -->
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="card m-b-30">
+                                    <div class="card-body">
+                                        <p style="color:red">
+                                            @TempData["EmpSal"]
+                                        </p>
+
+                                        <div class="card-body">
+                                            <div class="row justify-content-center">
+                                                <div class="col-md-12 mx-auto">
+                                                    <div class="row ">
+
+
+                                                        <div class="col-lg-3 col-md-3">
+
+                                                            <div class="form-group">
+                                                                <label>Attendance Date <span style="color:red">*</span></label>
+                                                                @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @Placeholder = "Attendance Date" })
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <!-- /.col -->
+                                            </div>
+                                        </div>
+                                        <!-- /.EndBasicInfo -->
+                                        <!-- Validation Forms -->
+                                        <!-- /.box-header -->
+                                    </div>
+                                    @if (Model != null)
+                                    {
+                                        if (Model.dtQualification != null)
+                                        {
+                                            int j = 1;
+                                            <div class="card-body">
+                                                <div class="col-lg-12">
+                                                    <div class="row">
+
+
+                                                        <div class="col-md-12 col-lg-12 ">
+                                                            <div>
+                                                                <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
+
+
+                                                                    <div>
+                                                                        <table class="table datatable display responsive w-100 dataTable no-footer dtr-inline" style="width: 1002px;">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Sr No</th>
+                                                                                    <th>Code</th>
+                                                                                    <th>Name</th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+
+                                                                                @for (int i = 0; i <= Model.dtQualification.Rows.Count - 1; i++)
+                                                                                {
+                                                                                    <tr class="text-left">
+                                                                                        <td>@j</td>
+                                                                                        <td>@Model.dtQualification.Rows[i]["LoginId"].ToString()</td>
+                                                                                        <td>@Model.dtQualification.Rows[i]["Name"].ToString()</td>
+
+                                                                                        <td>
+                                                                                            <input type="checkbox" id="checkBoxId_@j" name="checkBoxId_@j" class="chkclass" />
+                                                                                            <input id="Pk_EmployeeID_@j" name="Pk_EmployeeID_@j" type="hidden" value="@Model.dtQualification.Rows[i]["Pk_AdminId"].ToString()" />
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                    j++;
+                                                                                }
+                                                                                <input type='hidden' value='@j' id='hdrows' name='hdrows' />
+
+                                                                            </tbody>
+
+                                                                        </table>
+                                                                        @*<div class="text-center">  <h5>Total</h5>   <input type="text" id="txtTotalEarning" /></div>*@
+
+                                                                    </div>
+                                                                    <!-- /.box-body -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+
+
+                                                        <!-- /.EndBasicInfo -->
+                                                        <!-- /.box-body -->
+                                                        <input type="submit" value="Save" id="Save" name="Save" class="btn btn-success align left" style="text-align:center" onclick="return SaveValidate();" />
+                                                    </div>
+                                                    <!-- /.box -->
+
+                                                </div>
+
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="../../assets/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+        document.getElementById("hdTotalEarning").value = 0;
+        document.getElementById("hdTotalEarning1").value = 0;
+    });
+    function SaveValidate() {
+
+
+        if ($("#PaymentDate").val() == "") {
+            $("#PaymentDate").addClass('errortext');
+            $("#PaymentDate").focus();
+            return false;
+        }
+        return true;
+    }
+
+
+
+    function getdata1(earningval, IsAmtPer, i) {
+        $('#TxtValEarning').val(earningval.value);
+        $('#headtypeE').val(IsAmtPer);
+        var totalEarning = 0;
+        var oldTotalEarning = document.getElementById("hdTotalEarning").value;
+
+        if (IsAmtPer == 'A') {
+            totalEarning = (Number)(oldTotalEarning) + (Number)(earningval.value);
+            document.getElementById("txtEarAmt " + i).value = earningval.value;
+        }
+        else {
+            var basic = document.getElementById("txtEarVal 1").value;
+            document.getElementById("txtEarAmt " + i).value = ((Number)(basic) * (Number)(earningval.value) / 100).toString();
+            totalEarning = (Number)(oldTotalEarning) + ((Number)(basic) * (Number)(earningval.value) / 100);
+        }
+        document.getElementById("hdTotalEarning").value = totalEarning;
+        $("#txtTotalEarning").val(totalEarning);
+
+    }
+
+    function getdata3(dedval, IsAmtPer, i) {
+        $('#TxtValDeduction').val(dedval.value);
+        $('#headtypeD').val(IsAmtPer);
+        var totalEarning = 0;
+        var oldTotalEarning = document.getElementById("hdTotalEarning1").value;
+
+        if (IsAmtPer == 'A') {
+            document.getElementById("txtDedAmt " + i).value = dedval.value;
+            totalEarning = (Number)(oldTotalEarning) + (Number)(dedval.value);
+        }
+        else {
+            var basic = document.getElementById("txtEarVal 1").value;
+            document.getElementById("txtDedAmt " + i).value = ((Number)(basic) * (Number)(dedval.value) / 100).toString();
+            totalEarning = (Number)(oldTotalEarning) + ((Number)(basic) * (Number)(dedval.value) / 100);
+        }
+        document.getElementById("hdTotalEarning1").value = totalEarning;
+        $("#txtTotalDeduction").val(totalEarning);
+    }
+
+    function getdata2(earningamt) {
+        $('#TxtAmtEarning').val(earningamt.value);
+    }
+
+    function getdata4(dedamt) {
+        $('#TxtAmtDeduction').val(dedamt.value);
+    }
+
+    $('#PaymentDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeMonth: true,
+        changeYear: true,
+    });
+
+</script>
+
+
+
+
+

@@ -1,0 +1,537 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "Plot Availability";
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Plot Availability | Shashikala Infratech</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 4 CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #004191;
+            --accent-color: #ff9800;
+            --bg-light: #f0f2f5;
+            --available: #28a745;
+            --hold: #ffc107;
+            --booked: #e83e8c;
+            --allotted: #dc3545;
+            --border-radius: 20px;
+            --box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f2f5;
+            color: #2c3e50;
+            padding: 40px 0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animations */
+        @@keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.8) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .animate-up { animation: scaleIn 0.8s ease-out forwards; }
+
+        .main-card {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: none;
+            overflow: hidden;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .card-header-premium {
+            background: linear-gradient(135deg, #001a2c 0%, #004191 100%);
+            color: #fff;
+            padding: 45px 30px;
+            border: none;
+            text-align: center;
+        }
+
+        .card-header-premium img {
+            max-width: 170px;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .card-header-premium h2 {
+            font-weight: 800;
+            font-size: 2rem;
+            margin-bottom: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .filter-section {
+            padding: 40px;
+            background: #fff;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .form-control {
+            height: 52px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 65, 145, 0.15);
+            background: #fff;
+        }
+
+        label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #475569;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3949ab 100%);
+            color: #fff;
+            height: 52px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: var(--transition);
+            width: 100%;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0, 65, 145, 0.2);
+        }
+
+        .btn-search:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 65, 145, 0.3);
+            color: #fff;
+        }
+
+        .status-legend {
+            padding: 25px 40px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .legend-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .bg-available { background: var(--available); }
+        .bg-hold { background: var(--hold); }
+        .bg-booked { background: var(--booked); }
+        .bg-allotted { background: var(--allotted); }
+
+        .plot-container {
+            padding: 50px 40px;
+            min-height: 450px;
+        }
+
+        .block-header {
+            width: 100%;
+            padding: 15px 25px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            font-weight: 800;
+            color: #1e293b;
+            margin: 40px 0 20px 0;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            border-left: 6px solid var(--primary-color);
+        }
+
+        .plot-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 11px;
+        }
+
+        .plot-box {
+            width: 75px;
+            height: 65px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #fff;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none !important;
+            border: 2px solid rgba(255,255,255,0.2);
+            opacity: 0;
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+
+        .plot-box i { font-size: 0.75rem; margin-top: 5px; opacity: 0.8; }
+
+        .plot-box:hover {
+            transform: scale(1.15) translateY(-8px);
+            z-index: 10;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            color: #fff;
+        }
+
+        .plot-box.available { background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); }
+        .plot-box.booked { background: linear-gradient(135deg, #e83e8c 0%, #b11d5a 100%); }
+        .plot-box.hold { background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%); color: #1a202c; }
+        .plot-box.allotted { background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%); }
+
+        /* Side Detail Panel */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 400px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -10px 0 50px rgba(0,0,0,0.15);
+            z-index: 2000;
+            transition: all 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-panel.active { right: 0; }
+
+        .panel-header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .panel-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: 0.3s;
+        }
+
+        .panel-close:hover { opacity: 1; transform: rotate(90deg); }
+
+        .panel-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .info-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-value i { color: var(--primary-color); margin-right: 12px; width: 20px; }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.5);
+            z-index: 1999;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .overlay.active { display: block; }
+
+        @@media (max-width: 768px) {
+            .detail-panel { width: 100%; right: -100%; }
+            .plot-box { width: 60px; height: 55px; }
+              .plot-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px !important;
+        }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="overlay" id="pageOverlay" onclick="closePanel()"></div>
+
+    <div class="detail-panel" id="plotPanel">
+        <div class="panel-header">
+            <span class="panel-close" onclick="closePanel()">&times;</span>
+            <h3 class="mb-1">Plot Details</h3>
+            <div id="panelPlotNumber" class="h2 font-weight-bold">---</div>
+            <div id="panelStatus" class="status-badge">---</div>
+        </div>
+        <div class="panel-body">
+            <div class="info-card">
+                <span class="info-label">Site & Sector</span>
+                <div class="info-value"><i class="fas fa-map-marker-alt"></i> <span id="panelSite">---</span></div>
+                <div class="info-value mt-2"><i class="fas fa-layer-group"></i> <span id="panelSector">---</span></div>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">Property Dimensions</span>
+                <div class="info-value"><i class="fas fa-vector-square"></i> <span id="panelArea">---</span></div>
+                <div class="info-value mt-2"><i class="fas fa-cube"></i> <span id="panelBlock">---</span></div>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">Pricing Details</span>
+                <div class="info-value text-primary"><i class="fas fa-tag"></i> <span id="panelRate">---</span></div>
+                <div class="info-value text-success mt-2 font-weight-bold" style="font-size: 1.4rem;">
+                    <i class="fas fa-money-bill-wave"></i> <span id="panelAmount">---</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <span class="info-label">Additional Features / PLC</span>
+                <div class="info-value text-muted"><i class="fas fa-star"></i> <span id="panelPLC">N/A</span></div>
+            </div>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("PlotAvailbility", "Home", FormMethod.Post, new { @id = "form1" }))
+    {
+        <div class="container">
+            <div class="main-card animate-up">
+                <div class="card-header-premium">
+                    <a href="/">
+                        <img src="/files/assets/images/logo.png" alt="Logo" />
+                    </a>
+                    <h2><i class="fas fa-th mr-2"></i> Plot Inventory Matrix</h2>
+                </div>
+
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <label>Select Site</label>
+                            @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "onSiteChange();" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Select Sector</label>
+                            @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "onSectorChange();" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Select Block</label>
+                            @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label>Plot Status</label>
+                            @Html.DropDownListFor(m => m.PlotStatus, new List<SelectListItem> {
+                                new SelectListItem { Text = "All Plots", Value = "" },
+                                new SelectListItem { Text = "Available", Value = "A" },
+                                new SelectListItem { Text = "On Hold", Value = "H" },
+                                new SelectListItem { Text = "Booked", Value = "B" },
+                                new SelectListItem { Text = "Allotted", Value = "AL" },
+                                new SelectListItem { Text = "Cancelled", Value = "C" }
+                            }, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12 text-center">
+                            <button type="submit" class="btn btn-search px-5">
+                                <i class="fas fa-search mr-2"></i> Show Availability
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-legend">
+                    <div class="legend-item"><div class="legend-box bg-available"></div> Available</div>
+                    <div class="legend-item"><div class="legend-box bg-hold"></div> On Hold</div>
+                    <div class="legend-item"><div class="legend-box bg-booked"></div> Booked</div>
+                    <div class="legend-item"><div class="legend-box bg-allotted"></div> Allotted</div>
+                </div>
+
+                <div class="plot-container">
+                    @if (Model != null && Model.lstPlot != null && Model.lstPlot.Count > 0)
+                    {
+                        string currentBlock = "";
+                        <div class="plot-grid">
+                            @for (int i = 0; i < Model.lstPlot.Count; i++)
+                            {
+                                var item = Model.lstPlot[i];
+                                if (currentBlock != item.BlockName)
+                                {
+                                    currentBlock = item.BlockName;
+                                    <div class="block-header"><i class="fas fa-cube"></i> Block: @currentBlock</div>
+                                }
+
+                                string sClass = "available";
+                                string sIcon = "fa-check-circle";
+                                if (item.PlotStatus == "Booked") { sClass = "booked"; sIcon = "fa-lock"; }
+                                else if (item.PlotStatus == "Hold") { sClass = "hold"; sIcon = "fa-clock"; }
+                                else if (item.PlotStatus == "Allotted") { sClass = "allotted"; sIcon = "fa-user-check"; }
+
+                                <div class="plot-box @sClass" 
+                                     style="animation-delay: @((i % 40) * 0.02)s"
+                                     onclick="showDetails({
+                                         num: '@item.PlotNumber',
+                                         status: '@item.PlotStatus',
+                                         site: '@item.SiteName',
+                                         sector: '@item.SectorName',
+                                         block: '@item.BlockName',
+                                         area: '@item.PlotArea',
+                                         rate: '@item.PlotRate',
+                                         amount: '@item.PlotAmount',
+                                         plc: '@(string.IsNullOrEmpty(item.PLCCharge) || item.PLCCharge == "0" ? "N/A" : item.PLCCharge)'
+                                     })">
+                                    <span>@item.PlotNumber</span>
+                                    <i class="fas @sIcon"></i>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else if (Model != null)
+                    {
+                        <div class="text-center py-5 text-muted animate-up">
+                            <i class="fas fa-search-minus fa-4x mb-4 opacity-50"></i>
+                            <h4>No Plots Found</h4>
+                            <p>Please adjust your filters to see plot availability.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        function showDetails(data) {
+            $('#panelPlotNumber').text(data.num);
+            $('#panelStatus').text(data.status).removeClass().addClass('status-badge');
+            
+            if(data.status == 'Available') $('#panelStatus').addClass('bg-success text-white');
+            else if(data.status == 'Booked') $('#panelStatus').addClass('bg-primary text-white');
+            else if(data.status == 'Hold') $('#panelStatus').addClass('bg-warning text-dark');
+            else $('#panelStatus').addClass('bg-danger text-white');
+
+            $('#panelSite').text(data.site || 'N/A');
+            $('#panelSector').text(data.sector || 'N/A');
+            $('#panelArea').text(data.area + ' Sq/Ft');
+            $('#panelBlock').text(data.block);
+            $('#panelRate').text('Rs. ' + data.rate + ' / SqFt');
+            $('#panelAmount').text('Rs. ' + data.amount);
+            $('#panelPLC').text(data.plc);
+
+            $('#plotPanel').addClass('active');
+            $('#pageOverlay').addClass('active');
+        }
+
+        function closePanel() {
+            $('#plotPanel').removeClass('active');
+            $('#pageOverlay').removeClass('active');
+        }
+
+        function onSiteChange() {
+            var value = $('#SiteID').val();
+            $.ajax({
+                url: "/Home/GetSiteDetails",
+                type: "Get",
+                dataType: "JSON",
+                data: { SiteID: value },
+                success: function (data) {
+                    if (data.Result == "yes") {
+                        $("#SectorID").empty().append($('<option></option>').val(0).html('Select Sector'));
+                        $.each(data.ddlSector, function (index, sc) {
+                            $("#SectorID").append($('<option></option>').val(sc.Value).html(sc.Text));
+                        });
+                    } else {
+                        $("#SectorID").empty();
+                    }
+                }
+            });
+        }
+
+        function onSectorChange() {
+            var siteID = $('#SiteID').val();
+            var sectorID = $('#SectorID').val();
+            $.ajax({
+                url: '/Home/GetBlockList', type: 'post', dataType: 'json',
+                data: { 'SiteID': siteID, 'sectorID': sectorID },
+                success: function (data) {
+                    $("#BlockID").empty().append($('<option></option>').val(0).html('Select Block'));
+                    $.each(data.lstBlock, function (index, bc) {
+                        $("#BlockID").append($('<option></option>').val(bc.Value).html(bc.Text));
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

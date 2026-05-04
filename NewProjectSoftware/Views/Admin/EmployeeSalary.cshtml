@@ -1,0 +1,184 @@
+@model RealEstateRegalSpace.Models.HRManagement
+
+@{
+    ViewBag.Title = "Employee Salary";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EmployeeSalary", "Admin", FormMethod.Post, new { @id = "signupForm", enctype = "multipart/form-data" }))
+{
+    <div class="wrapper">
+        <div class="container-fluid">
+            <div class="page-title-box">
+                <div class="row align-items-center">
+                    <div class="col-sm-6">
+                        <h4 class="page-title">Employee Salary</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card m-b-30">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p style="color:red">
+                                        @TempData["EmpSal"]
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Select Employee <span style="color: red">*</span></label>
+                                        @Html.DropDownListFor(m => m.EmployeeID, new SelectList(ViewBag.ddlUser, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Payment Date <span style="color: red">*</span></label>
+                                        @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <br />
+                                        <input type="submit" name="Search" value="Search" class="btn btn-primary" onclick="return validateSearch();" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (Model != null && Model.lstList != null)
+                            {
+                                <div class="row mt-4">
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Earnings</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead class="bg-light">
+                                                    <tr>
+                                                        <th>Sr No.</th>
+                                                        <th>Salary Head</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        int i = 1;
+                                                        foreach (var item in Model.lstList)
+                                                        {
+                                                            <tr>
+                                                                <td>@i</td>
+                                                                <td>
+                                                                    @item.SalaryHeadName
+                                                                    <input type="hidden" name="ESalHeadId_ @i" value="@item.SalaryHeadID" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="txtEarAmt @i" class="form-control" value="@item.PaidAmount" onkeypress="return isNumberKey(event)" />
+                                                                </td>
+                                                            </tr>
+                                                            i++;
+                                                        }
+                                                        <input type="hidden" id="hdrows" name="hdrows" value="@i" />
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <h5 class="mb-3">Deductions</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead class="bg-light">
+                                                    <tr>
+                                                        <th>Sr No.</th>
+                                                        <th>Salary Head</th>
+                                                        <th>Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{
+                                                        int j = 1;
+                                                        foreach (var item in Model.lstList1)
+                                                        {
+                                                            <tr>
+                                                                <td>@j</td>
+                                                                <td>
+                                                                    @item.SalaryHeadName
+                                                                    <input type="hidden" name="DSalHeadId_ @j" value="@item.SalaryHeadID" />
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" name="txtDedAmt @j" class="form-control" value="@item.PaidAmount" onkeypress="return isNumberKey(event)" />
+                                                                </td>
+                                                            </tr>
+                                                            j++;
+                                                        }
+                                                        <input type="hidden" id="hdrows1" name="hdrows1" value="@j" />
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-3">
+                                    <div class="col-md-12 text-right">
+                                        <input type="submit" name="Save" value="Save Salary" class="btn btn-success" onclick="return validateSave();" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="../../assets/js/jquery.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script>
+    $(document).ready(function () {
+        $('#PaymentDate').datepicker({
+            dateFormat: 'dd/mm/yy',
+            changeMonth: true,
+            changeYear: true
+        });
+    });
+
+    function validateSearch() {
+        if ($('#EmployeeID').val() == '0' || $('#EmployeeID').val() == '') {
+            alert('Please select an employee');
+            return false;
+        }
+        if ($('#PaymentDate').val() == '') {
+            alert('Please select payment date');
+            return false;
+        }
+        return true;
+    }
+
+    function validateSave() {
+        if ($('#EmployeeID').val() == '0' || $('#EmployeeID').val() == '') {
+            alert('Please select an employee');
+            return false;
+        }
+        if ($('#PaymentDate').val() == '') {
+            alert('Please select payment date');
+            return false;
+        }
+        return true;
+    }
+
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 46 && charCode > 31
+          && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+</script>

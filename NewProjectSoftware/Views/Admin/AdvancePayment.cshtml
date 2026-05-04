@@ -1,0 +1,336 @@
+@model RealEstateRegalSpace.Models.Wallet
+
+@{
+    ViewBag.Title = "AdvancePayment";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("AdvancePayment", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Advance Payment Processing</h4>
+                </div>
+            </div>
+        </div>
+
+        @if (TempData["AdvancePayment"] != null)
+        {
+            <div class="alert alert-soft-info border-0 mb-3 animate-up">
+                <i class="fas fa-info-circle mr-2"></i> @TempData["AdvancePayment"]
+            </div>
+        }
+
+        <div class="row">
+            <!-- Member Search Card -->
+            <div class="col-md-4">
+                <div class="wizard-card animate-up h-100">
+                    <div class="card-header-premium">
+                        <i class="fas fa-user-search mr-2"></i> Member Lookup
+                    </div>
+                    <div class="p-4">
+                        <div class="form-group mb-3">
+                            <label class="font-weight-bold text-dark">Member Login ID <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @onchange = "return GetMemberName();", @Placeholder = "Enter ID", @style="height: 45px;" })
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-dark">Member Name</label>
+                            @Html.TextBoxFor(m => m.sponsorName, new { @class = "form-control bg-light", @readonly = "readonly", @style="height: 45px;" })
+                        </div>
+                        <div class="text-center mt-4 pt-2">
+                            <div class="profile-pic-container mx-auto shadow-sm border rounded-circle overflow-hidden bg-light" style="width: 120px; height: 120px;">
+                                <img src="~/assets/images/Logo.png" id="ProfilePic" class="w-100 h-100 object-fit-cover" alt="Profile" />
+                            </div>
+                            <p class="small text-muted mt-2 mb-0">Member Profile Image</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info Grid -->
+            <div class="col-md-8">
+                <div class="wizard-card animate-up h-100">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-id-card mr-2"></i> Quick Information Summary
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <!-- Contact Column -->
+                            <div class="col-md-6 mb-4">
+                                <h6 class="text-primary font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-address-book mr-2"></i> Contact Details
+                                </h6>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Email Address</label>
+                                    <input type="text" id="EmailId" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Mobile Number</label>
+                                    <input type="text" id="Mobile" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-0">
+                                    <label class="small text-muted d-block mb-1">Residential Address</label>
+                                    <input type="text" id="Addres" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                            </div>
+                            <!-- Bank Column -->
+                            <div class="col-md-6 mb-4 border-left">
+                                <h6 class="text-success font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-university mr-2"></i> Banking Information
+                                </h6>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Account Number</label>
+                                    <input type="text" id="MemberAccNo" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-2">
+                                    <label class="small text-muted d-block mb-1">Bank Name</label>
+                                    <input type="text" id="MemberBankName" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                                <div class="mb-0">
+                                    <label class="small text-muted d-block mb-1">IFSC Code</label>
+                                    <input type="text" id="IFSCCode" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <!-- KYC Column -->
+                            <div class="col-12">
+                                <h6 class="text-warning font-weight-bold mb-3 border-bottom pb-2">
+                                    <i class="fas fa-shield-alt mr-2"></i> KYC Documents
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <label class="small text-muted d-block mb-1">Aadhar Number</label>
+                                        <input type="text" id="AdharNumber" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <label class="small text-muted d-block mb-1">PAN Number</label>
+                                        <input type="text" id="PanNumber" readonly class="form-control bg-light font-weight-bold" style="height: 38px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Entry Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium info">
+                <i class="fas fa-hand-holding-usd mr-2"></i> Payment Details Entry
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Amount <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @onkeypress = "return isNumberOrDecimal(event);", @Placeholder = "0.00", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Payment Mode <span class="text-danger">*</span></label>
+                        @Html.DropDownListFor(m => m.PaymentMode, new SelectList(ViewBag.ddlpaymentmode, "Value", "Text"), new { @class = "form-control", @onchange = "return getpaymentdetails();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Payment Date <span class="text-danger">*</span></label>
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Debit To Bank</label>
+                        @Html.DropDownListFor(m => m.CreditTo, new SelectList(ViewBag.ddlBank, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                </div>
+
+                <!-- Conditional Bank Details -->
+                <div class="row bg-light rounded p-3 mb-3 border" id="bank_details_section" style="display:none;">
+                    <div class="col-12 mb-3">
+                        <h6 class="font-weight-bold text-info mb-0"><i class="fas fa-university mr-2"></i> Bank Transaction Info</h6>
+                    </div>
+                    <div class="col-md-3 mb-3" id="bankname" style="display: none">
+                        <label class="small font-weight-bold">Bank Name</label>
+                        @Html.TextBoxFor(m => m.BankName, new { @class = "form-control", @placeholder = "Enter Bank Name", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="chequeno" style="display: none">
+                        <label class="small font-weight-bold">Transaction/Cheque No</label>
+                        @Html.TextBoxFor(m => m.TransactionNo, new { @class = "form-control", @placeholder = "Enter Number", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="chequdate" style="display: none">
+                        <label class="small font-weight-bold">Transaction Date</label>
+                        @Html.TextBoxFor(m => m.TransactionDate, new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "readonly", @style="height: 40px;" })
+                    </div>
+                    <div class="col-md-3 mb-3" id="bankbranch" style="display: none">
+                        <label class="small font-weight-bold">Bank Branch</label>
+                        @Html.TextBoxFor(m => m.BankBranch, new { @class = "form-control", @placeholder = "Enter Branch", @style="height: 40px;" })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <label class="font-weight-bold text-dark">Description / Narration</label>
+                        @Html.TextBoxFor(m => m.Narration, new { @class = "form-control", @Placeholder = "Enter payment description...", @style="height: 45px;" })
+                        @Html.HiddenFor(m => m.PK_AdvancePaymentID)
+                    </div>
+                    <div class="col-12 text-center">
+                        @if (Model.PK_AdvancePaymentID == null)
+                        {
+                            <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm" onclick="return validateform();" id="btnSave" name="btnSave" value="Advance Payment">
+                                <i class="fas fa-check-circle mr-2"></i> Submit Advance Payment
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary btn-lg px-5 shadow-sm" onclick="return validateform();" id="btnUpdate" name="btnUpdate" value="Update Payment">
+                                <i class="fas fa-edit mr-2"></i> Update Payment Details
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment-with-locales.min.js"></script>
+
+<script>
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+    $('#TransactionDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        maxDate: 0,
+        changeMonth: true
+    });
+    $('#PaymentDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        maxDate: 0,
+        changeYear: true,
+        changeMonth: true
+    });
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+        if ($('#LoginId').val() == '') {
+            $("#LoginId").addClass('errortext');
+            $('#LoginId').focus();
+            return false;
+
+        }
+        if ($('#Amount').val() == '') {
+            $("#Amount").addClass('errortext');
+            $('#Amount').focus();
+            return false;
+        }
+        if ($('#Amount').val() == '0') {
+            $("#Amount").addClass('errortext');
+            $('#Amount').focus();
+            return false;
+        }
+        if ($('#PaymentDate').val() == '') {
+            $("#PaymentDate").addClass('errortext');
+            $('#PaymentDate').focus();
+            return false;
+        }
+        if ($('#PaymentMode').val() == '0') {
+            $("#PaymentMode").addClass('errortext');
+            $('#PaymentMode').focus();
+            return false;
+        }
+        if ($('#PaymentMode').val() != "1") {
+            if ($('#BankName').val() == '') {
+                $("#BankName").addClass('errortext');
+                $('#BankName').focus();
+                return false;
+            }
+            if ($('#TransactionNo').val() == '') {
+                $("#TransactionNo").addClass('errortext');
+                $('#TransactionNo').focus();
+                return false;
+            }
+            if ($('#TransactionDate').val() == '') {
+                $("#TransactionDate").addClass('errortext');
+                $('#TransactionDate').focus();
+                return false;
+            }
+            if ($('#BankBranch').val() == '') {
+                $("#BankBranch").addClass('errortext');
+                $('#BankBranch').focus();
+                return false;
+            }
+        }
+
+    }
+    function getpaymentdetails() {
+        if ($('#PaymentMode').val() != "1") {
+            $('#bankname').css({ 'display': '' });
+            $('#chequdate').css({ 'display': '' });
+            $('#chequeno').css({ 'display': '' });
+            $('#bankbranch').css({ 'display': '' });
+
+        }
+        else {
+            $('#bankname').css({ 'display': 'none' });
+            $('#chequdate').css({ 'display': 'none' });
+            $('#chequeno').css({ 'display': 'none' });
+            $('#bankbranch').css({ 'display': 'none' });
+        }
+    }
+    function GetMemberName() {
+        $("#divload").css({ 'display': '' });
+        var sponsorID = $('#LoginId').val();
+        $.ajax({
+            url: '/Admin/GetNameForExpense', type: 'post', dataType: 'json',
+            data: { 'LoginId': sponsorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                if (data.Result == "yes") {
+                    $("#sponsorName").val(data.sponsorName);
+                    $("#Addres").val(data.Addres);
+                    $("#Mobile").val(data.Mobile);
+                    $("#EmailId").val(data.EmailId);
+                    $("#MemberAccNo").val(data.MemberAccNo);
+                    $("#MemberBankName").val(data.MemberBankName);
+                    $("#MemberBranch").val(data.MemberBranch);
+                    $("#IFSCCode").val(data.IFSCCode);
+
+                    $("#AdharNumber").val(data.AdharNumber);
+                    $("#AdharImage").val(data.AdharImage);
+                    $("#AdharStatus").val(data.AdharStatus);
+                    $("#PanNumber").val(data.PanNumber);
+                    $("#PanImage").val(data.PanImage);
+                    $("#PanStatus").val(data.PanStatus);
+                    $("#DocumentImage").val(data.DocumentImage);
+                    $("#DocumentStatus").val(data.DocumentStatus);
+                    $("#ProfilePic").attr("src", data.ProfilePic);
+
+                }
+                else if (data.Result == "no") {
+                    $("#Name").text('');
+                    $("#sponsorName").addClass('errortext');
+                    $("#LoginId").addClass('errortext');
+
+                    $('#LoginId').focus();
+                    $('#LoginId').val('');
+                    alert("Invalid LoginId");
+                }
+            }
+
+        });
+    }
+
+
+</script>

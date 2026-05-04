@@ -1,0 +1,199 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "PlotRegistryList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("PlotRegistryList", "Admin", FormMethod.Post, new { @id = "form1" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Registry Directory</h4>
+                </div>
+            </div>
+        </div>
+
+        @if (TempData["UpdateRegistry"] != null)
+        {
+            <div class="alert alert-soft-success border-0 mb-3 animate-up">
+                <i class="fas fa-check-circle mr-2"></i> @TempData["UpdateRegistry"]
+            </div>
+        }
+
+        <!-- Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-list-alt mr-2"></i> Registered Plots
+            </div>
+            <div class="p-0">
+                @if (Model != null)
+                {
+                    decimal totalarea = 0, totalplotrate = 0, totalplotamount = 0, totalplc = 0;
+                    <div class="table-responsive">
+                        <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                            <thead>
+                                <tr>
+                                    <th>S No.</th>
+                                    <th>Site Details</th>
+                                    <th>Sector/Block</th>
+                                    <th>Plot No.</th>
+                                    <th>Area</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                    <th>PLC</th>
+                                    <th>Registry Info</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.lstPlot != null)
+                                {
+                                    int i = 1;
+                                    foreach (var Item in Model.lstPlot)
+                                    {
+                                        totalarea += decimal.Parse(Item.PlotArea);
+                                        totalplotrate += decimal.Parse(Item.PlotRate);
+                                        totalplotamount += decimal.Parse(Item.PlotAmount);
+                                        totalplc += decimal.Parse(Item.PLCCharge);
+                                        <tr>
+                                            <td>@i</td>
+                                            <td class="font-weight-bold text-primary">@Item.SiteName</td>
+                                            <td><span class="badge badge-soft-info">@Item.SectorName / @Item.BlockName</span></td>
+                                            <td><span class="font-weight-bold text-dark">@Item.PlotNumber</span></td>
+                                            <td>@Item.PlotArea</td>
+                                            <td>@Item.PlotRate</td>
+                                            <td class="font-weight-bold text-success">@Item.PlotAmount</td>
+                                            <td class="text-info">@Item.PLCCharge</td>
+                                            <td>
+                                                <div class="small">No: <span class="font-weight-bold">@Item.RegistreeNo</span></div>
+                                                <div class="small">Dt: <span class="text-muted">@Item.RegistrationDate</span></div>
+                                                <div class="small text-muted">Khasra: @Item.KhadraNo</div>
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="openPopup('@Item.PlotID','@Item.RegistreeNo','@Item.RegistrationDate','@Item.KhadraNo');" data-toggle="modal" data-target="#myModal">
+                                                    <i class="fas fa-edit mr-1"></i> Edit
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        i++;
+                                    }
+                                }
+                            </tbody>
+                            <tfoot class="bg-light font-weight-bold">
+                                <tr>
+                                    <th colspan="4" class="text-right">TOTAL SUMMARY:</th>
+                                    <th>@totalarea</th>
+                                    <th>@totalplotrate</th>
+                                    <th class="text-success">@totalplotamount</th>
+                                    <th class="text-info">@totalplc</th>
+                                    <th colspan="2"></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Update Registry Modal -->
+        <div class="modal fade" id="myModal" role="dialog" style="display: none">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content border-0 shadow-lg">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="fas fa-edit mr-2"></i> Update Registry Details</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" onclick="closeModal();">&times;</button>
+                    </div>
+                    <div class="modal-body p-4">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label class="font-weight-bold">Khasra Number <span class="text-danger">*</span></label>
+                                <input type="text" id="KhadraNo" class="form-control" placeholder="Enter Khasra No" style="height: 45px;" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">Registree Number <span class="text-danger">*</span></label>
+                                <input type="text" id="RegistreeNo" class="form-control" placeholder="Enter Registree No" style="height: 45px;" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold">Registree Date <span class="text-danger">*</span></label>
+                                <input type="text" id="RegistreeDate" class="form-control" placeholder="dd/mm/yyyy" readonly style="height: 45px;" />
+                            </div>
+                            <input type="hidden" id="plotid" />
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary px-4" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-success px-4 shadow-sm" onclick="return updateregistry()">
+                            <i class="fas fa-save mr-1"></i> Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+
+
+<script>
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+
+    $('#RegistreeDate').datepicker({
+        dateFormat: 'dd/mm/yy',
+        changeYear: true,
+        changeMonth: true
+    });
+    function openPopup(plotid, RegistreeNo, RegistrationDate, KhadraNo) {
+        $('#plotid').val(plotid);
+        $('#KhadraNo').val(KhadraNo);
+        $('#RegistreeNo').val(RegistreeNo);
+        $('#RegistreeDate').val(RegistrationDate);
+    }
+    function updateregistry() {
+        $(".errortext").removeClass("errortext");
+
+        if ($('#KhadraNo').val() == '') {
+            $("#KhadraNo").addClass('errortext');
+            $('#KhadraNo').focus();
+            return false;
+        }
+        if ($('#RegistreeNo').val() == '') {
+            $("#RegistreeNo").addClass('errortext');
+            $('#RegistreeNo').focus();
+             return false;
+         }
+
+        if ($('#RegistreeDate').val() == '') {
+            $("#RegistreeDate").addClass('errortext');
+            $('#RegistreeDate').focus();
+             return false;
+         }
+
+        var r = confirm('Are you sure you want to update this data ?');
+        if (r == true) {
+            //$("#divload").css({ 'display': '' });
+            $.ajax({
+                url: "/Admin/UpdateRegistry",
+                Type: "Get",
+                DataType: "JSON",
+                data: { KhadraNo: $("#KhadraNo").val(), RegistreeNo: $("#RegistreeNo").val(), RegistreeDate: $('#RegistreeDate').val(), plotid: $('#plotid').val()},
+                success: function (data) {
+                    alert("Registry Updated Successfully");
+                    window.location.href = '@Url.Action("PlotRegistryList", "Admin")';
+
+                }
+
+            });
+        }
+    }
+</script>

@@ -1,0 +1,112 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Direct";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("Direct", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Direct Associates</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Filter Associates
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-4">
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-dark">Associate Id <span class="text-danger">*</span></label>
+                            @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter Associate Id", @style="height: 45px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group mb-0">
+                            <label class="d-block">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block shadow-sm" style="height: 45px; white-space: nowrap; line-height: 1;">
+                                <i class="fas fa-filter mr-1"></i> Get Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-list mr-2"></i> Direct List
+            </div>
+            <div class="p-4">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover custom-table" width="100%">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>Associate Info</th>
+                                <th>Password</th>
+                                <th>Joining Date</th>
+                                <th>Mobile</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.directList != null && Model.directList.Rows.Count > 0)
+                            {
+                                for (int i = 0; i <= Model.directList.Rows.Count - 1; i++)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Model.directList.Rows[i]["Name"].ToString()</div>
+                                            <small class="text-muted">ID: @Model.directList.Rows[i]["LoginId"].ToString()</small>
+                                        </td>
+                                        <td>
+                                            <div class="pwd-mask" id="@i" onclick="fn_showPWD('@i','@RealEstateRegalSpace.Crypto.Decrypt(Model.directList.Rows[i]["Password"].ToString())')" style="cursor:pointer; background:#f1f3f4; padding:2px 10px; border-radius:15px; display:inline-block; font-family:monospace;">
+                                                ******
+                                            </div>
+                                            <small class="d-block text-info mt-1" style="font-size:10px;">Click to show</small>
+                                        </td>
+                                        <td><i class="fas fa-calendar-alt mr-1 small"></i> @Model.directList.Rows[i]["JoiningDate"].ToString()</td>
+                                        <td><i class="fas fa-phone mr-1 small"></i> @Model.directList.Rows[i]["Mobile"].ToString()</td>
+                                        <td class="text-center">
+                                            @if (Model.directList.Rows[i]["Status"].ToString() == "Active")
+                                            {
+                                                <span class="badge badge-success px-3 py-2" style="border-radius:20px;">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger px-3 py-2" style="border-radius:20px;">InActive</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script>
+    function fn_showPWD(id, pwd) {
+
+        if ($('#' + id).html() != '******') {
+            $('#' + id).html('******');
+        }
+        else {
+            $('#' + id).html(pwd);
+        }
+    }
+</script>
+

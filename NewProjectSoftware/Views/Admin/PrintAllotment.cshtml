@@ -1,0 +1,534 @@
+@model RealEstateRegalSpace.Models.Plot
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Receipt - Shashikala Infratech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #1a237e;
+            --secondary: #d4a81e;
+            --dark: #212121;
+            --light: #f5f5f5;
+            --white: #ffffff;
+            --border: #e0e0e0;
+        }
+
+        @@page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+
+        .no-print-zone {
+            background: var(--white);
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .btn-print {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(26, 35, 126, 0.3);
+        }
+
+        .receipt-container {
+            width: 210mm;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 0;
+        }
+
+        .receipt-wrapper {
+            padding: 30px;
+            position: relative;
+            width: 210mm;
+            height: 297mm; /* Full A4 height */
+            page-break-after: always;
+            border-bottom: none;
+            background: white;
+        }
+
+        .receipt-wrapper:last-child {
+            page-break-after: auto;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 55px;
+            color: rgba(0,0,0,0.02);
+            font-weight: 800;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--secondary);
+            padding-bottom: 15px;
+        }
+
+        .logo-box img {
+            height: 80px;
+        }
+
+        .receipt-title-box {
+            text-align: right;
+        }
+
+        .receipt-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .copy-tag {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--white);
+            padding: 4px 15px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 40px;
+            margin-bottom: 25px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 6px 0;
+            font-size: 13px;
+        }
+
+        .label {
+            font-weight: 600;
+            color: #666;
+            width: 120px;
+        }
+
+        .value {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Applicant Box */
+        .applicant-box {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 25px;
+            background: #fafafa;
+        }
+
+        .applicant-header {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+
+        /* Payment Table */
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .payment-table th {
+            background: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .payment-table td {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        .total-row {
+            background: #f8f9fa;
+            font-weight: 700;
+        }
+
+        .amount-in-words {
+            font-style: italic;
+            font-size: 12px;
+            color: #555;
+            margin-top: 5px;
+        }
+
+        /* Paid Through */
+        .payment-method-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .method-item .m-label {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .method-item .m-value {
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Terms and Signature */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: end;
+        }
+
+        .terms {
+            font-size: 10.5px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .terms b {
+            color: var(--dark);
+        }
+
+        .signature-area {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1.5px solid var(--dark);
+            margin-top: 50px;
+            padding-top: 5px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .system-gen {
+            font-size: 10px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Company Footer */
+        .company-footer {
+            margin-top: 40px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: #777;
+        }
+
+        .footer-contact i {
+            color: var(--secondary);
+            margin-right: 5px;
+        }
+
+        @@media print {
+            body {
+                background: white;
+            }
+            .no-print-zone {
+                display: none;
+            }
+            .receipt-container {
+                box-shadow: none;
+                margin: 0;
+                width: 100%;
+            }
+            .receipt-wrapper {
+                page-break-after: always;
+                border-bottom: none;
+            }
+            .receipt-wrapper:last-child {
+                page-break-after: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print-zone">
+        <button class="btn-print" onclick="window.print();">
+            <i class="fas fa-print mr-2"></i> Print Allotment Receipt
+        </button>
+        <p style="margin-top: 10px; color: #666; font-size: 13px;">Ensure "Background Graphics" is enabled in print settings for best results.</p>
+    </div>
+
+    <div class="receipt-container">
+        
+        @renderReceipt("OFFICE COPY")
+        @renderReceipt("CUSTOMER COPY")
+
+    </div>
+
+    @helper renderReceipt(string copyType) {
+        <div class="receipt-wrapper">
+            <div class="watermark">Shashikala Infratech</div>
+            
+            <div class="header">
+                <div class="logo-box">
+                    <img src="/files/assets/images/logo.png" alt="Shashikala Logo">
+                </div>
+                <div class="receipt-title-box">
+                    <h1 class="receipt-title">Payment Receipt</h1>
+                    <span class="copy-tag">@copyType</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Project:</td>
+                        <td class="value">@ViewBag.ProjectName</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Unit No:</td>
+                        <td class="value">
+                            @{
+                                string pNo = ViewBag.PlotNumber ?? "";
+                                if (pNo.Contains("BLOCK")) {
+                                    // Extract just the part after the last dash or within specific pattern if possible
+                                    // For now, let's keep it clean if user says so.
+                                }
+                                @pNo
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label">Unit Type:</td>
+                        <td class="value">PLOT</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Block:</td>
+                        <td class="value">@ViewBag.BlockName</td>
+                    </tr>
+                </table>
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Customer ID:</td>
+                        <td class="value">@ViewBag.CustomerID</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Receipt No:</td>
+                        <td class="value">@ViewBag.ReceiptNo</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Receipt Date:</td>
+                        <td class="value">@ViewBag.DepositeDate</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Print Date:</td>
+                        <td class="value">@DateTime.Now.ToString("dd-MMM-yy")</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="applicant-box">
+                <div class="applicant-header">APPLICANT DETAILS</div>
+                <table class="info-table">
+                    <tr>
+                        <td class="label">Applicant:</td>
+                        <td class="value" style="font-size: 16px;">@ViewBag.CustomerName</td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(ViewBag.FathersName))
+                    {
+                        <tr>
+                            <td class="label">@ViewBag.Relation:</td>
+                            <td class="value">@ViewBag.FathersName</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="label">Address:</td>
+                        <td class="value">
+                            @ViewBag.Address
+                            @if (!string.IsNullOrEmpty(ViewBag.City)) { <span>, @ViewBag.City</span> }
+                            @if (!string.IsNullOrEmpty(ViewBag.State)) { <span>, @ViewBag.State</span> }
+                            @if (!string.IsNullOrEmpty(ViewBag.Pincode)) { <span>- @ViewBag.Pincode</span> }
+                        </td>
+                    </tr>
+                    @if (!string.IsNullOrEmpty(ViewBag.CoApplicantName))
+                    {
+                        <tr>
+                            <td class="label">Co-Applicant:</td>
+                            <td class="value">@ViewBag.CoApplicantName</td>
+                        </tr>
+                    }
+                    else if (!string.IsNullOrEmpty(ViewBag.NomineeName))
+                    {
+                        <tr>
+                            <td class="label">Nominee:</td>
+                            <td class="value">@ViewBag.NomineeName</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th width="50%">Description</th>
+                        <th width="20%">Charge Type</th>
+                        <th width="30%" style="text-align: right;">Amount (INR)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Against Unit No: <b>@ViewBag.PlotNumber</b> (@ViewBag.ProjectName)</td>
+                        <td>BASIC AMOUNT</td>
+                        <td style="text-align: right; font-weight: 700;">@ViewBag.PaidAmount</td>
+                    </tr>
+                    @{
+                        decimal totalPLC = 0;
+                        decimal.TryParse(Convert.ToString(ViewBag.TotalPLC), out totalPLC);
+                    }
+                    @if (totalPLC > 0)
+                    {
+                        <tr>
+                            <td>PLC Charges</td>
+                            <td>PLC</td>
+                            <td style="text-align: right;">@ViewBag.TotalPLC</td>
+                        </tr>
+                    }
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align: right; text-transform: uppercase;">Total Received:</td>
+                        <td style="text-align: right; font-size: 18px; color: var(--primary);">Rs. @ViewBag.PaidAmount</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="amount-in-words" style="margin-bottom: 25px;">
+                <b>Amount in Words:</b> @ViewBag.AmountInWords
+            </div>
+
+            <div class="payment-method-box">
+                <div class="method-item">
+                    <span class="m-label">Payment Mode</span>
+                    <span class="m-value">@ViewBag.PaymentMode</span>
+                </div>
+                <div class="method-item">
+                    <span class="m-label">Reference No.</span>
+                    <span class="m-value">
+                        @{
+                            var rNo = !string.IsNullOrEmpty(ViewBag.TransactionNo) ? ViewBag.TransactionNo : (!string.IsNullOrEmpty(ViewBag.TransactionNumber) ? ViewBag.TransactionNumber : "N/A");
+                        }
+                        @rNo
+                    </span>
+                </div>
+                <div class="method-item">
+                    <span class="m-label">Bank Name</span>
+                    <span class="m-value">
+                        @{
+                            var bName = !string.IsNullOrEmpty(ViewBag.BankName) ? ViewBag.BankName : "CASH";
+                            if (bName != "CASH" && !string.IsNullOrEmpty(ViewBag.BankBranch)) {
+                                bName += " (" + ViewBag.BankBranch + ")";
+                            }
+                        }
+                        @bName
+                    </span>
+                </div>
+            </div>
+
+            <div class="footer-grid">
+                <div class="terms">
+                    <b>Remarks / Terms:</b><br>
+                    &bull; Applicant shall be liable/responsible for any payment made by him from any third party account.<br>
+                    &bull; This report is not transferable unless consented by the company.<br>
+                    &bull; This report does not confirm the booking/allotment of the unit which would be subject to availability.<br>
+                    &bull; Please keep this document in safe custody & in case the same is lost/misplaced, please inform immediately.<br>
+                    &bull; This money is subject to realization of Payment Mode.
+                </div>
+                <div class="signature-area">
+                    <div class="signature-line">Authorized Signatory</div>
+                    <div class="system-gen">THIS IS SYSTEM GENERATED SLIP, HENCE DOES NOT REQUIRE ANY SIGNATURE</div>
+                </div>
+            </div>
+
+            <div class="company-footer">
+                <div class="footer-contact">
+                    <i class="fas fa-map-marker-alt"></i> 132, 1st Floor, Sector-J/6, Sushant Golf City, Lucknow, UP-226030
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-phone"></i> +91-8175928000
+                </div>
+                <div class="footer-contact">
+                    <i class="fas fa-globe"></i> shashikalainfratech.com
+                </div>
+            </div>
+        </div>
+    }
+
+</body>
+</html>

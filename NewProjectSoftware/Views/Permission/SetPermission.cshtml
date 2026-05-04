@@ -1,0 +1,143 @@
+@model RealEstateRegalSpace.Models.Permisssions
+@{
+    ViewBag.Title = "SetPermission";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("SetPermission", "Permission", FormMethod.Post, new { @class = "tr-form" }))
+{
+
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Manage User Permissions</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Selection Criteria
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-5">
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-dark">Select User <span class="text-danger">*</span></label>
+                            @Html.DropDownListFor(m => m.Fk_UserId, new SelectList(ViewBag.ddluser, "Value", "Text"), new { @class = "form-control", @style = "height: 45px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group mb-0">
+                            <label class="font-weight-bold text-dark">Select Main Menu <span class="text-danger">*</span></label>
+                            @Html.DropDownListFor(m => m.Fk_FormTypeId, new SelectList(ViewBag.ddlformtype, "Value", "Text"), new { @class = "form-control", @style = "height: 45px;" })
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group mb-0">
+                            <label class="d-block">&nbsp;</label>
+                            <button type="submit" id="GetDetails" name="GetDetails" value="Get Details" class="btn btn-primary btn-block shadow-sm" style="height: 45px; white-space: nowrap; line-height: 1;">
+                                 Get Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model != null && Model.lstpermission != null)
+        {
+            <!-- Permissions Table Card -->
+            <div class="wizard-card animate-up mt-4">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-key mr-2"></i> Menu Permissions for Selected User
+                </div>
+                <div class="p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 custom-table">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th width="80">Sr No.</th>
+                                    <th>Form Name / Sub-Menu</th>
+                                    <th width="150" class="text-center">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="select-all">
+                                            <label class="custom-control-label font-weight-bold" for="select-all">Select All</label>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int i = 1; }
+                                @foreach (var item in Model.lstpermission)
+                                {
+                                    <tr>
+                                        <td><span class="badge badge-light">@i</span></td>
+                                        <td>
+                                            <div class="font-weight-600 text-dark">@item.FormName</div>
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="hidden" name="hdFormtypeId_ @i" id="hdFormtypeId_ @i" value="@item.Fk_FormTypeId" />
+                                            <input type="hidden" name="hdFormId_ @i" id="hdFormId_ @i" value="@item.Fk_FormId" />
+                                            <input type="hidden" name="hdLoginid_ @i" id="hdLoginid_ @i" value="@item.Fk_UserId" />
+                                            
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" name="chkSelect_ @i" id="chkSelect_ @i" @item.SelectedValue>
+                                                <label class="custom-control-label" for="chkSelect_ @i"></label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                                <input type="hidden" id="hdRows" name="hdRows" value="@i" />
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="wizard-footer border-top-0 mt-0">
+                    <div class="left-actions">
+                        @if (TempData["Permission"] != null)
+                        {
+                            <div class="alert alert-info py-2 px-3 mb-0 shadow-sm">
+                                <i class="fas fa-info-circle mr-1"></i> @TempData["Permission"]
+                            </div>
+                        }
+                    </div>
+                    <div class="right-actions">
+                        <button type="submit" id="Save" name="Save" value="Update" class="btn btn-success btn-lg px-5 shadow-sm">
+                            <i class="fas fa-check-circle mr-2"></i> Update Permissions
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+
+
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#divload").css({ 'display': 'none' });
+    });
+    $('#select-all').click(function (event) {
+        if (this.checked) {
+            // Iterate each checkbox
+            $(':checkbox').each(function () {
+                this.checked = true;
+            });
+        } else {
+            $(':checkbox').each(function () {
+                this.checked = false;
+            });
+        }
+    });
+
+</script>

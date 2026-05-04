@@ -1,0 +1,221 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Associate Ledger";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("GetAssociateLedger", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Associate Financial Ledger</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Search Associate
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-6 mb-3">
+                        <label class="small font-weight-bold text-muted">Search Associate Name Or Login ID</label>
+                        <input type="text" id="txtassociateId" class="form-control" placeholder="Type name or ID to search..." style="height: 48px;">
+                        @Html.HiddenFor(m => m.LoginId)
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px;" onclick="return fvalidate();">
+                            <i class="fas fa-eye mr-2"></i> View Ledger
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+        {
+            <!-- Associate Profile Summary -->
+            <div class="wizard-card animate-up mb-4">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-user-circle mr-2"></i> Associate Profile Details
+                </div>
+                <div class="p-4 bg-light-soft">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Full Name</div>
+                            <div class="h6 text-primary">@Model.lstDetails.Rows[0]["Name"].ToString()</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Relation</div>
+                            <div class="h6">@Model.lstDetails.Rows[0]["FathersName"].ToString()</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Mobile Number</div>
+                            <div class="h6"><i class="fas fa-phone-alt mr-1 text-success small"></i> @Model.lstDetails.Rows[0]["Mobile"].ToString()</div>
+                        </div>
+                    </div>
+                    <hr class="mt-0 mb-3 border-light">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Aadhar Number</div>
+                            <div class="small font-weight-bold text-dark">@Model.lstDetails.Rows[0]["AdharNumber"].ToString()</div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">PAN Number</div>
+                            <div class="small font-weight-bold text-dark">@Model.lstDetails.Rows[0]["PanNumber"].ToString()</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Bank Information</div>
+                            <div class="small font-weight-bold text-dark">
+                                @Model.lstDetails.Rows[0]["MemberBankName"].ToString() (@Model.lstDetails.Rows[0]["MemberBranch"].ToString())
+                                <br />
+                                <span class="text-muted">Acc:</span> @Model.lstDetails.Rows[0]["MemberAccNo"].ToString() | <span class="text-muted">IFSC:</span> @Model.lstDetails.Rows[0]["IFSCCode"].ToString()
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-3">
+                            <div class="p-3 bg-white rounded shadow-sm border-left border-warning">
+                                <div class="small text-muted font-weight-bold mb-1">Advance Payment</div>
+                                <div class="h5 mb-0 text-warning">₹ @ViewBag.AdvancePayment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model != null)
+        {
+            <!-- Transaction Table -->
+            <div class="wizard-card animate-up">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-list-ul mr-2"></i> Transaction Statement
+                </div>
+                <div class="p-0">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table id="example25" class="table table-hover mb-0 custom-table text-nowrap">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-center">Sr No</th>
+                                    <th class="text-center">Date</th>
+                                    <th>Particulars / Narration</th>
+                                    <th class="text-center">Mode</th>
+                                    <th class="text-center">Trans No</th>
+                                    <th class="text-right">Credit (In)</th>
+                                    <th class="text-right">Debit (Out)</th>
+                                    <th class="text-right font-weight-bold">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.customerLedger != null && Model.customerLedger.Rows.Count > 0)
+                                {
+                                    for (int i = 0; i < Model.customerLedger.Rows.Count; i++)
+                                    {
+                                        <tr>
+                                            <td class="text-center text-muted">@(i + 1)</td>
+                                            <td class="text-center small">@Model.customerLedger.Rows[i]["TransactionDate"].ToString()</td>
+                                            <td>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="small text-dark">@Model.customerLedger.Rows[i]["Particular"].ToString()</span>
+                                                    @if (Model.customerLedger.Rows[i]["CrAmount1"].ToString() != "0")
+                                                    {
+                                                        <span class="badge badge-soft-info ml-2">₹ @Model.customerLedger.Rows[i]["CrAmount1"].ToString()</span>
+                                                    }
+                                                </div>
+                                                @if (Model.customerLedger.Rows[i]["Particular"].ToString().Contains("Gross Payout"))
+                                                {
+                                                    <div class="mt-1 small border-top pt-1 d-flex justify-content-between text-danger font-weight-bold">
+                                                        <span>TDS (5%) Deducted</span>
+                                                        <span>- ₹ @Model.customerLedger.Rows[i]["Charges"].ToString()</span>
+                                                    </div>
+                                                }
+                                            </td>
+                                            <td class="text-center small">
+                                                <span class="badge badge-soft-secondary">@Model.customerLedger.Rows[i]["Mode"].ToString()</span>
+                                            </td>
+                                            <td class="text-center small text-muted">@Model.customerLedger.Rows[i]["TransactionNo"].ToString()</td>
+                                            <td class="text-right text-success font-weight-bold">
+                                                @if (Model.customerLedger.Rows[i]["CrAmount"].ToString() != "0")
+                                                {
+                                                    <span>₹ @Model.customerLedger.Rows[i]["CrAmount"].ToString()</span>
+                                                }
+                                            </td>
+                                            <td class="text-right text-danger font-weight-bold">
+                                                @if (Model.customerLedger.Rows[i]["DrAmount"].ToString() != "0")
+                                                {
+                                                    <span>₹ @Model.customerLedger.Rows[i]["DrAmount"].ToString()</span>
+                                                }
+                                            </td>
+                                            <td class="text-right font-weight-bold text-dark">₹ @Model.customerLedger.Rows[i]["Balance"].ToString()</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="8" class="text-center py-5 text-muted">
+                                            No transactions found for this associate.
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            var associateDetails = [];
+
+            $.ajax({
+                url: '/Admin/GetAssociateList',
+                type: 'Post',
+                success: function (response) {
+                    if (response != null) {
+                        $(response).each(function (index, item) {
+                            associateDetails.push(item.Name + " [" + item.LoginId + "]");
+                        });
+
+                        $('#txtassociateId').autocomplete({
+                            source: associateDetails,
+                            select: function (event, ui) {
+                                var str = ui.item.label;
+                                var strsplit = str.split("[");
+                                $('#LoginId').val(strsplit[1].substr(0, strsplit[1].length - 1));
+                            }
+                        });
+                    }
+                }
+            });
+        });
+
+        function fvalidate() {
+            if ($('#LoginId').val() == '') {
+                $('#txtassociateId').addClass('is-invalid').focus();
+                return false;
+            }
+            $('#txtassociateId').removeClass('is-invalid');
+            $("#divload").css({ 'display': '' });
+            return true;
+        }
+    </script>
+}
+
+
+
+
+
+

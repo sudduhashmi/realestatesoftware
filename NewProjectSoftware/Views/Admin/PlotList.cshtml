@@ -1,0 +1,197 @@
+@model RealEstateRegalSpace.Models.Master
+
+@{
+    ViewBag.Title = "PlotList";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+@using (Html.BeginForm("PlotList", "Admin", FormMethod.Post, new { @id = "form1" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Plot Inventory Directory</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium">
+                <i class="fas fa-filter mr-2"></i> Search & Filter Inventory
+            </div>
+            <div class="p-4">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Site</label>
+                        @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Sector</label>
+                        @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Block</label>
+                        @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">Plot No</label>
+                        @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Search Plot No", @style="height: 45px;" })
+                        @Html.HiddenFor(m => m.PlotID)
+                    </div>
+                </div>
+                <div class="row align-items-end mt-2">
+                    <div class="col-md-3 mb-3">
+                        <label class="font-weight-bold text-dark">PLC</label>
+                        @Html.DropDownListFor(m => m.PLCName, new SelectList(ViewBag.ddlPLC, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block text-white">&nbsp;</label>
+                        <button type="submit" name="SearchPlot" value="Search" id="btnSearchPlot" class="btn btn-primary btn-block shadow-sm" style="height: 45px;" onclick="return load();">
+                            <i class="fas fa-search mr-1"></i> Search Plots
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Card -->
+        <div class="wizard-card animate-up mt-4">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-th mr-2"></i> Plot Inventory List
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead>
+                            <tr>
+                                <th>S No.</th>
+                                <th>Site Name</th>
+                                <th>Sector/Block</th>
+                                <th>Plot No.</th>
+                                <th>Area</th>
+                                <th>Rate</th>
+                                <th>Total Amt</th>
+                                <th>PLC</th>
+                                <th>Booking %</th>
+                                <th>Allot %</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstPlot != null)
+                            {
+                                int i = 1;
+                                foreach (var Item in Model.lstPlot)
+                                {
+                                    string statusClass = "badge-soft-success";
+                                    if (Item.PlotStatus == "Hold") { statusClass = "badge-soft-warning"; }
+                                    else if (Item.PlotStatus == "Booked") { statusClass = "badge-soft-danger"; }
+                                    else if (Item.PlotStatus == "Alloted") { statusClass = "badge-soft-primary"; }
+
+                                    <tr>
+                                        <td>@i</td>
+                                        <td class="font-weight-bold text-primary">@Item.SiteName</td>
+                                        <td><span class="small">@Item.SectorName / @Item.BlockName</span></td>
+                                        <td><span class="font-weight-bold text-dark">@Item.PlotNumber</span></td>
+                                        <td>@Item.PlotArea</td>
+                                        <td>@Item.PlotRate</td>
+                                        <td class="font-weight-bold text-success">@Item.PlotAmount</td>
+                                        <td class="text-info">@Item.PLCCharge</td>
+                                        <td>@Item.BookingPercent%</td>
+                                        <td>@Item.AllottmentPercent%</td>
+                                        <td class="text-center">
+                                            <span class="badge @statusClass px-3 py-1 rounded-pill">@Item.PlotStatus</span>
+                                        </td>
+                                    </tr>
+                                    i++;
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+
+
+    function openpopup(plotid) {
+        $('#PlotID').val(plotid);
+        // $('#updateLocation').modal('show');
+    }
+
+    function onSiteChange() {
+        $("#divload").css({ 'display': '' });
+        var value = $('#SiteID').val();
+        var values = $('#SectorID').val();
+        var tr = [];
+        $.ajax({
+            url: "/Masters/GetSiteDetails",
+            Type: "Get",
+            DataType: "JSON",
+            data: { SiteID: value },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                var j = 1;
+                //alert(data.Result);
+                if (data.Result == "yes") {
+                    //alert(data.Rate);
+
+                    $("#SectorID").html(""); // clear before appending new list
+                    $("#SectorID").empty();
+                    $("#BlockID").empty();
+                    $("#SectorID").append(
+                        $('<option></option>').val(0).html('Select Sector'));
+                    $.each(data.ddlSector, function (index, Sectorcount) {
+                        $("#SectorID").append(
+                            $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+
+                    });
+
+
+
+                }
+                else {
+                    $('#Rate').val('');
+                }
+            }
+
+        });
+
+    }
+
+    function onSectorChange() {
+        debugger;
+        $("#divload").css({ 'display': '' });
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        $.ajax({
+            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+            data: { 'SiteID': siteID, 'sectorID': sectorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                $("#BlockID").html(""); // clear before appending new list
+                $("#BlockID").empty();
+                $("#BlockID").append(
+                    $('<option></option>').val(0).html('Select Block'));
+                $.each(data.lstBlock, function (index, BlockCount) {
+                    $("#BlockID").append(
+                        $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                });
+
+            }
+
+        });
+    }
+
+
+
+</script>
+

@@ -1,0 +1,340 @@
+@model RealEstateRegalSpace.Models.Plot
+
+@{
+    ViewBag.Title = "HoldPlot";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("HoldPlot", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Hold Plot Management</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Plot Selection Card -->
+                <div class="wizard-card animate-up">
+                    <div class="card-header-premium">
+                        <i class="fas fa-search-location mr-2"></i> Select Plot to Hold
+                    </div>
+                    <div class="p-4">
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Site <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.SiteID, new SelectList(ViewBag.ddlSite, "Value", "Text"), new { @class = "form-control", @onchange = "return onSiteChange();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Sector <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.SectorID, new SelectList(ViewBag.ddlSector, "Value", "Text"), new { @class = "form-control", @onchange = "return onSectorChange();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Select Block <span class="text-danger">*</span></label>
+                                @Html.DropDownListFor(m => m.BlockID, new SelectList(ViewBag.ddlBlock, "Value", "Text"), new { @class = "form-control", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Plot Number <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.PlotNumber, new { @class = "form-control", @Placeholder = "Enter Plot No", @onchange = "return CheckPlotStatus();", @style = "text-transform:uppercase; height: 45px;" })
+                                @Html.HiddenFor(m => m.PlotID)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hold Details Card -->
+                <div class="wizard-card animate-up mt-4">
+                    <div class="card-header-premium secondary">
+                        <i class="fas fa-clock mr-2"></i> Hold Duration & Customer Information
+                    </div>
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold Amount <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Amount, new { @class = "form-control", @Placeholder = "0.00", onkeypress = "return isNumberOrDecimal(event);", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold From Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.HoldFrom, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @onchange = "return SelectDate();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Hold To Date <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.HoldTo, new { @class = "form-control", @Placeholder = "dd/mm/yyyy", @readonly = "readonly", @onchange = "return CheckDate();", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Customer Name <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @Placeholder = "Enter Full Name", @style="height: 45px;" })
+                            </div>
+                        </div>
+                        <div class="row align-items-end">
+                            <div class="col-md-3 mb-3">
+                                <label class="font-weight-bold text-dark">Mobile Number <span class="text-danger">*</span></label>
+                                @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control", @Placeholder = "10 Digit Mobile", onkeypress = "return isNumberOrDecimal(event);", @maxlength = "10", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="font-weight-bold text-dark">Internal Remark</label>
+                                @Html.TextBoxFor(m => m.Remark, new { @class = "form-control", @Placeholder = "Enter any notes...", @style="height: 45px;" })
+                            </div>
+                            <div class="col-md-3 mb-3 text-right">
+                                <button type="submit" onclick="return validateform();" class="btn btn-success btn-block shadow-sm" style="height: 45px;" id="btnSave" name="Save" value="Save">
+                                    <i class="fas fa-lock mr-2"></i> Confirm Hold Plot
+                                </button>
+                            </div>
+                        </div>
+                        @if (TempData["PlotHold"] != null)
+                        {
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="alert alert-soft-danger border-0">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i> @TempData["PlotHold"]
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+<script src="../../Scripts/jquery-1.10.2.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+<script>
+    $('#HoldFrom').datepicker({
+        format: 'dd/mm/yyyy',
+        changeYear: true,
+        changeMonth: true
+    });
+    $('#HoldTo').datepicker({
+        format: 'dd/mm/yyyy',
+        changeYear: true,
+        changeMonth: true
+    });
+    function validateform() {
+        $(".errortext").removeClass("errortext");
+        if ($('#SiteID').val() == '0') {
+            $("#SiteID").addClass('errortext');
+            $('#SiteID').focus();
+            return false;
+        }
+
+        if ($('#SectorID').val() == '0') {
+            $("#SectorID").addClass('errortext');
+            $('#SectorID').focus();
+            return false;
+        }
+        if ($('#BlockID').val() == '0') {
+            $("#BlockID").addClass('errortext');
+            $('#BlockID').focus();
+            return false;
+        }
+        if ($('#PlotNumber').val() == '') {
+            $("#PlotNumber").addClass('errortext');
+            $('#PlotNumber').focus();
+            return false;
+        }
+        if ($('#HoldType').val() == '') {
+            $("#HoldType").addClass('errortext');
+            $('#HoldType').focus();
+            return false;
+        }
+        if ($('#Amount').val() == '') {
+            $("#Amount").addClass('errortext');
+            $('#Amount').focus();
+            return false;
+        }
+        if ($('#HoldFrom').val() == '') {
+            $("#HoldFrom").addClass('errortext');
+            $('#HoldFrom').focus();
+            return false;
+        }
+
+        if ($('#HoldTo').val() == '') {
+            $("#HoldTo").addClass('errortext');
+            $('#HoldTo').focus();
+            return false;
+        }
+        if ($('#Name').val() == '') {
+            $("#Name").addClass('errortext');
+            $('#Name').focus();
+            return false;
+        }
+
+        if ($('#Mobile').val() == '') {
+            $("#Mobile").addClass('errortext');
+            $('#Mobile').focus();
+            return false;
+        }
+        return true;
+    }
+
+    function isNumberOrDecimal(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode != 46 && charCode > 31
+            && (charCode < 48 || charCode > 57))
+            return false;
+
+        return true;
+    }
+
+    function onlyAlphabets(e, t) {
+        try {
+            if (window.event) {
+                var charCode = window.event.keyCode;
+            }
+            else if (e) {
+                var charCode = e.which;
+            }
+            else { return true; }
+            if ((charCode > 64 && charCode < 91) || (charCode > 96 && charCode < 123))
+                return true;
+            else
+                return false;
+        }
+        catch (err) {
+            alert(err.Description);
+        }
+    }
+
+    function onSiteChange() {
+        $("#divload").css({ 'display': '' });
+        var value = $('#SiteID').val();
+        var values = $('#SectorID').val();
+        var tr = [];
+        $.ajax({
+            url: "/Masters/GetSiteDetails",
+            Type: "Get",
+            DataType: "JSON",
+            data: { SiteID: value },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                var j = 1;
+                if (data.Result == "yes") {
+                    $('#Rate').val(data.Rate);
+                    $("#SectorID").html(""); // clear before appending new list
+                    $("#SectorID").empty();
+                    $("#SectorID").append(
+                        $('<option></option>').val(0).html('Select Sector'));
+                    $.each(data.ddlSector, function (index, Sectorcount) {
+                        $("#SectorID").append(
+                            $('<option></option>').val(Sectorcount.Value).html(Sectorcount.Text));
+
+                    });
+
+                }
+                else {
+                    $("#SectorID").empty();
+                    $('#Rate').val('');
+                }
+
+
+            }
+
+        });
+
+    }
+
+    function onSectorChange() {
+
+        $("#divload").css({ 'display': '' });
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        $.ajax({
+            url: '/Masters/GetBlockList', type: 'post', dataType: 'json',
+            data: { 'SiteID': siteID, 'sectorID': sectorID },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                $("#BlockID").html(""); // clear before appending new list
+                $("#BlockID").empty();
+                $("#BlockID").append(
+                    $('<option></option>').val(0).html('Select Block'));
+                $.each(data.lstBlock, function (index, BlockCount) {
+                    $("#BlockID").append(
+                        $('<option></option>').val(BlockCount.Value).html(BlockCount.Text));
+                });
+
+            }
+
+        });
+    }
+
+    function CheckPlotStatus() {
+        $("#divload").css({ 'display': '' });
+        debugger
+        var siteID = $('#SiteID').val();
+        var sectorID = $('#SectorID').val();
+        var block = $('#BlockID').val();
+        var plotno = $('#PlotNumber').val();
+
+        $.ajax({
+            url: '/Admin/CheckPlot', type: 'get', dataType: 'json',
+            data: { 'SiteID': siteID, 'SectorID': sectorID, 'BlockID': block, 'PlotNumber': plotno },
+            success: function (data) {
+                $("#divload").css({ 'display': 'none' });
+                if (data.Result == "yes") {
+
+                    $("#PlotID").val(data.PlotID);
+                    $("#PlotAmount").val(data.PlotAmount);
+                    $("#ActualPlotRate").val(data.ActualPlotRate);
+                    $("#BookingAmount").val(data.BookingAmount);
+                    $("#TotalPLC").val(data.TotalPLC);
+                }
+                else {
+                    alert('Plot not available .');
+                    $("#PlotNumber").val('');
+                    $("#PlotAmount").val('');
+                    $("#ActualPlotRate").val('');
+                    $("#BookingAmount").val('');
+                    $("#TotalPLC").val('');
+
+                }
+            }
+
+        });
+
+    }
+
+    function CheckDate() {
+        debugger
+        var startDate = new Date($('#HoldFrom').val());
+        var endDate = new Date($('#HoldTo').val());
+
+        if (startDate > endDate) {
+            alert("Hold To Date should be greater than Hold From Date");
+            $('#HoldTo').val('');
+        }
+
+    }
+    function datechange() {
+        if ($("#HoldType").val() == 'Hold') {
+            $("#HoldFrom").datepicker({
+                onClose: function () {
+                    var date2 = $('#HoldFrom').datepicker('getDate');
+                    date2.setDate(date2.getDate() + 7)
+                    $("#HoldTo").datepicker("setDate", date2);
+                }
+            });
+            $("#HoldTo").datepicker();
+        }
+        else {
+
+            $("#HoldFrom").datepicker({
+                onClose: function () {
+                    var date2 = $('#HoldFrom').datepicker('getDate');
+                    date2.setDate(date2.getDate() + 30)
+                    $("#HoldTo").datepicker("setDate", date2);
+                }
+            });
+            $("#HoldTo").datepicker();
+
+        }
+
+    }
+</script>

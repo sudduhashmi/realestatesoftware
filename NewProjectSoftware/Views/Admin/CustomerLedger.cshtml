@@ -1,0 +1,273 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Customer Ledger";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("CustomerLedger", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Customer Financial Ledger</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-search mr-2"></i> Search Customer
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-4 mb-3">
+                        <label class="small font-weight-bold text-muted">Customer Login ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @Placeholder = "Enter Customer ID", @style = "height: 48px;" })
+                        @Html.HiddenFor(m => m.id)
+                    </div>
+                    <div class="col-md-5 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <div class="d-flex">
+                            <button type="submit" class="btn btn-primary shadow-sm font-weight-bold mr-2" style="height: 48px; flex: 1;">
+                                <i class="fas fa-eye mr-2"></i> Get Details
+                            </button>
+                            <button type="button" class="btn btn-info shadow-sm font-weight-bold" style="height: 48px; flex: 1;" onclick="printLedger();">
+                                <i class="fas fa-print mr-2"></i> Print Ledger
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+        {
+            <!-- Customer Profile Summary -->
+            <div class="wizard-card animate-up mb-4">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-user-circle mr-2"></i> Customer Profile Details
+                </div>
+                <div class="p-4 bg-light-soft">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Customer Name</div>
+                            <div class="h6 text-primary">@Model.lstDetails.Rows[0]["Name"].ToString()</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Login ID</div>
+                            <div class="h6 text-dark">@Model.lstDetails.Rows[0]["LoginId"].ToString()</div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Mobile Number</div>
+                            <div class="h6"><i class="fas fa-phone-alt mr-1 text-success small"></i> @Model.lstDetails.Rows[0]["Mobile"].ToString()</div>
+                        </div>
+                    </div>
+                    <hr class="mt-0 mb-3 border-light">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Relation & Name</div>
+                            <div class="small font-weight-bold text-dark">@Model.lstDetails.Rows[0]["GaurdianRelation"].ToString(): @Model.lstDetails.Rows[0]["FathersName"].ToString()</div>
+                        </div>
+                        <div class="col-md-8 mb-3">
+                            <div class="small text-muted font-weight-bold mb-1">Permanent Address</div>
+                            <div class="small font-weight-bold text-dark">@Model.lstDetails.Rows[0]["Address"].ToString()</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Booked Plots List -->
+        @if (Model != null && Model.customerLedger != null && Model.customerLedger.Rows.Count > 0)
+        {
+            <div class="wizard-card animate-up mb-4">
+                <div class="card-header-premium secondary">
+                    <i class="fas fa-map-marked-alt mr-2"></i> Registered/Booked Plots (Select to view payment details)
+                </div>
+                <div class="p-0">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table id="example23654" class="table table-hover mb-0 custom-table text-nowrap">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="text-center">Sr No</th>
+                                    <th>Site Name</th>
+                                    <th class="text-center">Plot No</th>
+                                    <th class="text-right">Plot Area</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.customerLedger.Rows.Count; i++)
+                                {
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td class="font-weight-bold text-dark">@Model.customerLedger.Rows[i]["SiteName"].ToString()</td>
+                                        <td class="text-center">@Model.customerLedger.Rows[i]["PlotNumber"].ToString()</td>
+                                        <td class="text-right">@Model.customerLedger.Rows[i]["TotalArea"].ToString() Sqft</td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-soft-primary btn-sm px-3" onclick="return getPaymentDetails('@Model.customerLedger.Rows[i]["PK_BookingId"].ToString()');">
+                                                <i class="fas fa-file-invoice-dollar mr-1"></i> View Statement
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Dynamic Payment Summary & Transaction Statement -->
+        <div class="wizard-card animate-up mb-5">
+            <div class="card-header-premium">
+                <i class="fas fa-receipt mr-2"></i> Plot Payment Statement
+            </div>
+            <div class="p-4 bg-light-soft border-bottom">
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Customer Name</label>
+                        <input type="text" class="form-control bg-white font-weight-bold" readonly="readonly" id="txtcustName" style="height: 40px; color: #333;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Site Name</label>
+                        <input type="text" class="form-control bg-white" readonly="readonly" id="txtSiteName" style="height: 40px;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Plot No</label>
+                        <input type="text" class="form-control bg-white font-weight-bold" readonly="readonly" id="txtPlotNumber" style="height: 40px;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Total Area (Sqft)</label>
+                        <input type="text" class="form-control bg-white" readonly="readonly" id="txtTotalArea" style="height: 40px;" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Plot Rate</label>
+                        <input type="text" class="form-control bg-white" readonly="readonly" id="txtPlotRate" style="height: 40px;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">PLC (%)</label>
+                        <input type="text" class="form-control bg-white" readonly="readonly" id="txtPLCPerc" style="height: 40px;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Discount</label>
+                        <input type="text" class="form-control bg-white" readonly="readonly" id="txtdiscount" style="height: 40px;" />
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Final Plot Amount</label>
+                        <input type="text" class="form-control bg-white text-primary font-weight-bold" readonly="readonly" id="txtNetPlotAmount" style="height: 40px;" />
+                    </div>
+                </div>
+                <input type="hidden" id="txtLoginId" />
+            </div>
+            <div class="p-0">
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <table id="example231" class="table table-hover mb-0 custom-table text-nowrap">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Date</th>
+                                <th>Particulars</th>
+                                <th>Credit To</th>
+                                <th class="text-right">Plot Amount</th>
+                                <th class="text-right">Paid Amount</th>
+                                <th class="text-right font-weight-bold">Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic Rows via AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        function printLedger() {
+            var bookingId = $('#id').val();
+            if (bookingId == '' || bookingId == '0' || bookingId == undefined) {
+                alert("Please select a plot first by clicking 'View Statement' to print its ledger.");
+                return false;
+            }
+            window.open('/Print/CustomerLedger?id=' + bookingId, '_blank');
+        }
+
+        function validatePrint() {
+            var bookingId = $('#id').val();
+            if (bookingId == '' || bookingId == '0' || bookingId == undefined) {
+                alert("Please select a plot first by clicking 'View Statement' to print its ledger.");
+                return false;
+            }
+            return true;
+        }
+
+        function getPaymentDetails(Pk_BookingId) {
+            $("#divload").css({ 'display': '' });
+            $.ajax({
+                url: "/Admin/GetPaymentDetails",
+                type: "GET",
+                dataType: "JSON",
+                data: { id: Pk_BookingId },
+                success: function (data) {
+                    $("#divload").css({ 'display': 'none' });
+                    $('#txtcustName').val(data.Name);
+                    $('#txtLoginId').val(data.LoginId);
+                    $('#txtSiteName').val(data.SiteName);
+                    $('#txtPlotNumber').val(data.PlotNumber);
+                    $('#txtTotalArea').val(data.TotalArea);
+                    $('#txtPlotRate').val(data.PlotRate);
+                    $('#txtPLCPerc').val(data.PLCPerc);
+                    $('#txtdiscount').val(data.Discount);
+                    $('#txtPlotAmount').val(data.PlotAmount);
+                    $('#txtNetPlotAmount').val(data.NetPlotAmount);
+                    $('#id').val(data.id);
+                    
+                    var tableBody = $('#example231 tbody');
+                    tableBody.empty();
+                    $('#example231 tfoot').remove();
+
+                    if (data.details.length > 0) {
+                        for (var i = 0; i < data.details.length; i++) {
+                            var row = '<tr>' +
+                                '<td class="text-center small">' + data.details[i].TransactionDate + '</td>' +
+                                '<td class="small">' + data.details[i].Particular + '</td>' +
+                                '<td class="small">' + data.details[i].CreditTo + '</td>' +
+                                '<td class="text-right text-info">₹ ' + data.details[i].NetPlotAmount + '</td>' +
+                                '<td class="text-right text-success font-weight-bold">₹ ' + data.details[i].PaidAmount + '</td>' +
+                                '<td class="text-right font-weight-bold text-dark">₹ ' + data.details[i].Balance + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        }
+                        
+                        var footer = '<tfoot class="bg-light font-weight-bold">' +
+                            '<tr>' +
+                            '<td colspan="3" class="text-right py-3">Total Summary:</td>' +
+                            '<td class="text-right text-info py-3">₹ ' + data.TotalPlotAmount + '</td>' +
+                            '<td class="text-right text-success py-3">₹ ' + data.TotalPaidAmount + '</td>' +
+                            '<td class="text-right text-danger py-3">₹ ' + data.TotalBalance + '</td>' +
+                            '</tr></tfoot>';
+                        $('#example231').append(footer);
+                    }
+                    
+                    // Smooth scroll to the statement table
+                    $('html, body').animate({
+                        scrollTop: $("#example231").offset().top - 150
+                    }, 500);
+                },
+                error: function() {
+                    $("#divload").css({ 'display': 'none' });
+                    alert("Error loading payment details.");
+                }
+            });
+        }
+    </script>
+}
+

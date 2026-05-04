@@ -1,0 +1,143 @@
+@model RealEstateRegalSpace.Models.Reports
+
+@{
+    ViewBag.Title = "Business Report";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("BusinessReport", "Admin", FormMethod.Post, new { @id = "form1", enctype = "multipart/form-data" }))
+{
+    <div class="container-fluid">
+        <!-- Page-Title -->
+        <div class="page-title-box">
+            <div class="row align-items-center">
+                <div class="col-sm-6">
+                    <h4 class="page-title">Business Performance Report</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="wizard-card animate-up mb-4">
+            <div class="card-header-premium">
+                <i class="fas fa-chart-line mr-2"></i> Performance Filters
+            </div>
+            <div class="p-4">
+                <div class="row align-items-end">
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted">Login ID / Member ID</label>
+                        @Html.TextBoxFor(m => m.LoginId, new { @class = "form-control", @placeholder = "Search by ID", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> From Date</label>
+                        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control", @readonly = "readonly", @placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="small font-weight-bold text-muted"><i class="far fa-calendar-alt mr-1"></i> To Date</label>
+                        @Html.TextBoxFor(m => m.Todate, new { @class = "form-control", @readonly = "readonly", @placeholder = "dd/mm/yyyy", @style = "height: 48px;" })
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="d-block">&nbsp;</label>
+                        <button type="submit" id="btnSearch" name="Search" value="Search" class="btn btn-primary btn-block shadow-sm font-weight-bold" style="height: 48px;" onclick="return fvalidate();">
+                            <i class="fas fa-search mr-2"></i> Analyze Business
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Card -->
+        <div class="wizard-card animate-up">
+            <div class="card-header-premium secondary">
+                <i class="fas fa-briefcase mr-2"></i> Member Business Summary
+            </div>
+            <div class="p-0">
+                <div class="table-responsive">
+                    <table id="example23" class="table table-hover mb-0 custom-table">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="text-center">Sr No</th>
+                                <th>Associate Info</th>
+                                <th class="text-right">Self Business</th>
+                                <th class="text-right">Team Business</th>
+                                <th class="text-right font-weight-bold">Total Turnover</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.lstDetails != null && Model.lstDetails.Rows.Count > 0)
+                            {
+                                for (int i = 0; i < Model.lstDetails.Rows.Count; i++)
+                                {
+                                    decimal selfBiz = 0, teamBiz = 0;
+                                    decimal.TryParse(Model.lstDetails.Rows[i]["SelfBusiness"].ToString(), out selfBiz);
+                                    decimal.TryParse(Model.lstDetails.Rows[i]["TeamBusiness"].ToString(), out teamBiz);
+                                    
+                                    <tr>
+                                        <td class="text-center text-muted">@(i + 1)</td>
+                                        <td>
+                                            <div class="font-weight-bold text-dark">@Model.lstDetails.Rows[i]["Name"].ToString()</div>
+                                            <span class="badge badge-soft-primary small">ID: @Model.lstDetails.Rows[i]["LoginId"].ToString()</span>
+                                        </td>
+                                        <td class="text-right text-success">₹ @selfBiz.ToString("N2")</td>
+                                        <td class="text-right text-info">₹ @teamBiz.ToString("N2")</td>
+                                        <td class="text-right font-weight-bold text-dark">
+                                            ₹ @((selfBiz + teamBiz).ToString("N2"))
+                                        </td>
+                                        <td class="text-center">
+                                            <a class="btn btn-soft-primary btn-sm px-3" href="/Admin/BusinessReport?loginid=@Model.lstDetails.Rows[i]["LoginId"].ToString()">
+                                                <i class="fas fa-network-wired mr-1"></i> Downline Biz
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <div class="text-muted">
+                                            <i class="fas fa-chart-bar fa-3x mb-3 d-block opacity-50"></i>
+                                            Enter Login ID to view performance records.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Script {
+    <script>
+        $(document).ready(function () {
+            $('#FromDate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                maxDate: 0,
+                changeYear: true,
+                changeMonth: true
+            });
+            $('#Todate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                changeYear: true,
+                changeMonth: true
+            });
+        });
+
+        function fvalidate() {
+            if ($('#LoginId').val() == '') {
+                $('#LoginId').addClass('is-invalid').focus();
+                return false;
+            }
+            $('#LoginId').removeClass('is-invalid');
+            $("#divload").css({ 'display': '' });
+            return true;
+        }
+    </script>
+}
+
+
+
